@@ -101,7 +101,7 @@ class PendulumAnim():
             func = onestep,
             frames = np.arange(0, len(self.t)),
             interval = 25,
-            blit = True
+            blit = True,
         )
         
         ax.set_xlim(-self.L*1.1, self.L*1.1)
@@ -179,6 +179,6 @@ class Matoate:
 
 
 if __name__ == '__main__':
-    #hoge_1 = PendulumAnim()  # 振り子
+    hoge_1 = PendulumAnim()  # 振り子
     
-    hoge_2 = Matoate()  # 的あてゲーム
+    #hoge_2 = Matoate()  # 的あてゲーム

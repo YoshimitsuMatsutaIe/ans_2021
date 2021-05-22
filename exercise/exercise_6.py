@@ -11,8 +11,9 @@ import matplotlib.pyplot as plt
 
 
 class VanDelPol:
-    """van del polのクラス\n
-    ・あくまでも作成例です
+    """van del polのクラス
+    
+    あくまでも作成例です
     """
     
     def __init__(self,):
@@ -30,7 +31,8 @@ class VanDelPol:
         return [dx_1dt, dx_2dt]
     
     def do_exercise_2(self, K = 1):
-        """exercise2の内容を実行"""
+        """exercise2の内容を実行
+        """
         
         t = np.arange(0.0, 50.0, 0.001)
         time_list = list(t)

@@ -7,3 +7,11 @@ M1が作成したロボットアームの逆運動問題を解くプログラム
 
 ※exercise_7_utilsフォルダ内にあるモジュールを使っても良いです．
 """
+
+
+import numpy as np
+import scipy.integrate as integrate
+import math
+from math import pi, cos, sin, tanh
+
+

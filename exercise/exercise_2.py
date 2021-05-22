@@ -14,7 +14,6 @@ ddxddt = K * (1 - x**2) * dxdt - x
 
 import numpy as np
 from scipy import integrate
-import scipy as sp
 import matplotlib.pyplot as plt
 
 

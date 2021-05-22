@@ -2,9 +2,8 @@
 リカッチ方程式を解いて最適な制御入力uを計算してください．
 またuを用いてモデルを制御した結果をグラフで示してください．
 """
+
 import numpy as np
-import control
-import control.matlab
 import matplotlib.pyplot as plt
 
 # 状態方程式のA, B, C
@@ -22,7 +21,14 @@ C = np.eye(3)
 
 
 def main_control():
-    """controlモジュールを利用"""
+    """controlモジュールを利用
+    
+    *以下をインストールしとく
+    conda install -c conda-forge slycot
+    conda install -c conda-forge control
+    """
+    import control
+    import control.matlab
     
     sys = control.ss(A, B, C, np.zeros([3, 1]))  # 状態空間モデル
     
@@ -40,7 +46,6 @@ def main_control():
     x0 = np.array([[0.4, 0.5, 1.2]]).T
     
     x, t = control.matlab.initial(sys_fb, td, x0)
-    print(x.shape)
     
     
     # グラフ化
