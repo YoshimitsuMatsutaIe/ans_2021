@@ -102,67 +102,12 @@ class PID:
         return [dx[0, 0], dx[1, 0], dx[2, 0]]
     
     
-    def do_exercise_4_first(self, Kp = 5.0, Ki = 5.0, Kd = 1.5):
-        """(1)をやる
-        
-        固定ゲインでの結果を図示．
-        
-        Parameters:
-        ---
-        Kp :
-            比例ゲイン
-        Ki :
-            積分ゲイン
-        Kd :
-            微分ゲイン
-        
-        Returns:
-        ---
-        out : None
-        """
-        
-        t = np.arange(0.0, self.TIME_SPAN, self.TIME_INTERVAL)
-        time_list = list(t)
-        state_init = [self.X_INIT, self.DX_INIT, self.U_INIT]
-        params = (Kp, Ki, Kd)
-        
-        # 解く
-        print('計算中...')
-        start = time.time()
-        sol = integrate.solve_ivp(
-            fun = self.diff_eq,
-            t_span = (0.0, self.TIME_SPAN),
-            y0 = state_init,
-            method = 'RK45',
-            t_eval = t,
-            args = params,
-            rtol = 1.e-12,
-            atol = 1.e-14,
-        )
-        print('計算終了\n計算時間', time.time() - start, 's')
-        
-        # グラフ化
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        ax.plot(time_list, [self.GOAL]*len(time_list), color = 'red', label = 'goal')
-        ax.plot(time_list, sol.y[0], label = 'position')
-        ax.set_xlabel('time')
-        ax.set_ylabel('x')
-        ax.set_xlim(0.0, self.TIME_SPAN)
-        ax.grid(True)
-        ax.legend()
-        
-        plt.show()
-        
-        return None
-    
-    
-    def do_exercise_4_second(
+    def do_exercise_4(
         self,
-        Kp_range = [5.0], Ki_range = [5.0], Kd_range = [0.5],
+        Kp_range = [5.0], Ki_range = [5.0], Kd_range = [1.5],
         part_num = 30,
     ):
-        """(2)をやる
+        """言われたことををやる
         
         引数で与えたゲイン幅を等分し，全ゲインを同時に変化させるアニメーションを作成する
         
@@ -182,6 +127,12 @@ class PID:
         out : None
             何も返しません．
         """
+        
+        # (1)か(2)か判定
+        if len(Kd_range) == 1 and len(Ki_range) == 1 and len(Kd_range) == 1:
+            part_num = 1
+        else:
+            pass
         
         t = np.arange(0.0, self.TIME_SPAN, self.TIME_INTERVAL)
         time_list = list(t)
@@ -272,16 +223,18 @@ class PID:
         ax.legend(loc = 8)
         plt.show()
         
+        plt.savefig(ani, )
+        
         return None
 
 
 
 if __name__ == '__main__':
     model = PID()
-    #model.do_exercise_4_first(Kp = 5.0, Ki = 5.0, Kd = 1.5)
-    model.do_exercise_4_second(
+    model.do_exercise_4(
         Kp_range = [0.0, 5.0],
         Ki_range = [0.0, 5.0],
-        Kd_range = [0.0, 2.5],
+        Kd_range = [0.0, 2],
         part_num = 30,
     )
+    #model.do_exercise_4()
