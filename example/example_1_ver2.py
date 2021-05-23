@@ -1,4 +1,4 @@
-"""例題1：ファイル操作
+"""例題1：ファイル操作  ※訂正版
 example_1_dataフォルダにあるcsvファイルの中で，変数xにある数値以上の値が含まれる物をリストアップするプログラムを作成してください．
 結果はcsvファイルでexample_1_rezultフォルダに保存されるようにしてください．
 ただし結果のファイル名には実行時刻が入るようにしてください．
@@ -7,6 +7,7 @@ example_1_dataフォルダにあるcsvファイルの中で，変数xにある�
 ### Pandasを使用 ###
 import pandas as pd
 import pathlib
+import os
 import datetime
 import csv
 
@@ -29,7 +30,7 @@ def func_example_1(path_data, path_result, threshold):
             pass
     
     # 結果をcsvファイルで出力
-    result_name = 'rezult_' + date_now.strftime('%Y-%m-%d--%H-%M-%S') + '.csv'
+    result_name = 'result_' + date_now.strftime('%Y-%m-%d--%H-%M-%S') + '.csv'
     path_result = path_result / result_name
     with open(path_result, 'x', newline="") as f:
         writer = csv.writer(f, delimiter=',')
@@ -39,10 +40,10 @@ def func_example_1(path_data, path_result, threshold):
 
 
 if __name__ == '__main__':
-    re_path_data = pathlib.Path('example_1_data')  # exercize_1_dataフォルダの相対パス
+    cwd = os.path.dirname(__file__)  # 実行しているpyファイルのカレントディレクトリ
+    re_path_data = pathlib.Path(cwd + r'/example_1_data')  # exercize_1_dataフォルダの相対パス
     ab_path_data = re_path_data.resolve()  # 絶対パスに変換
-    
-    re_path_result = pathlib.Path('example_1_result')  # exercize_1_rezultフォルダの相対パス
+    re_path_result = pathlib.Path(cwd + r'/example_1_result')  # exercize_1_rezultフォルダの相対パス
     ab_path_result = re_path_result.resolve()  # 絶対パスに変換
     
     func_example_1(

@@ -10,3 +10,37 @@ exercise_1_dataフォルダには，あるシステムの状態の時刻歴デ�
 2. リストアップしたcsvファイルのx，yの時系列グラフを描画し，exercise_1_rezultフォルダに保存する．
 ただしグラフのファイル名には実行時刻と使用したcsvファイル名が入るようにする．
 """
+
+import pandas as pd
+import numpy as np
+import pathlib
+import os
+import datetime
+import csv
+
+def do_exercise_1():
+    """全部やる"""
+    
+    cwd = os.path.dirname(__file__)
+    path_data = pathlib.Path(cwd + r'/exercise_1_data').resolve()  # exercize_1_dataフォルダの相対パス
+    
+    date_now = datetime.datetime.now()  # 日付取得．保存ファイル名用
+    csv_names = path_data.glob('*.csv')  # csvファイルの名前を取得
+    header = '収束しているデータ'
+    result = [[header]]  # 結果格納
+    
+    for n in csv_names:
+        file_name = n.name
+        if file_name == 'hoge.csv':  # hoge.csvはstrなので除外．もっと頭の良い実装法があれば教えてください．
+            continue
+        print(file_name)
+        path_csv = path_data / file_name
+        data = np.loadtxt(path_csv, delimiter=',')
+        print(data[0, :])
+    
+    
+    return None
+
+
+if __name__ == '__main__':
+    do_exercise_1()

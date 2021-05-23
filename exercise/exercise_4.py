@@ -13,12 +13,14 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 import matplotlib.animation as anm
 import time
+# import control
+# import control.matlab
 
 
-class PID:
-    """自作PIDモデル
+class MyPID:
+    """自作PID
     
-    PIDを実演する
+    controlモジュールを使わずにPIDを実行．
     
     Attributes:
     -----
@@ -26,7 +28,7 @@ class PID:
     
     def __init__(
         self,
-        M = 1.0, K = 1.0, D = 1.0,
+        M = 1.0, K = 1.0, C = 1.0,
         X_INIT = 0.0, DX_INIT = 0.0, U_INIT = 0.0,
         GOAL = 1.0, TIME_INTERVAL = 0.01, TIME_SPAN = 10,
     ):
@@ -37,8 +39,8 @@ class PID:
             mass
         K :
             ばね定数
-        D :
-            摩擦係数
+        C :
+            減衰係数
         X_INIT :
             初期位置
         DX_INIT :
@@ -55,7 +57,7 @@ class PID:
         
         self.M = M
         self.K = K
-        self.D = D
+        self.C = C
         self.X_INIT = X_INIT
         self.DX_INIT = DX_INIT
         self.U_INIT = U_INIT
@@ -92,8 +94,8 @@ class PID:
         x = np.array([[state[0], state[1], state[2]]]).T
         multi = np.array([
             [0, 1, 0],
-            [-self.K/self.M, -self.D/self.M, 1/self.M],
-            [-Ki + Kd*self.K/self.M, -Kp + Kd*self.D/self.M, -Kd/self.M],
+            [-self.K/self.M, -self.C/self.M, 1/self.M],
+            [-Ki + Kd*self.K/self.M, -Kp + Kd*self.C/self.M, -Kd/self.M],
         ])
         offset = np.array([[0, 0, Ki*self.GOAL]]).T
         
@@ -105,7 +107,7 @@ class PID:
     def do_exercise_4(
         self,
         Kp_range = [5.0], Ki_range = [5.0], Kd_range = [1.5],
-        part_num = 30,
+        part_num = 30, save = False,
     ):
         """言われたことををやる
         
@@ -121,6 +123,8 @@ class PID:
             微分ゲイン．Kp_rangeと同様．
         part_num : int
             分割数．整数でないと多分エラー．大きいほど滑らか．
+        save : bool
+            保存するか否か．
         
         Returns:
         ----
@@ -223,16 +227,29 @@ class PID:
         ax.legend(loc = 8)
         plt.show()
         
-        plt.savefig(ani, )
+        if save:
+            ani.save('exercise_4.gif', writer = 'pillow')
         
         return None
 
 
+# class PIDbyControlModul:
+#     """controモジュールを使った実装"""
+    
+#     def __init__(self, M = 1.0, K = 1.0, C = 1.0, GOAL = 1.0):
+#         self.GOAL = GOAL
+        
+        
+    
+#     #def
+
+
+
 
 if __name__ == '__main__':
-    model = PID()
+    model = MyPID()
     model.do_exercise_4(
-        Kp_range = [0.0, 5.0],
+        Kp_range = [5.0],
         Ki_range = [0.0, 5.0],
         Kd_range = [0.0, 2],
         part_num = 30,
