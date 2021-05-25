@@ -6,9 +6,8 @@
 
 # Requirement
 
-必要なライブラリ
-
 * NumPy
 * Pandas 
 * SciPy
 * matplotlib
+* 

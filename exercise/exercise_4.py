@@ -144,7 +144,8 @@ class MyPID:
         
         gain_ranges = [Kp_range, Ki_range, Kd_range]
         gain_lists = [
-            gain*part_num if len(gain) == 1 else list(np.linspace(gain[0], gain[1], part_num)) for gain in gain_ranges
+            gain*part_num if len(gain) == 1 else list(np.linspace(gain[0], gain[1], part_num)) \
+                for gain in gain_ranges
         ]  # 各ゲインの数列の入ったリスト
         
         
@@ -200,7 +201,8 @@ class MyPID:
             )  # テキスト位置
         comment_templates = ['Kp = %s', 'Ki = %s', 'Kd = %s']
         comments = [
-            [ax.text(*comment_posi, comment_templates[i] % (gain_lists[i][0]), size = 10)] for i, comment_posi in enumerate(comment_posis)
+            [ax.text(*comment_posi, comment_templates[i] % (gain_lists[i][0]), size = 10)] \
+                for i, comment_posi in enumerate(comment_posis)
         ]
         
         def update(i):
@@ -227,6 +229,7 @@ class MyPID:
         ax.legend(loc = 8)
         plt.show()
         
+        # アニメーションを保存
         if save:
             ani.save('exercise_4.gif', writer = 'pillow')
         
