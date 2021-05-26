@@ -236,25 +236,12 @@ class MyPID:
         return None
 
 
-# class PIDbyControlModul:
-#     """controモジュールを使った実装"""
-    
-#     def __init__(self, M = 1.0, K = 1.0, C = 1.0, GOAL = 1.0):
-#         self.GOAL = GOAL
-        
-        
-    
-#     #def
-
-
-
 
 if __name__ == '__main__':
     model = MyPID()
     model.do_exercise_4(
-        Kp_range = [5.0],
+        Kp_range = [0, 5.0],
         Ki_range = [0.0, 5.0],
         Kd_range = [0.0, 2],
         part_num = 30,
     )
-    #model.do_exercise_4()
