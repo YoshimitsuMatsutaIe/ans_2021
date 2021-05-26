@@ -20,7 +20,7 @@ class InvertedPendulum:
     
     def __init__(
         self,
-        M_PEN=1.0, M_CAR=5.0, L=1.5, D_PEN=0.0, D_CAR=0.0, G_ACCEL=9.80665,
+        M_PEN=1.0, M_CAR=5.0, L=1.5, D_PEN=100, D_CAR=0.01, G_ACCEL=9.80665,
         TIME_INTERVAL=0.05, TIME_SPAN=10,
     ):
         """"""
@@ -49,7 +49,7 @@ class InvertedPendulum:
         ax = fig_ani.add_subplot(111)
         ax.set_xlim(x_min-0.5, x_max+0.5)
         #ax.set_xlim(-2, 2)
-        ax.set_ylim(-self.L*1.1, self.L*1.1)
+        ax.set_ylim(-self.L*1.2, self.L*1.2)
         ax.set_aspect('equal')
         
         ax.plot([x_min, x_max], [0, 0], color = 'k')  # 水平線
@@ -63,7 +63,7 @@ class InvertedPendulum:
         
         pen, = ax.plot([], [], lw = 2)  # 振り子
         pen.set_data(
-            [x_list[0], x_list[0] + self.L*cos(pi/2-theta_list[0])],
+            [x_list[0], x_list[0] + self.L*cos(-pi/2-theta_list[0])],
             [0, self.L*sin(pi/2-theta_list[0])],
         )
         
@@ -72,7 +72,7 @@ class InvertedPendulum:
             
             car.set_center([x_list[i], 0])
             pen.set_data(
-                [x_list[i], x_list[i] + self.L*cos(pi/2-theta_list[i])],
+                [x_list[i], x_list[i] + self.L*cos(-pi/2-theta_list[i])],
                 [0, self.L*sin(pi/2-theta_list[i])],
             )
             
@@ -114,11 +114,13 @@ class InvertedPendulum:
 
 
 class ByPID(InvertedPendulum):
-    """PIDで制御"""
+    """PIDで制御
+    ・未完成
+    """
     
     def __init__(
-        self, Kp=5, Ki=1, Kd=0,
-        X_INIT=0.0, DX_INIT=0.0, THETA_INIT=0, DTHETA_INIT=0.0, U_INIT = 0.0,
+        self, Kp=1000, Ki=10, Kd=3,
+        X_INIT=0.0, DX_INIT=0.0, THETA_INIT=0.0, DTHETA_INIT=0.0, U_INIT = 0.0,
     ):
         """"""
         super().__init__()
@@ -150,14 +152,15 @@ class ByPID(InvertedPendulum):
         offset = np.array([
             [x[1]],
             [x[3]],
-            [x[4] + 1/2*self.M_PEN*self.L*sin(x[2])*(x[3]**2)],
-            [1/2*self.M_PEN*self.L*sin(x[2])*x[1]*x[3] + 1/2*self.M_PEN*self.G_ACCEL*self.L*sin(x[2])],
+            [1/2*self.M_PEN*self.L*sin(x[2])*(x[3]**2)],
+            [1/2*self.M_PEN*self.L*sin(x[2])*x[1]*x[3] + 1/2*self.M_PEN*self.G_ACCEL*self.L*sin(x[2])+x[4]],
             [-self.Kp*x[3] + self.Ki*(self.GOAL - x[2])],
         ])
         
         dx = np.linalg.inv(multi) @ offset
         
         return np.ravel(dx).tolist()
+        #return [dx[0,0], dx[1,0], dx[2,0], dx[3,0], 0]
     
     
     def do_simu(self):
@@ -196,9 +199,10 @@ class ByLQR(InvertedPendulum):
     
     def __init__(self):
         super().__init__()
+        
 
 
 
 
 if __name__ == '__main__':
-    sim_by_pid = ByPID()
+    sim_by_pid = ByPID(THETA_INIT=pi/10)

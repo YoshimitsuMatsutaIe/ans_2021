@@ -28,7 +28,7 @@ class MyPID:
     
     def __init__(
         self,
-        M = 1.0, K = 1.0, C = 1.0,
+        M = 1.0, K = 0.1, C = 1.0,
         X_INIT = 0.0, DX_INIT = 0.0, U_INIT = 0.0,
         GOAL = 1.0, TIME_INTERVAL = 0.01, TIME_SPAN = 10,
     ):
@@ -106,7 +106,8 @@ class MyPID:
     
     def do_exercise_4(
         self,
-        Kp_range = [5.0], Ki_range = [5.0], Kd_range = [1.5],
+        #Kp_range = [5.0], Ki_range = [5.0], Kd_range = [1.5],
+        Kp_range = [5.0], Ki_range = [0.0], Kd_range = [0],
         part_num = 30, save = False,
     ):
         """言われたことををやる
@@ -239,9 +240,10 @@ class MyPID:
 
 if __name__ == '__main__':
     model = MyPID()
-    model.do_exercise_4(
-        Kp_range = [0, 5.0],
-        Ki_range = [0.0, 5.0],
-        Kd_range = [0.0, 2],
-        part_num = 30,
-    )
+    # model.do_exercise_4(
+    #     Kp_range = [0, 5.0],
+    #     Ki_range = [5.0],
+    #     Kd_range = [2.0],
+    #     part_num = 30,
+    # )
+    model.do_exercise_4()
