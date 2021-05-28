@@ -23,7 +23,26 @@ class InvertedPendulum:
         M_PEN=1.0, M_CAR=5.0, L=1.5, D_PEN=100, D_CAR=0.01, G_ACCEL=9.80665,
         TIME_INTERVAL=0.05, TIME_SPAN=10,
     ):
-        """"""
+        """
+        Parameters
+        ---
+        M_PEN :
+            振り子の質量[kg]
+        M_CAR :
+            台車の質量[kg]
+        L :
+            振り子の長さ[m]
+        D_PEN :
+            抵抗[]
+        D_CAR :
+            動摩擦[]
+        G_ACCEL :
+            重力加速度[m/s^2]
+        TIME_INTERVAL :
+            刻み時間[sec]
+        TIME_SPAN :
+            シミュレーション時間[sec]
+        """
         
         self.M_PEN = M_PEN
         self.M_CAR = M_CAR
@@ -119,10 +138,20 @@ class ByPID(InvertedPendulum):
     """
     
     def __init__(
-        self, Kp=1000, Ki=10, Kd=3,
-        X_INIT=0.0, DX_INIT=0.0, THETA_INIT=0.0, DTHETA_INIT=0.0, U_INIT = 0.0,
+        self, Kp=1, Ki=10, Kd=3,
+        X_INIT=0.0, DX_INIT=0.0, THETA_INIT=0.0, DTHETA_INIT=0.0,
     ):
-        """"""
+        """
+        Parameters
+        ---
+        Kp :
+            比例ゲイン
+        Ki :
+            積分ゲイン
+        Kd :
+            微分ゲイン
+        
+        """
         super().__init__()
         self.Kp = Kp
         self.Ki = Ki
@@ -131,8 +160,8 @@ class ByPID(InvertedPendulum):
         self.DX_INIT = DX_INIT
         self.THETA_INIT = THETA_INIT
         self.DTHETA_INIT = DTHETA_INIT
-        self.U_INIT = U_INIT
         self.GOAL = 0
+        self.U_INIT = Kp*(self.GOAL - THETA_INIT) - Kd*DX_INIT
         
         # 実行
         sol = self.do_simu()
@@ -152,8 +181,8 @@ class ByPID(InvertedPendulum):
         offset = np.array([
             [x[1]],
             [x[3]],
-            [1/2*self.M_PEN*self.L*sin(x[2])*(x[3]**2)],
-            [1/2*self.M_PEN*self.L*sin(x[2])*x[1]*x[3] + 1/2*self.M_PEN*self.G_ACCEL*self.L*sin(x[2])+x[4]],
+            [1/2*self.M_PEN*self.L*sin(x[2])*(x[3]**2) + x[4]],
+            [1/2*self.M_PEN*self.L*sin(x[2])*x[1]*x[3] + 1/2*self.M_PEN*self.G_ACCEL*self.L*sin(x[2])],
             [-self.Kp*x[3] + self.Ki*(self.GOAL - x[2])],
         ])
         

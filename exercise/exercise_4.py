@@ -28,8 +28,8 @@ class MyPID:
     
     def __init__(
         self,
-        M = 1.0, K = 0.1, C = 1.0,
-        X_INIT = 0.0, DX_INIT = 0.0, U_INIT = 0.0,
+        M = 1.0, K = 1.0, C = 1.0,
+        X_INIT = 0.0, DX_INIT = 0.0,
         GOAL = 1.0, TIME_INTERVAL = 0.01, TIME_SPAN = 10,
     ):
         """
@@ -45,8 +45,6 @@ class MyPID:
             初期位置
         DX_INIT :
             初期速度
-        U_INIT :
-            初期入力
         GOAL :
             目標位置
         TIME_INTERVAL :
@@ -60,7 +58,6 @@ class MyPID:
         self.C = C
         self.X_INIT = X_INIT
         self.DX_INIT = DX_INIT
-        self.U_INIT = U_INIT
         self.GOAL = GOAL
         self.TIME_INTERVAL = TIME_INTERVAL
         self.TIME_SPAN = TIME_SPAN
@@ -91,15 +88,17 @@ class MyPID:
         
         """
         
-        x = np.array([[state[0], state[1], state[2]]]).T
         multi = np.array([
+            [1, 0, 0],
             [0, 1, 0],
-            [-self.K/self.M, -self.C/self.M, 1/self.M],
-            [-Ki + Kd*self.K/self.M, -Kp + Kd*self.C/self.M, -Kd/self.M],
+            [0, Kd, 1],
         ])
-        offset = np.array([[0, 0, Ki*self.GOAL]]).T
-        
-        dx = multi @ x + offset
+        offset = np.array([
+            [state[1]],
+            [(state[2] - self.C*state[1] - self.K*state[0]) / self.M],
+            [-Kp*state[1] + Ki*(self.GOAL - state[0])],
+        ])
+        dx = np.linalg.inv(multi) @ offset
         
         return [dx[0, 0], dx[1, 0], dx[2, 0]]
     
@@ -107,7 +106,7 @@ class MyPID:
     def do_exercise_4(
         self,
         #Kp_range = [5.0], Ki_range = [5.0], Kd_range = [1.5],
-        Kp_range = [5.0], Ki_range = [0.0], Kd_range = [0],
+        Kp_range = [0, 10.0], Ki_range = [0.0], Kd_range = [0],
         part_num = 30, save = False,
     ):
         """言われたことををやる
@@ -130,18 +129,17 @@ class MyPID:
         Returns:
         ----
         out : None
-            何も返しません．
         """
         
-        # (1)か(2)か判定
-        if len(Kd_range) == 1 and len(Ki_range) == 1 and len(Kd_range) == 1:
-            part_num = 1
-        else:
-            pass
+        if len(Kp_range) == 1:
+            if len(Ki_range) == 1:
+                if len(Kd_range) == 1:
+                    print('アニメーション無し')
+                    part_num = 1
+        
         
         t = np.arange(0.0, self.TIME_SPAN, self.TIME_INTERVAL)
         time_list = list(t)
-        state_init = [self.X_INIT, self.DX_INIT, self.U_INIT]
         
         gain_ranges = [Kp_range, Ki_range, Kd_range]
         gain_lists = [
@@ -155,6 +153,9 @@ class MyPID:
         start = time.time()
         sol_xs = []
         for i in range(part_num):
+            U_INIT = gain_lists[0][i]*(self.GOAL - self.X_INIT) - gain_lists[2][i]*self.DX_INIT
+            state_init = [self.X_INIT, self.DX_INIT, U_INIT]
+            
             sol = integrate.solve_ivp(
                 fun = self.diff_eq,
                 t_span = (0.0, self.TIME_SPAN),
@@ -240,10 +241,9 @@ class MyPID:
 
 if __name__ == '__main__':
     model = MyPID()
-    # model.do_exercise_4(
-    #     Kp_range = [0, 5.0],
-    #     Ki_range = [5.0],
-    #     Kd_range = [2.0],
-    #     part_num = 30,
-    # )
-    model.do_exercise_4()
+    model.do_exercise_4(
+        Kp_range = [6.0],
+        Ki_range = [2],
+        Kd_range = [0],
+    )
+    #model.do_exercise_4()
