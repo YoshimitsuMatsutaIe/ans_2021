@@ -83,7 +83,7 @@ class MyPID:
         
         Returns:
         ---
-        out :list
+        out : list
             変数ベクトル
         
         """
@@ -105,8 +105,7 @@ class MyPID:
     
     def do_exercise_4(
         self,
-        #Kp_range = [5.0], Ki_range = [5.0], Kd_range = [1.5],
-        Kp_range = [0, 10.0], Ki_range = [0.0], Kd_range = [0],
+        Kp_range = [5.0], Ki_range = [5.0], Kd_range = [0, 1.5],
         part_num = 30, save = False,
     ):
         """言われたことををやる
@@ -122,7 +121,7 @@ class MyPID:
         Kd_range : list
             微分ゲイン．Kp_rangeと同様．
         part_num : int
-            分割数．整数でないと多分エラー．大きいほど滑らか．
+            分割数．大きいほど滑らか．
         save : bool
             保存するか否か．
         
@@ -188,7 +187,7 @@ class MyPID:
         else:
             y_max = self.X_INIT
             y_min = self.GOAL
-        ax.set_ylim(y_min-0.2, y_max+0.2)
+        ax.set_ylim(y_min-0.5, y_max+0.5)
         
         ax.plot(time_list, [self.GOAL]*len(time_list), color = 'red', label = 'goal')  # 目標値のラインを引く
         curve, = ax.plot([], [], label = 'position')
@@ -224,7 +223,6 @@ class MyPID:
             func = update,
             frames = range(part_num),
             interval = 100,
-            #blit = True,  # blitを使う場合はコールバック関数でreturnする必要がある
         )
         print('アニメーション作成終了\n処理時間', time.time() - start, 's')
         
@@ -241,9 +239,9 @@ class MyPID:
 
 if __name__ == '__main__':
     model = MyPID()
-    model.do_exercise_4(
-        Kp_range = [6.0],
-        Ki_range = [2],
-        Kd_range = [0],
-    )
-    #model.do_exercise_4()
+    # model.do_exercise_4(
+    #     Kp_range = [6.0],
+    #     Ki_range = [2],
+    #     Kd_range = [0],
+    # )
+    model.do_exercise_4()

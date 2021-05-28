@@ -17,111 +17,119 @@ from scipy import integrate
 import matplotlib.pyplot as plt
 
 
-
-def odeint_main():
-    """SciPyのodeintを使った実装"""
+class VanDelPol:
+    """VanDelPolを解く"""
     
-    def func_van_del_pol(state_variable_vector, t, K):
-        """van del Pol方程式
+    def __init__(
+        self,
+        K=1.0, x_init=0.1, dx_init=0.1, time_interval = 0.001, time_span = 50.0,
+        solver = 'solve_ivp'
+    ):
         """
-        x_1 = state_variable_vector[0]
-        x_2 = state_variable_vector[1]
+        Parameters
+        ---
+        K : float
+            係数
+        x_init : float
+            initial position
+        dx_init : float
+            initial velocity
+        time_interval : float
+            time interval
+        time_span: float
+            time span
+        solver : str
+            type of solver
+        """
+        
+        self.K = K
+        self.x_init = x_init
+        self.dx_init = dx_init
+        self.time_interval = time_interval
+        self.time_span = time_span
+        self.solver = solver
+        
+        self.t = np.arange(0.0, self.time_span, self.time_interval)
+        self.time_list = list(self.t)
+        
+        data = self.run_simu()
+        self.draw(data)
+    
+    
+    def diff_eq(self, t, state, K):
+        """ODE"""
+        
+        x_1, x_2 = state[0], state[1]
         
         dx_1dt = x_2
         dx_2dt = K * (1-x_1**2) * x_2 - x_1
         
         return [dx_1dt, dx_2dt]
-
-    time_list = np.linspace(0.0, 50.0, 1000000)
-    state_variable_vector_init = [0.1, 0.1]
-    K = 1
-
-    #解く
-    sol = integrate.odeint(
-        func = func_van_del_pol,
-        y0 = state_variable_vector_init,
-        t = time_list,
-        args = (K,)
-    )
-
-    # グラフ化
-    label_name = ['x_1', 'x_2', 'trajetory',]
-    xlabel_name = ['time', 'time', 'position x_1',]
-    ylabel_name = ['position', 'velocity', 'velocity',]
-
-    fig = plt.figure()
-    axs = [fig.add_subplot(1, 3, i) for i in [1, 2, 3]]
-
-    for i, ax in enumerate(axs):
-        if i < 2:
-            ax.plot(time_list, sol[:, i], label = label_name[i])
-        else:
-            ax.plot(sol[:, 0], sol[:, 1], label = label_name[i])
-        ax.set_xlabel(xlabel_name[i])
-        ax.set_ylabel(ylabel_name[i])
-        ax.grid(True)
-        ax.set_aspect('equal', adjustable='box')
-
-    plt.show()
     
-    return None
-
-
-def solve_ivp_main():
-    """SciPyのsolve_ivpを使った実装"""
-    
-    def func_van_del_pol(t, state_variable_vector, K):
-        """van del Pol方程式
+    def run_simu(self):
+        """run the simulation
+        
+        Return
+        ---
+        out : list
+            [x_history, dx_history]
         """
-        x_1 = state_variable_vector[0]
-        x_2 = state_variable_vector[1]
         
-        dx_1dt = x_2
-        dx_2dt = K * (1-x_1**2) * x_2 - x_1
+        state_init = [self.x_init, self.dx_init]
+        if self.solver == 'solve_ivp':
+            sol = integrate.solve_ivp(
+                fun = self.diff_eq,
+                t_span = (0.0, self.time_span),
+                y0 = state_init,
+                method = 'RK45',
+                t_eval = self.t,
+                args = (self.K,),
+                rtol = 1.e-12,  # 相対誤差
+                atol = 1.e-14,  # 絶対誤差
+            )
+            return [sol.y[0], sol.y[1]]
         
-        return [dx_1dt, dx_2dt]
-
-    t = np.arange(0.0, 50.0, 0.001)
-    time_list = list(t)
-    state_variable_vector_init = [0.1, 0.1]
-    K = 1
-
-    #解く
-    sol = integrate.solve_ivp(
-        fun = func_van_del_pol,
-        t_span = (0.0, 50.0),
-        y0 = state_variable_vector_init,
-        method = 'RK45',
-        t_eval = t,
-        args = (K,),
-        rtol = 1.e-12,  # 相対誤差
-        atol = 1.e-14,  # 絶対誤差
-    )
-
-    # グラフ化
-    label_name = ['x_1', 'x_2', 'trajetory',]
-    xlabel_name = ['time', 'time', 'position x_1',]
-    ylabel_name = ['position', 'velocity', 'velocity',]
-
-    fig = plt.figure()
-    axs = [fig.add_subplot(1, 3, i) for i in [1, 2, 3]]
-
-    for i, ax in enumerate(axs):
-        if i < 2:
-            ax.plot(time_list, sol.y[i], label = label_name[i])
-        else:
-            ax.plot(sol.y[0], sol.y[1], label = label_name[i])
-        ax.set_xlabel(xlabel_name[i])
-        ax.set_ylabel(ylabel_name[i])
-        ax.grid(True)
-        
-        ax.set_aspect('equal', adjustable='box')
-    ax.legend()
-    plt.show()
+        elif self.solver == 'odeint':
+            sol = integrate.odeint(
+                func = self.diff_eq,
+                y0 = state_init,
+                t = np.array(self.t),
+                args = (self.K,),
+                tfirst = True,
+            )
+            
+            return [sol[:, 0], sol[:, 1]]
     
-    return None
+    
+    def draw(self, data):
+        """make figure
+        
+        Parameters
+        ---
+        data : list
+            list of x, dx
+        """
+        
+        label_name = ['x_1', 'x_2', 'trajetory',]
+        xlabel_name = ['time', 'time', 'position x_1',]
+        ylabel_name = ['position', 'velocity', 'velocity',]
+
+        fig = plt.figure()
+        axs = [fig.add_subplot(1, 3, i) for i in [1, 2, 3]]
+
+        for i, ax in enumerate(axs):
+            if i < 2:
+                ax.plot(self.time_list, data[i], label = label_name[i])
+            else:
+                ax.plot(data[0], data[1], label = label_name[i])
+            ax.set_xlabel(xlabel_name[i])
+            ax.set_ylabel(ylabel_name[i])
+            ax.grid(True)
+            
+            #ax.set_aspect('equal', adjustable='box')
+        ax.legend()
+        plt.show()
 
 
 if __name__ == '__main__':
-    odeint_main()  # odeintは古いようです．
-    #solve_ivp_main()
+    simu = VanDelPol(solver='odeint')

@@ -8,19 +8,21 @@
 import numpy as np
 import math
 from math import pi, sin, cos, tan
+import scipy as sp
 import scipy.integrate as integrate
 import matplotlib.pyplot as plt
 import matplotlib.animation as anm
 import matplotlib.patches as patches
 import time
 
+import exercise_5
 
 class InvertedPendulum:
     """倒立振子のモデル"""
     
     def __init__(
         self,
-        M_PEN=1.0, M_CAR=5.0, L=1.5, D_PEN=100, D_CAR=0.01, G_ACCEL=9.80665,
+        M_PEN=1.0, M_CAR=5.0, L=1.5, D_PEN=1, D_CAR=0.01, G_ACCEL=9.80665,
         TIME_INTERVAL=0.05, TIME_SPAN=10,
     ):
         """
@@ -53,6 +55,25 @@ class InvertedPendulum:
         self.TIME_INTERVAL = TIME_INTERVAL
         self.TIME_SPAN = TIME_SPAN
         
+        # 原点で線形化するとき
+        offset_x = np.array([
+            [0, 1, 0, 0],
+            [0, 0, 0, 1],
+            [0, -self.D_CAR, 0, 0],
+            [0, 0, self.M_PEN*self.G_ACCEL*self.L, -self.D_PEN],
+        ])
+        offset_u = np.array([[0, 0, 1, 0]]).T
+        multi = np.array([
+            [1, 0, 0, 0],
+            [0, 0, 1, 0],
+            [0, self.M_CAR + self.M_PEN, 0, self.M_PEN*self.L],
+            [0, self.M_PEN*self.L, 0, 4/3*self.M_PEN*self.L**2],
+        ])
+        
+        self.A_linier = np.linalg.inv(multi) @ offset_x
+        self.B_linier = np.linalg.inv(multi) @ offset_u
+        
+        # 時間関係
         self.t = np.arange(0.0, self.TIME_SPAN, self.TIME_INTERVAL)
         self.time_list = list(self.t)
     
@@ -168,35 +189,34 @@ class ByPID(InvertedPendulum):
         self.draw(x_list=sol.y[0], theta_list=sol.y[2])
     
     
-    def diff_eq(self, t, x):
-        """ODE"""
-        
-        multi = np.array([
-            [1, 0, 0, 0, 0],
-            [0, 0, 1, 0, 0],
-            [0, self.M_CAR + self.M_PEN, 0, 1/2*self.M_PEN*self.L*cos(x[2]), 0],
-            [0, 1/2*self.M_PEN*self.L*cos(x[2]), 0, 1/3*self.M_PEN*(self.L**2), 0],
-            [0, 0, 0, self.Kd, 1]
-        ])
-        offset = np.array([
-            [x[1]],
-            [x[3]],
-            [1/2*self.M_PEN*self.L*sin(x[2])*(x[3]**2) + x[4]],
-            [1/2*self.M_PEN*self.L*sin(x[2])*x[1]*x[3] + 1/2*self.M_PEN*self.G_ACCEL*self.L*sin(x[2])],
-            [-self.Kp*x[3] + self.Ki*(self.GOAL - x[2])],
-        ])
-        
-        dx = np.linalg.inv(multi) @ offset
-        
-        return np.ravel(dx).tolist()
-        #return [dx[0,0], dx[1,0], dx[2,0], dx[3,0], 0]
-    
-    
     def do_simu(self):
         """シミュレーションを実行"""
         
         start = time.time()
         print('計算中...')
+        
+        def diff_eq(t, x):
+            """ODE"""
+            
+            multi = np.array([
+                [1, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, self.M_CAR + self.M_PEN, 0, 1/2*self.M_PEN*self.L*cos(x[2]), 0],
+                [0, 1/2*self.M_PEN*self.L*cos(x[2]), 0, 1/3*self.M_PEN*(self.L**2), 0],
+                [0, 0, 0, self.Kd, 1]
+            ])
+            offset = np.array([
+                [x[1]],
+                [x[3]],
+                [1/2*self.M_PEN*self.L*sin(x[2])*(x[3]**2) + x[4]],
+                [1/2*self.M_PEN*self.L*sin(x[2])*x[1]*x[3] + 1/2*self.M_PEN*self.G_ACCEL*self.L*sin(x[2])],
+                [-self.Kp*x[3] + self.Ki*(self.GOAL - x[2])],
+            ])
+            
+            dx = np.linalg.inv(multi) @ offset
+            
+            return np.ravel(dx).tolist()
+            #return [dx[0,0], dx[1,0], dx[2,0], dx[3,0], 0]
         
         state_init = [
             self.X_INIT, self.DX_INIT, self.THETA_INIT, self.DTHETA_INIT, self.U_INIT,
@@ -204,7 +224,7 @@ class ByPID(InvertedPendulum):
         
         # 解く
         sol = integrate.solve_ivp(
-            fun = self.diff_eq,
+            fun = diff_eq,
             t_span = (0.0, self.TIME_SPAN),
             y0 = state_init,
             method = 'RK45',
@@ -222,16 +242,120 @@ class ByPID(InvertedPendulum):
         return sol
 
 
+class ByStateFeedback(InvertedPendulum):
+    """状態フィードバックで制御？"""
+    
+    def __init__(
+        self, X_INIT=0.0, DX_INIT=0.0, THETA_INIT=0.0, DTHETA_INIT=0.0,
+        K = np.array([[1, 1, 1, 1]])
+    ):
+        super().__init__()
+        self.X_INIT = X_INIT
+        self.DX_INIT = DX_INIT
+        self.THETA_INIT = THETA_INIT
+        self.DTHETA_INIT = DTHETA_INIT
+        self.GOAL = 0
+        
+        if exercise_5.ByLQR.controllability(self.A_linier, self.B_linier):
+            print('可制御')
+        else:
+            print('可制御でない')
+            return
+        
+        sol = self.do_simu(K)
+        self.draw(x_list=sol.y[0], theta_list=sol.y[2])
+    
+    
+    def do_simu(self, K):
+        self.A_F = self.A_linier - self.B_linier @ K
+        #print(self.A_F)
+        def diff_eq(t, state):
+            x = np.array([state]).T
+            dx = self.A_F @ x
+            return np.ravel(dx).tolist()
+        
+        state_init = [self.X_INIT, self.DX_INIT, self.THETA_INIT, self.DTHETA_INIT]
+        
+        sol = integrate.solve_ivp(
+            fun = diff_eq,
+            t_span = (0.0, self.TIME_SPAN),
+            y0 = state_init,
+            method = 'RK45',
+            t_eval = self.t,
+            args = None,
+            rtol = 1.e-12,
+            atol = 1.e-14,
+        )
+        
+        return sol
+
+
 
 class ByLQR(InvertedPendulum):
-    """リカッチで制御"""
+    """線形化してLQRで制御
     
-    def __init__(self):
+    安定性が低い
+    """
+    
+    def __init__(self, Q, R, X_INIT=0.0, DX_INIT=0.0, THETA_INIT=0.0, DTHETA_INIT=0.0,):
         super().__init__()
+        self.X_INIT = X_INIT
+        self.DX_INIT = DX_INIT
+        self.THETA_INIT = THETA_INIT
+        self.DTHETA_INIT = DTHETA_INIT
+        self.GOAL = 0
         
+        if exercise_5.ByLQR.controllability(self.A_linier, self.B_linier):
+            print('可制御')
+        else:
+            print('可制御でない')
+            return
+        
+        sol = self.do_simu(Q, R)
+        #print(sol.y[0])
+        #print(sol.y[2])
+        self.draw(x_list=sol.y[0], theta_list=sol.y[2])
+    
+    
+    def do_simu(self, Q, R):
+        
+        P = sp.linalg.solve_continuous_are(
+            a = self.A_linier,
+            b = self.B_linier,
+            q = Q,
+            r = R,
+        )
+        
+        A_bar = (self.A_linier - self.B_linier @ np.linalg.inv(R) @ self.B_linier.T @ P)
+        
+        def diff_eq(t, state, A_bar):
+            x = np.array([state]).T
+            dx = A_bar @ x
+            return np.ravel(dx).tolist()
+        
+        state_init = [self.X_INIT, self.DX_INIT, self.THETA_INIT, self.DTHETA_INIT]
+        
+        sol = integrate.solve_ivp(
+            fun = diff_eq,
+            t_span = (0.0, self.TIME_SPAN),
+            y0 = state_init,
+            method = 'RK45',
+            t_eval = self.t,
+            args = (A_bar,),
+            rtol = 1.e-12,
+            atol = 1.e-14,
+        )
+        
+        return sol
 
 
 
 
 if __name__ == '__main__':
-    sim_by_pid = ByPID(THETA_INIT=pi/10)
+    #sim = ByPID(THETA_INIT=pi/10)
+    
+    #sim = ByStateFeedback(THETA_INIT=pi/10)
+    
+    Q = np.diag([10, 10, 100, 100])
+    R = np.array([[1]]) * 0.01
+    sim = ByLQR(Q, R, THETA_INIT = pi/6)
