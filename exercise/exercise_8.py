@@ -22,7 +22,7 @@ class InvertedPendulum:
     
     def __init__(
         self,
-        M_PEN=1.0, M_CAR=5.0, L=1.5, D_PEN=1, D_CAR=0.01, G_ACCEL=9.80665,
+        M_PEN=1.0, M_CAR=5.0, L=1.5, D_PEN=0.01, D_CAR=0.01,
         TIME_INTERVAL=0.05, TIME_SPAN=10,
     ):
         """
@@ -51,7 +51,7 @@ class InvertedPendulum:
         self.L = L
         self.D_PEN = D_PEN
         self.D_CAR = D_CAR
-        self.G_ACCEL = G_ACCEL
+        self.G_ACCEL = 9.80665
         self.TIME_INTERVAL = TIME_INTERVAL
         self.TIME_SPAN = TIME_SPAN
         
@@ -88,11 +88,11 @@ class InvertedPendulum:
         fig_ani = plt.figure()
         ax = fig_ani.add_subplot(111)
         ax.set_xlim(x_min-0.5, x_max+0.5)
-        #ax.set_xlim(-2, 2)
         ax.set_ylim(-self.L*1.2, self.L*1.2)
         ax.set_aspect('equal')
+        ax.grid(True)
         
-        ax.plot([x_min, x_max], [0, 0], color = 'k')  # 水平線
+        ax.plot([x_min-0.5, x_max+0.5], [0, 0], color = 'k')  # 水平線
         
         car = patches.Circle(
             xy = (self.X_INIT, 0),
@@ -312,8 +312,6 @@ class ByLQR(InvertedPendulum):
             return
         
         sol = self.do_simu(Q, R)
-        #print(sol.y[0])
-        #print(sol.y[2])
         self.draw(x_list=sol.y[0], theta_list=sol.y[2])
     
     
@@ -324,7 +322,7 @@ class ByLQR(InvertedPendulum):
             b = self.B_linier,
             q = Q,
             r = R,
-        )
+        )  # ricatti_eqを解く
         
         A_bar = (self.A_linier - self.B_linier @ np.linalg.inv(R) @ self.B_linier.T @ P)
         
