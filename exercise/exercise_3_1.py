@@ -1,13 +1,16 @@
+"""練習問題3-1"""
+
+
 import math
 import numpy as np
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 import matplotlib.animation as amn
-import matplotlib.patches as patches
 
 
-class PendulumAnim():
-    """振り子\n
+class PendulumAnim:
+    """create pendulum animation
+    
     これを参考にしました：
     https://qiita.com/trami/items/a1bdec427fc0420e6f19
     """

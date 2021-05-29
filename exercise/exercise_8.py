@@ -69,7 +69,9 @@ class InvertedPendulum:
         self.free = True
         self.method = 'free'
         
-        # theta=0, dtheta=0で線形化したときの係数
+        self.integral_error = self.GOAL - THETA_INIT
+        
+        # linertheta=0, dtheta=0
         offset_x = np.array([
             [0, 1, 0, 0],
             [0, 0, 0, 1],
@@ -140,19 +142,23 @@ class InvertedPendulum:
             method = 'RK45',
             t_eval = self.t,
             args = None,
-            rtol = 1.e-12,
-            atol = 1.e-14,
+            #rtol = 1.e-12,
+            #atol = 1.e-14,
         )
         
         return sol
     
     
-    def draw(self, x_list, theta_list, dx_list=None, dtheta_list=None, u_list=None):
+    def draw(
+        self, x_list, theta_list, dx_list=None, dtheta_list=None, u_list=None,
+        ani_save=False
+    ):
         """create a graph
         
-        Parameters:
+        Parameters
         ---
-        x_list : list
+        ani_save : bool
+            save animation.
         """
         
         fig_ani = plt.figure()
@@ -209,7 +215,9 @@ class InvertedPendulum:
             )
             
             time.pop().remove()
-            time_, = [ax_ani.text(-0.5, -1, time_template % (round(self.time_list[i], 1)), size = 10)]
+            time_, = [
+                ax_ani.text(-0.5, -1, time_template % (round(self.time_list[i], 1)), size = 10)
+            ]
             time.append(time_)
             
             return [car, pen]
@@ -222,7 +230,9 @@ class InvertedPendulum:
             interval = 25,
         )
         
-        ani.save('sxercise_8_PID.gif', writer='pillow')
+        if ani_save:
+            fig_ani_name = 'exercise_8__by_' + self.method + '.gif'
+            ani.save(fig_ani_name, writer='pillow')
         
         # figure of state history
         data_list = [x_list, theta_list, dx_list, dtheta_list, u_list]
@@ -250,11 +260,14 @@ class InvertedPendulum:
 
 class ByPID(InvertedPendulum):
     """control by PID
+    
+    default parameter is is the lack of coordination.
     """
     
     def __init__(
-        self, Kp=1, Ki=10, Kd=3,
+        self, Kp=150, Ki=2, Kd=15,
         X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6, DTHETA_INIT=0.0,
+        ani_save=False,
     ):
         """
         Parameters
@@ -273,68 +286,38 @@ class ByPID(InvertedPendulum):
         self.Kp = Kp
         self.Ki = Ki
         self.Kd = Kd
-        self.U_INIT = Kp*(self.GOAL - self.THETA_INIT) - Kd*self.DX_INIT
         
         self.free = False
+        self.method = 'PID'
         
+        # execute
+        sol = self.run_simu()
+        self.draw(x_list=sol.y[0], theta_list=sol.y[2], ani_save=ani_save)
         
-        
-        # # 実行
-        # sol = self.do_simu()
-        # self.draw(x_list=sol.y[0], theta_list=sol.y[2])
+        return
     
     
-    def do_simu(self):
-        """シミュレーションを実行"""
+    def input(self, state):
+        """compute input value
         
-        start = time.time()
-        print('計算中...')
+        Parameter
+        ---
+        state : list
+            state vector
         
-        def diff_eq(t, x):
-            """ODE"""
-            
-            multi = np.array([
-                [1, 0, 0, 0, 0],
-                [0, 0, 1, 0, 0],
-                [0, self.M_CAR + self.M_PEN, 0, 1/2*self.M_PEN*self.L*cos(x[2]), 0],
-                [0, 1/2*self.M_PEN*self.L*cos(x[2]), 0, 1/3*self.M_PEN*(self.L**2), 0],
-                [0, 0, 0, self.Kd, 1]
-            ])
-            offset = np.array([
-                [x[1]],
-                [x[3]],
-                [1/2*self.M_PEN*self.L*sin(x[2])*(x[3]**2) + x[4]],
-                [1/2*self.M_PEN*self.L*sin(x[2])*x[1]*x[3] + 1/2*self.M_PEN*self.G_ACCEL*self.L*sin(x[2])],
-                [-self.Kp*x[3] + self.Ki*(self.GOAL - x[2])],
-            ])
-            
-            dx = np.linalg.inv(multi) @ offset
-            
-            return np.ravel(dx).tolist()
-            #return [dx[0,0], dx[1,0], dx[2,0], dx[3,0], 0]
+        Return
+        ---
+        out : float
+            input value
+        """
         
-        state_init = [
-            self.X_INIT, self.DX_INIT, self.THETA_INIT, self.DTHETA_INIT, self.U_INIT,
-        ]
+        u = -self.Kp*(self.GOAL - state[2]) + \
+            self.Ki*(self.integral_error) + \
+                self.Kd*(state[3])
+        self.integral_error = self.integral_error - (self.GOAL - state[2])*self.TIME_INTERVAL
         
-        # 解く
-        sol = integrate.solve_ivp(
-            fun = diff_eq,
-            t_span = (0.0, self.TIME_SPAN),
-            y0 = state_init,
-            method = 'RK45',
-            t_eval = self.t,
-            args = None,
-            rtol = 1.e-12,
-            atol = 1.e-14,
-        )
-        
-        print('計算終了．処理時間=', time.time() - start)
-        
-        if max(sol.y[0]) > self.L*10 or min(sol.y[0]) < -self.L*10:
-            print("発散")
-        
-        return sol
+        return u
+
 
 
 # class ByStateFeedback(InvertedPendulum):
@@ -389,8 +372,9 @@ class ByLQR(InvertedPendulum):
     """
     
     def __init__(
-        self, Q, R,
+        self, Q=np.diag([10, 10, 100, 100]), R=np.array([[1]]) * 0.01,
         X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6, DTHETA_INIT=0.0,
+        ani_save=False,
     ):
         """
         Parameters
@@ -404,10 +388,11 @@ class ByLQR(InvertedPendulum):
         """
         
         super().__init__(X_INIT, DX_INIT, THETA_INIT, DTHETA_INIT)
-        self.free = False
-        self.method = 'LQR'
         self.Q = Q
         self.R = R
+        
+        self.free = False
+        self.method = 'LQR'
         
         print('systhem is ', end='')
         if exercise_5.ByLQR.controllability(self.A_linier, self.B_linier):
@@ -428,7 +413,7 @@ class ByLQR(InvertedPendulum):
         
         # execute
         sol = self.run_simu()
-        self.draw(x_list=sol.y[0], theta_list=sol.y[2])
+        self.draw(x_list=sol.y[0], theta_list=sol.y[2], ani_save=ani_save)
     
     
     def input(self, state):
@@ -450,17 +435,22 @@ class ByLQR(InvertedPendulum):
         return u[0, 0]
 
 
+def main_no_input():
+    sim = InvertedPendulum(X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6, DTHETA_INIT=0.0,)
+    sol = sim.run_simu()
+    sim.draw(sol.y[0], sol.y[2])
+
+
+
 
 if __name__ == '__main__':
-    #sim = ByPID(THETA_INIT=pi/10)
+    # # by PID
+    # sim = ByPID(THETA_INIT=pi/10,)
     
     #sim = ByStateFeedback(THETA_INIT=pi/10)
     
     # by LQR
-    Q = np.diag([10, 10, 100, 100])
-    R = np.array([[1]]) * 0.01
-    sim = ByLQR(Q, R,THETA_INIT=pi/6)
+    simu = ByLQR()
     
-    # free
-    # sim = InvertedPendulum(X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6, DTHETA_INIT=0.0,)
-    # sim.solve()
+    # # no input
+    # main_no_input()

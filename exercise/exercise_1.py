@@ -21,19 +21,19 @@ import matplotlib.patches as patches
 
 
 def do_exercise_1(r = 1.0, time_span = 3.0, figure = False):
-    """全部やる関数
+    """do all
     
     Parameters:
     ---
     r :
-        収束判定に使う許容誤差半径[m]．
+        tolerance radius used for convergence test[m]．
     time_span :
-        収束判定に使う停留時間[sec]．
-    Figure : bool
-        グラフを作るか否か．実行結果を確かめたいときはTrue．
+        convergence test time[sec]．
+    figure : bool
+        whether to create a graph
     """
     
-    GOAL = np.array([[10, 0.5]]).T  # 目標位置
+    GOAL = np.array([[10, 0.5]]).T  # goal position
     
     cwd = os.path.dirname(__file__)
     path_data = pathlib.Path(cwd + r'/exercise_1_data').resolve()
@@ -44,7 +44,7 @@ def do_exercise_1(r = 1.0, time_span = 3.0, figure = False):
     csv_names = path_data.glob('*.csv')  # csvファイルの名前を取得
     header = 'List of converged data. radius of convergence = ' + \
         str(r) + ', stable time = ' + str(time_span) + '.'
-    result = [[header]]  # 結果格納
+    result = [[header]]
     
     for j, n in enumerate(csv_names):
         file_name = n.name
@@ -53,7 +53,7 @@ def do_exercise_1(r = 1.0, time_span = 3.0, figure = False):
         path_csv = path_data / file_name
         data = np.loadtxt(path_csv, delimiter=',')
         
-        time_interval = data[1, 0] - data[0, 0]  # 刻み時間
+        time_interval = data[1, 0] - data[0, 0]  # time interval
         i_span = int(time_span / time_interval)  # time_spanを離散値に変換
         
         xy_last = data[data.shape[0]-i_span:, 1:3].T
@@ -102,7 +102,7 @@ def do_exercise_1(r = 1.0, time_span = 3.0, figure = False):
     
     plt.show()
     
-    return None
+    return
 
 
 if __name__ == '__main__':

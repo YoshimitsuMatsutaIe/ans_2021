@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 
 
 class VanDelPol:
-    """VanDelPolを解く"""
+    """VanDelPol"""
     
     def __init__(
         self,
@@ -29,7 +29,7 @@ class VanDelPol:
         Parameters
         ---
         K : float
-            係数
+            wow
         x_init : float
             initial position
         dx_init : float
@@ -84,8 +84,8 @@ class VanDelPol:
                 method = 'RK45',
                 t_eval = self.t,
                 args = (self.K,),
-                rtol = 1.e-12,  # 相対誤差
-                atol = 1.e-14,  # 絶対誤差
+                #rtol = 1.e-12,  # 相対誤差
+                #atol = 1.e-14,  # 絶対誤差
             )
             return [sol.y[0], sol.y[1]]
         
@@ -129,6 +129,8 @@ class VanDelPol:
             #ax.set_aspect('equal', adjustable='box')
         ax.legend()
         plt.show()
+        
+        return
 
 
 if __name__ == '__main__':

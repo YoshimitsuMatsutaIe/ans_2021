@@ -17,10 +17,8 @@ import time
 # import control.matlab
 
 
-class MyPID:
-    """自作PID
-    
-    controlモジュールを使わずにPIDを実行．
+class SpringMassDamperModel:
+    """spring mass damper system
     
     Attributes:
     -----
@@ -35,22 +33,22 @@ class MyPID:
         """
         Parameters
         ----
-        M :
-            mass
-        K :
-            ばね定数
-        C :
-            減衰係数
-        X_INIT :
-            初期位置
-        DX_INIT :
-            初期速度
-        GOAL :
-            目標位置
-        TIME_INTERVAL :
-            刻み時間
-        TiME_SPAN :
-            シミュレーション時間
+        M : float
+            mass [kg]
+        K : float
+            spring constant [N/m]
+        C : float
+            coefficient
+        X_INIT : float
+            initial position
+        DX_INIT : float
+            initial velocity
+        GOAL : float
+            goal position
+        TIME_INTERVAL : float
+            time interval
+        TiME_SPAN : float
+            time span
         """
         
         self.M = M
@@ -61,31 +59,30 @@ class MyPID:
         self.GOAL = GOAL
         self.TIME_INTERVAL = TIME_INTERVAL
         self.TIME_SPAN = TIME_SPAN
+        
+        return
     
     
     def diff_eq(self, t, state, Kp, Ki, Kd):
         """ODE
         
-        integrate.solve_ivpに使うODE
-        
-        Args:
+        Parameters
         ---
         t : range
-            時間列
+            ?
         state : list
-            変数ベクトル
-        Kp :
-            比例ゲイン
-        Ki :
-            積分ゲイン
-        Kd :
-            微分ゲイン
+            generalized coordinate vector
+        Kp : float
+            proportional gain. non-negative.
+        Ki : float
+            integral gain. non-negative.
+        Kd : float
+            derivative gain. non-negative.
         
-        Returns:
+        Returns
         ---
         out : list
-            変数ベクトル
-        
+            generalized velocity vector
         """
         
         multi = np.array([
@@ -98,9 +95,9 @@ class MyPID:
             [(state[2] - self.C*state[1] - self.K*state[0]) / self.M],
             [-Kp*state[1] + Ki*(self.GOAL - state[0])],
         ])
-        dx = np.linalg.inv(multi) @ offset
         
-        return [dx[0, 0], dx[1, 0], dx[2, 0]]
+        dx = np.linalg.inv(multi) @ offset
+        return np.ravel(dx).tolist()
     
     
     def do_exercise_4(
@@ -108,12 +105,12 @@ class MyPID:
         Kp_range = [5.0], Ki_range = [5.0], Kd_range = [0, 1.5],
         part_num = 30, save = False,
     ):
-        """言われたことををやる
+        """do all
         
-        引数で与えたゲイン幅を等分し，全ゲインを同時に変化させるアニメーションを作成する
+        create animation that changes all gains at the same time.
         
-        Parameters:
-        --------
+        Parameters
+        -----
         Kp_rnage : list
             比例ゲイン．開始と終了（長さ2のリスト），または固定値（長さ1のリスト）を入れる．
         Ki_range : list
@@ -123,9 +120,8 @@ class MyPID:
         part_num : int
             分割数．大きいほど滑らか．
         save : bool
-            保存するか否か．
         
-        Returns:
+        Returns
         ----
         out : None
         """
@@ -162,14 +158,14 @@ class MyPID:
                 method = 'RK45',
                 t_eval = t,
                 args = (gain_lists[0][i], gain_lists[1][i], gain_lists[2][i]),
-                rtol = 1.e-12,
-                atol = 1.e-14,
+                #rtol = 1.e-12,
+                #atol = 1.e-14,
             )
             sol_xs.append(sol.y[0])  # 位置xのデータのみ格納
         print('計算終了\n処理時間', time.time() - start, 's')
         
         
-        ### アニメーション作成 ###
+        ### create animation ###
         print('アニメーション作成中...')
         start = time.time()
         
@@ -207,7 +203,7 @@ class MyPID:
         ]
         
         def update(i):
-            """アニメーションのコールバック"""
+            """callback"""
             
             curve.set_data(time_list, sol_xs[i])
             
@@ -238,7 +234,7 @@ class MyPID:
 
 
 if __name__ == '__main__':
-    model = MyPID()
+    model = SpringMassDamperModel()
     # model.do_exercise_4(
     #     Kp_range = [6.0],
     #     Ki_range = [2],
