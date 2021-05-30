@@ -19,4 +19,14 @@ map_example = [
     [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
 ]  # mapの例．0は通過可能な点，1は通貨不可能な点を示す
 
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+class Node:
+    """node"""
+    
+    def __init__(self,):
+        pass
+
 

@@ -16,7 +16,7 @@ import matplotlib.animation as anm
 import matplotlib.patches as patches
 import time
 
-import exercise_5
+#import exercise_5
 
 
 class InvertedPendulum:
@@ -360,14 +360,6 @@ class ByLQR(InvertedPendulum):
         
         self.free = False
         self.method = 'LQR'
-        
-        print('systhem is ', end='')
-        if exercise_5.ByLQR.controllability(self.A_linier, self.B_linier):
-            print('controllabe')
-        else:
-            print('uncontrollabe')
-            return
-        
         
         P = sp.linalg.solve_continuous_are(
             a = self.A_linier,
