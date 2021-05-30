@@ -1,7 +1,3 @@
-"""例題3：アニメーション
-点が等速で円軌道上を回るアニメーションを作成してください．
-""" 
-
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches

@@ -1,6 +1,3 @@
-"""練習問題3-1"""
-
-
 import math
 import numpy as np
 from scipy.integrate import solve_ivp

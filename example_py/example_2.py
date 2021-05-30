@@ -1,10 +1,3 @@
-"""例題2：微分方程式
-以下の状態方程式を数値的に解いてください．また結果をグラフ化してください．
-
-dxdt = a * x
-
-"""
-
 ### SciPyを使った実装 ###
 import numpy as np
 from scipy.integrate import odeint

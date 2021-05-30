@@ -1,17 +1,3 @@
-"""練習問題2：van del Pol振動子（SciPy，制御構文，グラフ作成）
-以下の状態方程式を解いてください．※Van der Pol振動子と呼ばれる有名な微分方程式です
-数値積分の手法はなんでも良いです．
-
-ddxddt = K * (1 - x**2) * dxdt - x
-
-また計算結果から次の三枚のグラフを作成してください．
-・横軸：時間，縦軸：位置
-・横軸：時間，縦軸：速度
-・横軸：位置，縦軸：速度
-
-ヒント：位置x_1と速度x_2を使って一階の微分方程式に直すと良い
-"""
-
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt

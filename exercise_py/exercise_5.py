@@ -1,8 +1,3 @@
-"""練習問題5：最適レギュレータ（いろいろ）
-リカッチ方程式を解いて最適な制御入力uを計算してください．
-またuを用いてモデルを制御した結果をグラフで示してください．
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 import control
