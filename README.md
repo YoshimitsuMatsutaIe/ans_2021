@@ -19,4 +19,4 @@
 # Author
 
 * Matsuta Yoshimitsu
-* sbb03104@edu.osakafu-u.ac.jp
+* <sbb03104@edu.osakafu-u.ac.jp>
