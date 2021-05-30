@@ -91,6 +91,8 @@ class InvertedPendulum:
         
         self.t = np.arange(0.0, self.TIME_SPAN, self.TIME_INTERVAL)
         self.time_list = list(self.t)
+        
+        return
     
     
     def eom(self, t, state,):
@@ -257,6 +259,14 @@ class InvertedPendulum:
         return
 
 
+def main_no_input():
+    """execute (no input)"""
+    
+    sim = InvertedPendulum(X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6, DTHETA_INIT=0.0,)
+    sol = sim.run_simu()
+    sim.draw(sol.y[0], sol.y[2])
+    return
+
 
 class ByPID(InvertedPendulum):
     """control by PID
@@ -267,7 +277,6 @@ class ByPID(InvertedPendulum):
     def __init__(
         self, Kp=150, Ki=2, Kd=15,
         X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6, DTHETA_INIT=0.0,
-        ani_save=False,
     ):
         """
         Parameters
@@ -290,10 +299,14 @@ class ByPID(InvertedPendulum):
         self.free = False
         self.method = 'PID'
         
-        # execute
+        return
+    
+    
+    def do_exercise_8(self, ani_save=False,):
+        """execute"""
+        
         sol = self.run_simu()
         self.draw(x_list=sol.y[0], theta_list=sol.y[2], ani_save=ani_save)
-        
         return
     
     
@@ -320,51 +333,6 @@ class ByPID(InvertedPendulum):
 
 
 
-# class ByStateFeedback(InvertedPendulum):
-#     """状態フィードバックで制御？"""
-    
-#     def __init__(
-#         self,
-#         K = np.array([[1, 1, 1, 1]]),
-#         X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6, DTHETA_INIT=0.0,
-#     ):
-#         super().__init__(X_INIT, DX_INIT, THETA_INIT, DTHETA_INIT)
-        
-#         if exercise_5.ByLQR.controllability(self.A_linier, self.B_linier):
-#             print('可制御')
-#         else:
-#             print('可制御でない')
-#             return
-        
-#         sol = self.do_simu(K)
-#         self.draw(x_list=sol.y[0], theta_list=sol.y[2])
-    
-    
-#     def do_simu(self, K):
-#         self.A_F = self.A_linier - self.B_linier @ K
-#         #print(self.A_F)
-#         def diff_eq(t, state):
-#             x = np.array([state]).T
-#             dx = self.A_F @ x
-#             return np.ravel(dx).tolist()
-        
-#         state_init = [self.X_INIT, self.DX_INIT, self.THETA_INIT, self.DTHETA_INIT]
-        
-#         sol = integrate.solve_ivp(
-#             fun = diff_eq,
-#             t_span = (0.0, self.TIME_SPAN),
-#             y0 = state_init,
-#             method = 'RK45',
-#             t_eval = self.t,
-#             args = None,
-#             rtol = 1.e-12,
-#             atol = 1.e-14,
-#         )
-        
-#         return sol
-
-
-
 class ByLQR(InvertedPendulum):
     """control by LQR
     
@@ -374,7 +342,6 @@ class ByLQR(InvertedPendulum):
     def __init__(
         self, Q=np.diag([10, 10, 100, 100]), R=np.array([[1]]) * 0.01,
         X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6, DTHETA_INIT=0.0,
-        ani_save=False,
     ):
         """
         Parameters
@@ -411,9 +378,15 @@ class ByLQR(InvertedPendulum):
         
         self.F = -np.linalg.inv(R) @ self.B_linier.T @ P  # optiomal feedback gain
         
-        # execute
+        return
+    
+    
+    def do_exercise_8(self, ani_save=False,):
+        """execute"""
+        
         sol = self.run_simu()
         self.draw(x_list=sol.y[0], theta_list=sol.y[2], ani_save=ani_save)
+        return
     
     
     def input(self, state):
@@ -435,22 +408,90 @@ class ByLQR(InvertedPendulum):
         return u[0, 0]
 
 
-def main_no_input():
-    sim = InvertedPendulum(X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6, DTHETA_INIT=0.0,)
-    sol = sim.run_simu()
-    sim.draw(sol.y[0], sol.y[2])
+
+class ByMPC(InvertedPendulum):
+    """control by Model Predictive Control
+    """
+    
+    def __init__(
+        self, Q=np.diag([10, 10, 100, 100]), R=np.array([[1]]) * 0.01,
+        X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6, DTHETA_INIT=0.0,
+    ):
+        """
+        Parameters
+        ---
+        Q : ndarray
+            Weight matrix. (n, n)
+        R : ndarray
+            Weight matrix. (m, m)
+        HOGE_INIT : float
+            initial value
+        """
+        
+        super().__init__(X_INIT, DX_INIT, THETA_INIT, DTHETA_INIT)
+        self.Q = Q
+        self.R = R
+        
+        self.free = False
+        self.method = 'LQR'
+        
+        print('systhem is ', end='')
+        if exercise_5.ByLQR.controllability(self.A_linier, self.B_linier):
+            print('controllabe')
+        else:
+            print('uncontrollabe')
+            return
+        
+        
+        P = sp.linalg.solve_continuous_are(
+            a = self.A_linier,
+            b = self.B_linier,
+            q = Q,
+            r = R,
+        )  # solve ricatti eq
+        
+        self.F = -np.linalg.inv(R) @ self.B_linier.T @ P  # optiomal feedback gain
+        
+        return
+    
+    
+    def do_exercise_8(self, ani_save=False,):
+        """execute"""
+        
+        sol = self.run_simu()
+        self.draw(x_list=sol.y[0], theta_list=sol.y[2], ani_save=ani_save)
+        return
+    
+    def input(self, state):
+        """compute input value
+        
+        Parameter
+        ---
+        state : list
+            state vector
+        
+        Return
+        ---
+        out : float
+            input value
+        """
+        
+        x = np.array([state]).T
+        u = self.F @ x
+        return u[0, 0]
+
+
+
 
 
 
 
 if __name__ == '__main__':
-    # # by PID
-    # sim = ByPID(THETA_INIT=pi/10,)
+    # simu = ByPID(THETA_INIT=pi/10,)
+    # simu.do_exercise_8()
     
-    #sim = ByStateFeedback(THETA_INIT=pi/10)
     
-    # by LQR
     simu = ByLQR()
+    simu.do_exercise_8()
     
-    # # no input
     # main_no_input()

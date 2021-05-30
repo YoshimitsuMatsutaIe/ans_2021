@@ -185,7 +185,7 @@ class SpringMassDamperModel:
             y_min = self.GOAL
         ax.set_ylim(y_min-0.5, y_max+0.5)
         
-        ax.plot(time_list, [self.GOAL]*len(time_list), color = 'red', label = 'goal')  # 目標値のラインを引く
+        ax.plot(time_list, [self.GOAL]*len(time_list), color = 'red', label = 'goal')
         curve, = ax.plot([], [], label = 'position')
         
         comment_posis = []
@@ -209,7 +209,9 @@ class SpringMassDamperModel:
             
             for j in range(3):
                 comments[j].pop().remove()  # 最後の要素を取得して（pop），fig_aniから削除（remove）
-                com_, = [ax.text(*comment_posis[j], comment_templates[j] % (round(gain_lists[j][i], 1)), size = 10)]
+                com_, = [
+                    ax.text(*comment_posis[j], comment_templates[j] % (round(gain_lists[j][i], 1)), size = 10)
+                ]
                 comments[j].append(com_)  # 最後に追加
             
             return [curve]
@@ -229,15 +231,13 @@ class SpringMassDamperModel:
         if save:
             ani.save('exercise_4.gif', writer = 'pillow')
         
-        return None
+        return
 
+
+def main():
+    model = SpringMassDamperModel()
+    model.do_exercise_4()
 
 
 if __name__ == '__main__':
-    model = SpringMassDamperModel()
-    # model.do_exercise_4(
-    #     Kp_range = [6.0],
-    #     Ki_range = [2],
-    #     Kd_range = [0],
-    # )
-    model.do_exercise_4()
+    main()

@@ -52,8 +52,7 @@ class VanDelPol:
         self.t = np.arange(0.0, self.time_span, self.time_interval)
         self.time_list = list(self.t)
         
-        data = self.run_simu()
-        self.draw(data)
+        return
     
     
     def diff_eq(self, t, state, K):
@@ -65,6 +64,7 @@ class VanDelPol:
         dx_2dt = K * (1-x_1**2) * x_2 - x_1
         
         return [dx_1dt, dx_2dt]
+    
     
     def run_simu(self):
         """run the simulation
@@ -131,7 +131,16 @@ class VanDelPol:
         plt.show()
         
         return
+    
+    
+    def do_exercise_2(self):
+        """do all"""
+        
+        data = self.run_simu()
+        self.draw(data)
+        return
 
 
 if __name__ == '__main__':
     simu = VanDelPol(solver='odeint')
+    simu.do_exercise_2()
