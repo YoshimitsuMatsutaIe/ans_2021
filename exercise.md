@@ -110,7 +110,7 @@ M1が作成したロボットアームの逆運動問題を解くプログラム
 また実行結果をアニメーションで示してください．  
 ただし使用する振子以下のものとします  
 ・長さL[m]で重さM[kg]，密度は一定で厚さが無視できる棒  
-![Alt text](ans_2021/misc/exercise_8__by_LQR.gif)
+![LQR Image](ans_2021/misc/exercise_8__by_LQR.gif)
 
 
 
