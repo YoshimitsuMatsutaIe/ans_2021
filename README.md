@@ -2,7 +2,7 @@
 
 例題，練習問題とその解答例
 
-👇問題
+### 問題
 
 * 例題 : <https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example.md>
 * 練習問題 : <https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise.md>
