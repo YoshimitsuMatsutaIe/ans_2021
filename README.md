@@ -1,6 +1,5 @@
 # ans_2021
-----
-----
+
 
 ## Description
 例題，練習問題とその解答例
@@ -35,7 +34,7 @@
 
 ## Licence
 
-[MIT](https://github.com/tcnksm/tool/blob/master/LICENCE)
+[MIT](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/LICENSE)
 
 ## Author
 
