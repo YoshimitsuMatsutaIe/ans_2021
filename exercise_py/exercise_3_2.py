@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import math
 import numpy as np
 from scipy.integrate import solve_ivp
@@ -7,7 +9,7 @@ import matplotlib.animation as amn
 class Matoate:
     """matate
     
-    未完成です．ごめんなさい．
+    未完成
     """
     
     def __init__(self):

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from sympy import sieve
 
 
@@ -30,7 +32,7 @@ def main_1():
     primality_test_1(1)
     primality_test_2([1, 6, 8, 108778979])
     
-    return None
+    return
 
 
 def main_2():
@@ -60,7 +62,7 @@ def main_2():
     primality_test_1(1)
     primality_test_2([1, 6, 8, 108778979])
     
-    return None
+    return
 
 
 

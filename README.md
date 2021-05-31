@@ -27,6 +27,7 @@
 ## Note
 
 間違いがあったので以下の問題文を修正しました．
+* exercise_1
 * exercise_5
 * exercise_7
 * exercise_9

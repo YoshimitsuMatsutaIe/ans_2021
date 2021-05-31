@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import numpy as np
 from scipy import integrate
 import matplotlib.pyplot as plt
@@ -9,9 +11,6 @@ import time
 
 class SpringMassDamperModel:
     """spring mass damper system
-    
-    Attributes:
-    -----
     """
     
     def __init__(

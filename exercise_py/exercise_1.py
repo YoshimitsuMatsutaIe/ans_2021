@@ -27,7 +27,7 @@ def do_exercise_1(r = 1.0, time_span = 3.0, figure = False):
     cwd = os.path.dirname(__file__)
     path_data = pathlib.Path(cwd + r'/exercise_1_data').resolve()
     path_result = pathlib.Path(cwd + r'/exercise_1_result').resolve()
-    os.makedirs(path_result, exist_ok=True)  # exercize_1_resultフォルダが無い場合は作成
+    os.makedirs(path_result, exist_ok=True)
     
     date_now = datetime.datetime.now()  # 日付取得．保存ファイル名用
     csv_names = path_data.glob('*.csv')  # csvファイルの名前を取得
@@ -58,7 +58,10 @@ def do_exercise_1(r = 1.0, time_span = 3.0, figure = False):
             fig = plt.figure()
             ax = fig.add_subplot(111)
             ax.plot(data[:, 1], data[:, 2], label = 'trajectory')
-            ax.scatter(GOAL[0, 0], GOAL[1, 0], marker = '*', color = 'red', label = 'goal')
+            ax.scatter(
+                GOAL[0, 0], GOAL[1, 0],
+                marker = '*', color = 'red', label = 'goal'
+            )
             c = patches.Circle(
                 xy = tuple(GOAL),
                 radius = r,
@@ -79,7 +82,9 @@ def do_exercise_1(r = 1.0, time_span = 3.0, figure = False):
     
     
     # 結果をcsvファイルで出力
-    result_name = 'result_' + date_now.strftime('%Y-%m-%d--%H-%M-%S') + '.csv'
+    result_name = 'result_' + \
+        date_now.strftime('%Y-%m-%d--%H-%M-%S') + \
+            '.csv'
     path_result = path_result / result_name
     with open(path_result, 'x', newline="") as f:
         writer = csv.writer(f, delimiter=',')

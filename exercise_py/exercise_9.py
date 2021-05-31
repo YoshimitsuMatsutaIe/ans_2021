@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 map_example = [
     [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
     [0, 1, 0, 0, 0, 0, 0, 0, 1, 0],
@@ -22,3 +24,6 @@ class Node:
         pass
 
 
+
+if __name__ == '__main__':
+    pass

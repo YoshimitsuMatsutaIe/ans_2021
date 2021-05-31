@@ -1,4 +1,3 @@
-### Pandasを使用 ###
 import pandas as pd
 import pathlib
 import os
@@ -6,7 +5,13 @@ import datetime
 import csv
 
 def func_example_1(threshold):
-    """処理をすべて行う関数"""
+    """処理をすべて行う
+    
+    Parameters
+    ---
+    threshold : float
+        閾値
+    """
     
     cwd = os.path.dirname(__file__)  # 実行しているpyファイルのカレントディレクトリ取得
     re_path_data = pathlib.Path(cwd + r'/example_1_data')  # exercize_1_dataフォルダの相対パス
@@ -33,7 +38,7 @@ def func_example_1(threshold):
             pass
     
     # 結果をcsvファイルで出力
-    result_name = 'result_' + date_now.strftime('%Y-%m-%d--%H-%M-%S') + '.csv'
+    result_name = 'exercise_1_result_' + date_now.strftime('%Y-%m-%d--%H-%M-%S') + '.csv'
     path_result = ab_path_result / result_name
     with open(path_result, 'x', newline="") as f:
         writer = csv.writer(f, delimiter=',')
@@ -43,7 +48,7 @@ def func_example_1(threshold):
     for s in result:
         print(s[0])
     
-    return None
+    return
 
 
 if __name__ == '__main__':
