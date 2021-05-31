@@ -1,21 +1,17 @@
 function example_0()
-% —á‘è0FƒŠƒXƒg‘€ìC§Œä\•¶
-%   1. “ñŽŸŠÖ”F
-%   y = x**2 + x + 1
-%   ‚ðl‚¦‚Ü‚·Dx‚Ì’l‚ð0.1‚¸‚Â“®‚©‚µ‚½‚Æ‚«‚Ì“ñŽŸŠÖ”‚Ì‚Æ‚é’l‚Ì“ü‚Á‚½ƒŠƒXƒg‚ðì¬‚µ‚Ä‚­‚¾‚³‚¢D
 
-%% ƒpƒ‰ƒ[ƒ^
-start = -5;  % •¶––‚É';'‚ð•t‚¯‚È‚¢‚ÆƒRƒ}ƒ“ƒhƒEƒBƒ“ƒhƒE‚Éo—Í‚³‚ê‚Ä‚µ‚Ü‚¤
+%% ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^
+start = -5;  % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½';'ï¿½ï¿½tï¿½ï¿½ï¿½È‚ï¿½ï¿½ÆƒRï¿½}ï¿½ï¿½ï¿½hï¿½Eï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½Éoï¿½Í‚ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½
 stop = 10;
 step = 0.1;
 
-%% x‚Ì”—ñì¬
+%% xï¿½Ìï¿½ï¿½ï¿½ì¬
 x = start:step:stop;
 
-%% “ñŽŸŠÖ”‚Ì”—ñì¬
-y = x.^2 + x + 1;  % ™p‚Í'^'ipython‚¾‚Æ**jD'.'‚ð•t‚¯‚é‚±‚Æ‚Å—v‘f–ˆ‚Ì™pæ‚É‚È‚éD
+%% ï¿½ñŽŸŠÖï¿½ï¿½Ìï¿½ï¿½ï¿½ì¬
+y = x.^2 + x + 1;  % ï¿½pï¿½ï¿½'^'ï¿½ipythonï¿½ï¿½ï¿½ï¿½**ï¿½jï¿½D'.'ï¿½ï¿½tï¿½ï¿½ï¿½é‚±ï¿½Æ‚Å—vï¿½fï¿½ï¿½ï¿½Ì™pï¿½ï¿½É‚È‚ï¿½D
 
-%% ‚¹‚Á‚©‚­‚È‚Ì‚ÅƒOƒ‰ƒt‰»
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚Ì‚ÅƒOï¿½ï¿½ï¿½tï¿½ï¿½
 plot(x, y);
 
 end

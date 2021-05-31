@@ -116,6 +116,8 @@ class VanDelPol:
         ax.legend()
         plt.show()
         
+        fig.savefig('exercise_2.png')
+        
         return
     
     

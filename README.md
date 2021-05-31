@@ -15,6 +15,8 @@
 
 # Note
 
+* 例題:<https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example.md>
+* 練習問題:<https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise.md>
 
 # Author
 

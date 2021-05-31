@@ -15,8 +15,18 @@ class PendulumAnim:
     def __init__(self):
         self.GRA_ACCEL = 9.8  # 重力加速度 [m/s^2]
         self.L = 1.0  # 振り子の紐の長さ [m]
+        
+        return
+    
+    
+    def do(self):
+        """execute"""
+        
         self.run_sim()
         self.make_anim()
+        
+        return
+    
     
     def run_sim(self):
         """振り子の時刻歴データを作成"""
@@ -42,6 +52,8 @@ class PendulumAnim:
             y0 = state_vec_init,
             t_eval = self.t,
         )
+        
+        return
     
     def make_anim(self):
         """アニメーション作成"""
@@ -74,7 +86,9 @@ class PendulumAnim:
         ax.grid()
         
         plt.show()
+        return
 
 
 if __name__ == '__main__':
-    pass
+    simu = PendulumAnim()
+    simu.do()

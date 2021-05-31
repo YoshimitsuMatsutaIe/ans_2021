@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# 💩💩💩💩 uncoding=utf-8 💩💩💩💩
+
 
 import numpy as np
 import math
@@ -467,10 +467,6 @@ class ByMPC(InvertedPendulum):
         x = np.array([state]).T
         u = self.F @ x
         return u[0, 0]
-
-
-
-
 
 
 

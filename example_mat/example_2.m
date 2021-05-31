@@ -1,8 +1,4 @@
 function example_2()
-% 例題2：微分方程式
-%   以下の状態方程式を数値的に解いてください．また結果をグラフ化してください．
-
-%   dxdt = a * x
 
 %% 解く
     function dx = myODE(t, x)
