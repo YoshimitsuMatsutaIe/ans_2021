@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""
+
+
+
+"""
 
 import numpy as np
 import math
@@ -423,12 +428,7 @@ class ByMPC(InvertedPendulum):
         self.free = False
         self.method = 'LQR'
         
-        print('systhem is ', end='')
-        if exercise_5.ByLQR.controllability(self.A_linier, self.B_linier):
-            print('controllabe')
-        else:
-            print('uncontrollabe')
-            return
+
         
         
         P = sp.linalg.solve_continuous_are(
@@ -475,7 +475,7 @@ if __name__ == '__main__':
     # simu.do_exercise_8()
     
     
-    simu = ByLQR()
+    simu = ByLQR(DX_INIT=1, DTHETA_INIT=1)
     simu.do_exercise_8()
     
     # main_no_input()
