@@ -7,17 +7,17 @@
 """
 
 import numpy as np
-import math
+#import math
 from math import pi, sin, cos, tan
-from numpy.core.fromnumeric import size
+#from numpy.core.fromnumeric import size
 import scipy as sp
 import scipy.integrate as integrate
 import scipy.optimize as optimize
 import matplotlib.pyplot as plt
 import matplotlib.animation as anm
 import matplotlib.patches as patches
-import time
-import cvxpy
+#import time
+import cvxpy as cvx
 
 #import exercise_5
 
@@ -27,8 +27,8 @@ class InvertedPendulum:
     
     G_ACCEL = 9.80665  # 
     GOAL = 0  # goal of theta
-    TIME_INTERVAL = 0.05  #[sec]
-    TIME_SPAN = 10  # [sec]
+    TIME_INTERVAL = 0.1  #[sec]
+    TIME_SPAN = 5  # [sec]
     
     def __init__(
         self,
@@ -409,20 +409,15 @@ class ByMPC(InvertedPendulum):
     """
     
     def __init__(
-        self, 
-        Q = np.array([
-            [1, 0, 0, 0],
-            [0, 1, 0, 0],
+        self,
+        q = np.array([
+            [0.1, 0, 0, 0],
+            [0, 0.1, 0, 0],
             [0, 0, 1, 0],
             [0, 0, 0, 1],
             ]),
-        R = np.array([
-            [1, 0, 0, 0],
-            [0, 1, 0, 0],
-            [0, 0, 1, 0],
-            [0, 0, 0, 1],
-            ]),
-        time_horizon = 1,
+        r = 0.001,
+        time_horizon = 0.5,
         X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6, DTHETA_INIT=0.0,
     ):
         """
@@ -438,20 +433,44 @@ class ByMPC(InvertedPendulum):
         
         super().__init__(X_INIT, DX_INIT, THETA_INIT, DTHETA_INIT)
         self.n_horizon = int(time_horizon / self.TIME_INTERVAL)
+        dim = self.A_linier.shape[0]  # dimension
         
         self.free = False
         self.method = 'MPC'
         
-        F = [np.linalg.matrix_power(self.A_linier, n) for n in range(1, self.n_horizon+1)]
-        self.F = np.block(F).T * self.TIME_INTERVAL
+        # calculate coefficient matrix
+        F_list = [np.linalg.matrix_power(self.A_linier, n) for n in range(1, self.n_horizon+1)]
+        F = np.block(F_list).T * self.TIME_INTERVAL
         #print(self.F)
         
-        G = []
-        for i in range(self.n_horizon):
-            temp = []
-            for j in range(self.n_horizon):
+        G_list = []
+        for i in range(1, self.n_horizon + 1):
+            col_G = []
+            for j in range(1, self.n_horizon + 1):
                 if i - j < 0:
-                    temp.append(np.linalg.matrix_power(self.A_linier, i-j) @ self.B_linier)
+                    col_G.append(np.zeros((dim, 1)))
+                elif i == j:
+                    col_G.append(self.B_linier)
+                else:
+                    col_G.append(np.linalg.matrix_power(self.A_linier, i-j) @ self.B_linier)
+            G_list.append(col_G)
+        G = np.block(G_list) * self.TIME_INTERVAL
+        #print(self.G)
+        
+        Q = np.tile(q, (self.n_horizon, self.n_horizon))
+        #R = np.full((self.n_horizon, self.n_horizon), r)
+        R = np.eye(self.n_horizon) * r
+        
+        self.multi_A = G.T @ Q @ G + R
+        self.multi_B_coeff = 2 * F.T @ Q @ G
+        
+        #print(self.multi_A)
+        #print(np.all(np.linalg.eigvals(self.multi_A) >= 0))
+        
+        # print(self.multi_A)
+        # print(self.multi_B_coeff)
+        
+        self.input([X_INIT, DX_INIT, THETA_INIT, DTHETA_INIT])
         
         return
     
@@ -463,6 +482,37 @@ class ByMPC(InvertedPendulum):
         self.draw(x_list=sol.y[0], theta_list=sol.y[2], ani_save=ani_save)
         return
     
+    # def input(self, state):
+    #     """compute input value
+        
+    #     Parameter
+    #     ---
+    #     state : list
+    #         state vector
+        
+    #     Return
+    #     ---
+    #     out : float
+    #         input value
+    #     """
+        
+    #     x = np.array([state]).T
+    #     x0 = x
+        
+    #     multi_B = x0.T @ self.multi_B_coeff
+        
+    #     U = cvx.Variable((self.n_horizon, 1))  # input matrix
+    #     print(U.value)
+        
+    #     # problem
+    #     obj = cvx.Minimize(U.T @ self.multi_A @ U + multi_B @ U)
+    #     prob = cvx.Problem(obj)
+    #     opt_U = prob.solve(verbose=True)
+        
+    #     print(opt_U)
+        
+    #     return 
+
     def input(self, state):
         """compute input value
         
@@ -478,10 +528,25 @@ class ByMPC(InvertedPendulum):
         """
         
         x = np.array([state]).T
-        u = self.F @ x
-        return u[0, 0]
-
-
+        self.x0 = x
+        
+        self.multi_B = self.x0.T @ self.multi_B_coeff
+        
+        def obj(U_list):
+            """object func"""
+            U = np.array([U_list]).T
+            J = U.T @ self.multi_A @ U + 2 * self.x0 @ self.multi_B @ U
+            return J[0, 0]
+        
+        x0 = [0] * self.n_horizon
+        # print(x0)
+        opt_U_list = optimize.minimize(obj, x0, method="nelder-mead")
+        #print(opt_U_list.x)
+        
+        if opt_U_list.x[0] > 1000:
+            print("発散")
+        print(opt_U_list.x[0])
+        return opt_U_list.x[0]
 
 if __name__ == '__main__':
     # simu = ByPID(THETA_INIT=pi/10,)
@@ -494,3 +559,4 @@ if __name__ == '__main__':
     # main_no_input()
     
     simu = ByMPC()
+    simu.do_exercise_8()
