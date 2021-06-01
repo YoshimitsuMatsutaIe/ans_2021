@@ -12,10 +12,12 @@ from math import pi, sin, cos, tan
 from numpy.core.fromnumeric import size
 import scipy as sp
 import scipy.integrate as integrate
+import scipy.optimize as optimize
 import matplotlib.pyplot as plt
 import matplotlib.animation as anm
 import matplotlib.patches as patches
 import time
+import cvxpy
 
 #import exercise_5
 
@@ -407,7 +409,20 @@ class ByMPC(InvertedPendulum):
     """
     
     def __init__(
-        self, Q=np.diag([10, 10, 100, 100]), R=np.array([[1]]) * 0.01,
+        self, 
+        Q = np.array([
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1],
+            ]),
+        R = np.array([
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1],
+            ]),
+        time_horizon = 1,
         X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6, DTHETA_INIT=0.0,
     ):
         """
@@ -422,23 +437,21 @@ class ByMPC(InvertedPendulum):
         """
         
         super().__init__(X_INIT, DX_INIT, THETA_INIT, DTHETA_INIT)
-        self.Q = Q
-        self.R = R
+        self.n_horizon = int(time_horizon / self.TIME_INTERVAL)
         
         self.free = False
-        self.method = 'LQR'
+        self.method = 'MPC'
         
-
+        F = [np.linalg.matrix_power(self.A_linier, n) for n in range(1, self.n_horizon+1)]
+        self.F = np.block(F).T * self.TIME_INTERVAL
+        #print(self.F)
         
-        
-        P = sp.linalg.solve_continuous_are(
-            a = self.A_linier,
-            b = self.B_linier,
-            q = Q,
-            r = R,
-        )  # solve ricatti eq
-        
-        self.F = -np.linalg.inv(R) @ self.B_linier.T @ P  # optiomal feedback gain
+        G = []
+        for i in range(self.n_horizon):
+            temp = []
+            for j in range(self.n_horizon):
+                if i - j < 0:
+                    temp.append(np.linalg.matrix_power(self.A_linier, i-j) @ self.B_linier)
         
         return
     
@@ -475,7 +488,9 @@ if __name__ == '__main__':
     # simu.do_exercise_8()
     
     
-    simu = ByLQR(DX_INIT=1, DTHETA_INIT=1)
-    simu.do_exercise_8()
+    # simu = ByLQR(DX_INIT=1, DTHETA_INIT=1)
+    # simu.do_exercise_8()
     
     # main_no_input()
+    
+    simu = ByMPC()

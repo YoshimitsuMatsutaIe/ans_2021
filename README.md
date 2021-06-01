@@ -7,7 +7,7 @@
 * 例題 : <https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example.md>
 * 練習問題 : <https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise.md>
 
-未完成の部分があります．適宜更新していく予定です．
+未完成の部分があります．
 
 ## Dependencies
 
