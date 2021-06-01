@@ -9,6 +9,7 @@
 import numpy as np
 #import math
 from math import pi, sin, cos, tan
+from numpy.lib.twodim_base import triu_indices
 #from numpy.core.fromnumeric import size
 import scipy as sp
 import scipy.integrate as integrate
@@ -28,7 +29,7 @@ class InvertedPendulum:
     G_ACCEL = 9.80665  # 
     GOAL = 0  # goal of theta
     TIME_INTERVAL = 0.1  #[sec]
-    TIME_SPAN = 5  # [sec]
+    TIME_SPAN = 2  # [sec]
     
     def __init__(
         self,
@@ -411,10 +412,10 @@ class ByMPC(InvertedPendulum):
     def __init__(
         self,
         q = np.array([
-            [0.1, 0, 0, 0],
-            [0, 0.1, 0, 0],
-            [0, 0, 1, 0],
-            [0, 0, 0, 1],
+            [1000, 0, 0, 0],
+            [0, 1000, 0, 0],
+            [0, 0, 1000, 0],
+            [0, 0, 0, 1000],
             ]),
         r = 0.001,
         time_horizon = 0.5,
@@ -559,4 +560,4 @@ if __name__ == '__main__':
     # main_no_input()
     
     simu = ByMPC()
-    simu.do_exercise_8()
+    simu.do_exercise_8(ani_save=True)
