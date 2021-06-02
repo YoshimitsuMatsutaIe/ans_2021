@@ -33,9 +33,6 @@
 以下の状態方程式を解いてください．
 数値積分の手法はなんでも良いです．  
 
-ddxddt = K * (1 - x**2) * dxdt - x  
-
-<img src="https://latex.codecogs.com/png.latex?\frac{\mathrm{d}^2&space;x}{\mathrm{d}&space;t^2}&space;=&space;K(1-x^2)\frac{\mathrm{d}&space;x}{\mathrm{d}&space;t}-x"/>
 <img src="https://latex.codecogs.com/png.latex?\bg_white&space;\frac{\mathrm{d}^2&space;x}{\mathrm{d}&space;t^2}&space;=&space;K(1-x^2)\frac{\mathrm{d}&space;x}{\mathrm{d}&space;t}-x">
 
 また計算結果から次の三枚のグラフを作成してください．  
