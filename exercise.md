@@ -94,7 +94,10 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 ## 練習問題4：PID制御（いろいろ）
 1次元バネマスダンパ系を考えます．  
 
-1. 入力uを初期変位x0から変位xを目標位置xdに収束させるシミュレーションを行ってください．  
+<img src="https://latex.codecogs.com/gif.latex?\bg_white&space;m\frac{\mathrm{d}^2&space;x}{\mathrm{d}&space;t}&plus;c\frac{\mathrm{d}&space;x}{\mathrm{d}&space;t}&plus;kx=u"/>
+
+
+1. 入力uを使って変位xを初期変位x0から目標位置xdに収束させるシミュレーションを行ってください．  
 入力uはPID制御で与えるものとします．  
 実行結果を横軸時間t，縦軸変位xのグラフで示して下さい．  
 
