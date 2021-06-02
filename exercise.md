@@ -14,7 +14,7 @@
 
 
 ## 練習問題1：（ファイル操作，グラフ作成）
-/exercise_1_dataには，あるシステムの状態の時刻歴データが入っています．  
+[/exercise_1_data](https://github.com/YoshimitsuMatsutaIe/ans_2021/tree/main/exercise_py/exercise_1_data)には，あるシステムの状態の時刻歴データが入っています．  
 左から時刻t[sec]，位置x[m]，位置y[m]，...のデータです．  
 フォルダ内のcsvファイルに対し，以下を実行するプログラムを作成してください．  
 
