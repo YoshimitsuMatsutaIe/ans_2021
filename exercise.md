@@ -35,6 +35,8 @@
 
 ddxddt = K * (1 - x**2) * dxdt - x  
 
+<img src="https://latex.codecogs.com/png.latex?\frac{\mathrm{d}^2&space;x}{\mathrm{d}&space;t^2}&space;=&space;K(1-x^2)\frac{\mathrm{d}&space;x}{\mathrm{d}&space;t}-x"/>
+
 また計算結果から次の三枚のグラフを作成してください．  
 ・横軸：時間，縦軸：位置  
 ・横軸：時間，縦軸：速度  
