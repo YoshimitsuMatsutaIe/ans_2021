@@ -8,7 +8,7 @@
 
 ~~ヒント：2では1で作った関数を利用すると良い~~  
 
-[py]("https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_0.py")
+[py]<"https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_0.py">  
 [matlab]
 
 
