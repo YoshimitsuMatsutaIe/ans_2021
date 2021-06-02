@@ -4,7 +4,7 @@
 
 ## 例題0：リスト操作，制御構文
 二次関数  
-<img src="https://latex.codecogs.com/gif.latex?y=x^2&plus;x&plus;1">
+<img src="https://latex.codecogs.com/gif.latex?\bg_white&space;y=x^2&plus;x&plus;1"/>  
 を考えます．xの値を0.1ずつ動かしたときの二次関数のとる値の入ったリストを作成してください．  
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_py/example_0.py)
