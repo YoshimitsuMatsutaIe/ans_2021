@@ -8,8 +8,8 @@
 
 ~~ヒント：2では1で作った関数を利用すると良い~~  
 
-[py](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_0.py)  
-[matlab]
+[python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_0.py)  
+[matlab]()  
 
 
 
@@ -25,7 +25,8 @@
 2. リストアップしたcsvファイルのx，yの時系列グラフを描画し，/exercise_1_rezultに保存する．  
 ただしグラフのファイル名には実行時刻と使用したcsvファイル名が入るようにする．  
 
-
+[python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_1.py)  
+[matlab]()  
 
 
 ## 練習問題2：van del Pol振動子（SciPy，制御構文，グラフ作成）
@@ -45,7 +46,8 @@ ddxddt = K * (1 - x**2) * dxdt - x
 👇イメージ  
 <img src="https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/misc/exercise_2.png" alt="ani" title="vandelpol">
 
-
+[python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_2.py)  
+[matlab]()  
 
 
 ## 練習問題3：アニメーション（グラフ作成）
@@ -57,7 +59,8 @@ ddxddt = K * (1 - x**2) * dxdt - x
 ### 1. 振り子
 2次元平面で振り子が往復運動するアニメーションを作成してください．  
 
-
+[python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_3_1.py)  
+[matlab]()  
 
 
 ### 2. 的あてゲーム
@@ -68,7 +71,8 @@ ddxddt = K * (1 - x**2) * dxdt - x
 ・移動目標はある区間を単振動で往復運動する  
 ・実行結果をアニメーションで示す  
 
-
+[python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_3_2.py)  
+[matlab]()  
 
 
 ### 3. 3次元粒子
@@ -83,7 +87,8 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 
 ※余裕があれば粒子に半径を設けて，粒子間の衝突も実装して下さい．  
 
-
+[python]()  
+[matlab]()  
 
 
 ## 練習問題4：PID制御（いろいろ）
@@ -98,14 +103,16 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 👇イメージ  
 <img src="https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/misc/exercise_4.gif" alt="ani" title="PID">  
 
-
+[python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_4.py)  
+[matlab]()  
 
 
 ## 練習問題5：最適レギュレータ（いろいろ）
 リカッチ方程式を解いて最適な制御入力uを計算してください．  
 またuを用いてモデルを制御した結果をグラフで示してください．  
 
-
+[python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_5.py)  
+[matlab]()  
 
 
 ## 練習問題6：（クラス）
@@ -116,10 +123,12 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 
 * 練習問題2と同じなので廃止
 
+
 ## 練習問題7：逆運動学（行列演算）
 ロボットの逆運動問題を解くプログラムを作成してください．  
 
-
+[python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_7.py)  
+[matlab]()  
 
 ## 練習問題8：倒立振り子（いろいろ）
 ~~実験室にある倒立振り子を制御するプログラムを作成してください．~~  
@@ -132,11 +141,14 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 👇イメージ  
 <img src="https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/misc/exercise_8__by_LQR.gif" alt="ani" title="pendulum">
 
-
+[python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_8.py)  
+[matlab]()  
 
 ## 練習問題9：最短経路探索（いろいろ）
 任意のスタート位置からゴール位置までの最短経路を探索するプログラムを作成してください．  
 
+[python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_9.py)  
+[matlab]()  
 
 ## 練習問題10：卒研に向けて
 自分が選択した前期英語文献の再現実験を行ってください．  
