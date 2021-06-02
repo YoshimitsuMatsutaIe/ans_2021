@@ -99,10 +99,10 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 
 1. 入力uを使って変位xを初期変位x0から目標位置xdに収束させるシミュレーションを行ってください．  
 入力uはPID制御で与えるものとします．  
-<img src="https://latex.codecogs.com/gif.latex?\bg_white&space;u=K_p(x_d-x)&plus;K_i\int_{0}^{t}(x_d-x)d\tau&plus;K_d\frac{\mathrm{d}&space;x}{\mathrm{d}&space;t}">
+<img src="https://latex.codecogs.com/gif.latex?\bg_white&space;u=K_p(x_d-x)&plus;K_i\int_{0}^{t}(x_d-x)d\tau&plus;K_d\frac{\mathrm{d}&space;x}{\mathrm{d}&space;t}"/>
 実行結果を横軸時間t，縦軸変位xのグラフで示して下さい．  
 
-2. 比例ゲイン，微分ゲイン，積分ゲインを変化させたとき，変位xの時間変化がどう変化するかアニメーションで示してください．  
+2. 比例ゲイン<img src="https://latex.codecogs.com/gif.latex?\bg_white&space;K_p">，積分ゲイン<img src="https://latex.codecogs.com/gif.latex?\bg_white&space;K_i">，微分ゲイン<img src="https://latex.codecogs.com/gif.latex?\bg_white&space;K_d">を変化させたとき，変位xの時間変化がどう変化するかアニメーションで示してください．  
 
 👇イメージ  
 <img src="https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/misc/exercise_4.gif" alt="ani" title="PID">  
