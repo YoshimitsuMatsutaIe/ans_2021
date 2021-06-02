@@ -22,7 +22,7 @@ y = x**2 + x + 1
 以下の状態方程式を数値的に解いてください．また結果をグラフ化してください．  
 
 dxdt = a * x  
-<img src="https://latex.codecogs.com/png.latex?\inline&space;\bg_white&space;\frac{\mathrm{d}&space;x}{\mathrm{d}&space;t}&space;=&space;ax">
+<img src="https://latex.codecogs.com/png.latex?\bg_white&space;\frac{\mathrm{d}&space;x}{\mathrm{d}&space;t}&space;=&space;ax">
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_py/example_2.py)
 [matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_mat/example_2.m)
