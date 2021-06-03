@@ -113,8 +113,6 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 
 ## 練習問題5：最適レギュレータ（いろいろ）
 次の線形システムを考えます．  
-<img src='https://latex.codecogs.com/gif.latex?\bg_white&space;\dot{x}=Ax&plus;Bu'/>  
-<img src='https://latex.codecogs.com/gif.latex?\bg_white&space;y=Cx'/>  
 <img src='https://latex.codecogs.com/gif.latex?\bg_white&space;\left\{\begin{matrix}&space;\dot{x}=&space;&&space;Ax&plus;Bu\\&space;y=&space;&&space;Cx&space;&plus;&space;Du&space;\end{matrix}\right.'/>  
 リカッチ方程式を解いて最適な制御入力uを計算してください．  
 またuを用いてモデルを制御した結果をグラフで示してください．  
