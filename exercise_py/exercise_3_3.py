@@ -1,27 +1,28 @@
 #!/usr/bin/env python
 
+
 import numpy as np
 import scipy.integrate as integrate
 import matplotlib.pyplot as plt
 import matplotlib.animation as anm
-from mpl_toolkits.mplot3d import Axes3D 
-
 import time
 
+
 class Particles:
+    """3次元粒子
     
+    N>=3から玉が消えるバグがある
+    """
     
     def __init__(self, **kwargs):
         
-        self.N = kwargs.pop('N', 10)
+        self.N = kwargs.pop('N', 4)
         self.L = kwargs.pop('L', 1)
-        self.DX_MAX = kwargs.pop('DX_MAX', 0.1)
-        self.TIME_SPAN = kwargs.pop('TIME_SPAN', 10)
+        self.DX_MAX = kwargs.pop('DX_MAX', 1.5)
+        self.TIME_SPAN = kwargs.pop('TIME_SPAN', 20)
         self.TIME_INTERVAL = kwargs.pop('TIME_INTERVAL', 0.001)
         
-        
         self.x = [(np.random.rand(3, 1) - 0.5)*self.L for i in range(self.N)]
-        #print(self.x)
         self.dx = [(np.random.rand(3, 1)*2 - 1)*self.DX_MAX for i in range(self.N)]
     
         self.t = np.arange(0.0, self.TIME_SPAN, self.TIME_INTERVAL)
@@ -29,6 +30,7 @@ class Particles:
     
     
     def run_simu(self,):
+        """シミュレーションを走らせる"""
         
         print('シミュレーション中...')
         start = time.time()
@@ -44,21 +46,15 @@ class Particles:
         
         def diff_eq(t, x):
             
-
-            
             x_ = [np.array([x[i:i+3]]).T for i in range(self.N)]
-            # dx_ = [
-            #     -v if np.any(np.abs(x_[i]) > self.L/2) else v \
-            #     for i, v in enumerate(self.dx)
-            # ]
             
             dx_ = []
             for i, v in enumerate(self.dx):
-                if abs(x_[i][0]) > self.L/2:
+                if abs(x_[i][0, 0]) > self.L/2:
                     dx_.append(self.t_x @ v)
-                elif abs(x_[i][1]) > self.L/2:
+                elif abs(x_[i][1, 0]) > self.L/2:
                     dx_.append(self.t_y @ v)
-                elif abs(x_[i][2]) > self.L/2:
+                elif abs(x_[i][2, 0]) > self.L/2:
                     dx_.append(self.t_z @ v)
                 else:
                     dx_.append(v)
@@ -71,7 +67,6 @@ class Particles:
         
         x_init_ = [np.ravel(x).tolist() for x in self.x]
         x_init = sum(x_init_, [])
-        #print(x_init)
         sols = integrate.solve_ivp(
             fun = diff_eq,
             t_span = (0.0, self.TIME_SPAN),
@@ -90,7 +85,8 @@ class Particles:
         return
     
     
-    def draw(self,):
+    def draw(self, save=False):
+        """結果を描画"""
         
         fig_ani = plt.figure()
         ax = fig_ani.gca(projection = '3d')
@@ -99,12 +95,30 @@ class Particles:
         ax.set_ylabel('Y[m]')
         ax.set_zlabel('Z[m]')
         ax.set_box_aspect((1,1,1))
-        ax.set_xlim(-self.L/2, self.L/2)
-        ax.set_ylim(-self.L/2, self.L/2)
-        ax.set_zlim(-self.L/2, self.L/2)
+        ax.set_xlim(-self.L/2*1.1, self.L/2*1.1)
+        ax.set_ylim(-self.L/2*1.1, self.L/2*1.1)
+        ax.set_zlim(-self.L/2*1.1, self.L/2*1.1)
         
-        # for i in range(self.N):
-        #     ax.plot(self.sols.y[i], self.sols.y[i+1], self.sols.y[i+2])
+        cor = np.array([
+            [0, 0, 0],
+            [1, 0, 0],
+            [1, 1, 0],
+            [0, 1, 0],
+            [0, 0, 0],
+            [0, 0, 1],
+            [1, 0, 1],
+            [1, 0, 0],
+            [1, 0, 1],
+            [1, 1, 1],
+            [1, 1, 0],
+            [1, 1, 1],
+            [0, 1, 1],
+            [0, 1, 0],
+            [0, 1, 1],
+            [0, 0, 1],
+        ]).T
+        cor = (cor - 0.5) * self.L
+        ax.plot(cor[0, :], cor[1, :], cor[2, :], c = 'k')
         
         ps = []
         for i in range(self.N):
@@ -121,28 +135,26 @@ class Particles:
                 p.set_3d_properties(self.sols.y[j+2][i])
             
             timeani.pop().remove()
-            timeani_, = [ax.text(0.8, 0.12, 0.01, time_template % round(i*self.TIME_INTERVAL, 2), size = 10)]
+            timeani_, = [
+                ax.text(0.8, 0.12, 0.01, time_template % round(i*self.TIME_INTERVAL, 2), size = 10)
+            ]
             timeani.append(timeani_)
             
             return ps
         
-        
         ani = anm.FuncAnimation(
             fig = fig_ani,
             func = update,
-            frames = range(0, len(self.t)),
-            interval = self.TIME_INTERVAL * 1.e-5,
+            frames = range(0, len(self.t), 20),
+            interval = self.TIME_INTERVAL * 1.e-3,
         )
         
-        ani.save('exercise_3_3.gif', writer='pillow')
+        if save:
+            ani.save('exercise_3_3.gif', fps = 1 / self.TIME_INTERVAL, writer='pillow')
         
         plt.show()
         
         return
-
-
-
-
 
 
 
