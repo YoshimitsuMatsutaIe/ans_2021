@@ -407,6 +407,8 @@ class ByLQR(InvertedPendulum):
 
 class ByMPC(InvertedPendulum):
     """control by Model Predictive Control
+    
+    未完成
     """
     
     def __init__(
