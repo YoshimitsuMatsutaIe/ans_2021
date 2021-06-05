@@ -87,7 +87,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 
 ※余裕があれば粒子に半径を設けて，粒子間の衝突も実装して下さい．  
 
-[python]()  
+[python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_3_3.py)  
 [matlab]()  
 
 
