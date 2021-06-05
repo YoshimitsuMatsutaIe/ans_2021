@@ -61,23 +61,30 @@
 # b = np.block(b_list)
 # print(b)
 
-import numpy as np
-import cvxpy as cvx
+# import numpy as np
+# import cvxpy as cvx
 
-np.random.seed(1)
-# 次元数
-m = 3
-n = 2
-# 各種定数・変数
-A = np.random.randn(m, n)
-b = np.random.randn(m)
-c = np.random.randn(n)
-x = cvx.Variable(n) # 変数定義
-# 問題設定
-obj = cvx.Minimize(c.T @ x) # 最小化
-constraint = [A @ x <= b] # 制約
-prob = cvx.Problem(obj, constraint)# 問題
-prob.solve(verbose=True) # 解く
-# 表示
-print("obj: ", prob.value)
-print("x: ", x.value)
+# np.random.seed(1)
+# # 次元数
+# m = 3
+# n = 2
+# # 各種定数・変数
+# A = np.random.randn(m, n)
+# b = np.random.randn(m)
+# c = np.random.randn(n)
+# x = cvx.Variable(n) # 変数定義
+# # 問題設定
+# obj = cvx.Minimize(c.T @ x) # 最小化
+# constraint = [A @ x <= b] # 制約
+# prob = cvx.Problem(obj, constraint)# 問題
+# prob.solve(verbose=True) # 解く
+# # 表示
+# print("obj: ", prob.value)
+# print("x: ", x.value)
+
+
+
+
+import numpy as np
+a = np.array([[1, -2, 1]])
+print(np.abs(a))
