@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib
 #matplotlib.use('nbagg')
-from IPython.display import HTML
+#from IPython.display import HTML
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.animation as anm
@@ -48,8 +48,8 @@ def do_example_3():
         blit = True,  # ？
     )  # アニメーションを作成
     
-    #plt.show()  # 図を表示
-    HTML(ani.to_jshtml())
+    plt.show()  # 図を表示
+    #HTML(ani.to_jshtml())
 
 
 if __name__ == '__main__':
