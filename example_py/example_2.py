@@ -7,7 +7,7 @@ def diff_eq(x, t, a):
     """微分方程式"""
     return a * x
 
-def example_2():
+def do_example_2():
     time_list = np.linspace(0.0, 2.0, 100)  # 時間のリスト
     x_init = [1.0]  # 初期値
     
@@ -35,4 +35,4 @@ def example_2():
 
 
 if __name__ == '__main__':
-    example_2()
+    do_example_2()

@@ -1,4 +1,7 @@
 import numpy as np
+import matplotlib
+#matplotlib.use('nbagg')
+from IPython.display import HTML
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.animation as anm
@@ -7,7 +10,7 @@ def circle(r):
     theta = np.linspace(0, 2 * np.pi, 360*3)
     return r * [np.cos(theta), np.sin(theta)]
 
-def example_3():
+def do_example_3():
     r = 1
     data = circle(r)
     
@@ -45,8 +48,9 @@ def example_3():
         blit = True,  # ？
     )  # アニメーションを作成
     
-    plt.show()  # 図を表示
+    #plt.show()  # 図を表示
+    HTML(ani.to_jshtml())
 
 
 if __name__ == '__main__':
-    example_3()
+    do_example_3()
