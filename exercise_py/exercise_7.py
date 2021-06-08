@@ -191,6 +191,15 @@ class Kinematics(Baxter):
         ax.set_zlabel('Z[m]')
         ax.set_box_aspect((1,1,1))
         
+        joints_init_ = self.forward(self.q_inist_position)
+        joints_init = joints_init_[0]
+        for i in range(1, len(joints_init_)):
+            joints_init = np.concatenate([joints_init, joints_init_[i]], axis = 1)
+        ax.plot(
+            joints_init[0, :], joints_init[1, :], joints_init[2, :],
+            marker = 'o', label = 'initial configuration', color = '#808080',
+        )
+        
         joints_ = self.forward(q)
         joints = joints_[0]
         for i in range(1, len(joints_)):
@@ -198,15 +207,6 @@ class Kinematics(Baxter):
         ax.plot(
             joints[0, :], joints[1, :], joints[2, :],
             marker = 'o', label = 'solution configuration'
-        )
-        
-        joints_init_ = self.forward(self.q_inist_position)
-        joints_init = joints_init_[0]
-        for i in range(1, len(joints_init_)):
-            joints_init = np.concatenate([joints_init, joints_init_[i]], axis = 1)
-        ax.plot(
-            joints_init[0, :], joints_init[1, :], joints_init[2, :],
-            marker = 'o', label = 'initial configuration'
         )
         
         
@@ -229,7 +229,6 @@ class Kinematics(Baxter):
         self.draw(qd, xd)
         
         return
-
 
 
 

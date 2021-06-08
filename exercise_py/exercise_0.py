@@ -29,8 +29,8 @@ def main_1():
     
     # 実行例
     primality_test_1(999961)  # 100万以下で最大の素数
-    primality_test_1(1)
-    primality_test_2([1, 6, 8, 108778979])
+    #primality_test_1(1)
+    #primality_test_2([1, 6, 8, 108778979])
     
     return
 
