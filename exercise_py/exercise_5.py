@@ -176,7 +176,7 @@ class ByLQR(Model):
         return np.array([sol]).reshape((n, n))
 
 
-if __name__ == '__main__':
+def main():
     # 状態方程式
     A = np.array([
         [1.1, 2.0, 3.0],
@@ -200,3 +200,7 @@ if __name__ == '__main__':
     print(sol)
     sol2 = sp.linalg.solve_continuous_are(a = A, b = B, q = Q, r = R)
     print(sol2)
+    
+
+if __name__ == '__main__':
+    main()
