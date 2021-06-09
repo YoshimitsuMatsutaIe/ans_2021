@@ -19,42 +19,50 @@ def map_example():
     ]  # mapの例．0は通過可能な点，1は通貨不可能な点を示す
     return map
 
-def option(map, id):
+def option(gridmap, id):
     
     x, y = id
     # x_max = map.shape[1]
     # y_max = map.shape[0]
     
-    x_max = len(map[0])
-    y_max = len(map)
+    x_max = len(gridmap[0])
+    y_max = len(gridmap)
     
     options = []
     
-    if x+1 <= x_max and y+1 <= y_max and map[x+1][y+1] is False:
-        options.apprnd([1, 1, math.sqrt(2)])
-    print(y+1<= y_max)
-    print(map[x][y+1] == False)
-    print(y+1<= y_max and not map[x][y+1] is False)
-    if y+1 <= y_max and map[x][y+1] is False:
-        options.apprnd([0, 1, 1])
-    if x-1 >= 0 and y+1 <= y_max and map[x-1][y+1] is False:
-        options.apprnd([-1, 1, math.sqrt(2)])
-    if x-1 >= 0 and map[x-1][y] is False:
-        options.apprnd([-1, 0, 1])
-    if x-1 >= 0 and y-1 >= 0 and map[x-1][y-1] is False:
-        options.apprnd([-1, -1, math.sqrt(2)])
-    if y-1 >= 0 and map[x][y-1] is False:
-        options.apprnd([0, -1, 1])
-    if x+1 <= x_max and y-1 >= y_max and map[x+1][y-1] is False:
-        options.apprnd([1, -1, math.sqrt(2)])
-    if x+1 <= x_max and map[x+1][y] is False:
-        options.apprnd([1, 0, 1])
+    if x+1 <= x_max and y+1 <= y_max:
+        if not gridmap[y+1][x+1]:
+            options.append([1, 1, math.sqrt(2)])
+    if y+1 <= y_max:
+        if not gridmap[y+1][x]:
+            options.append([0, 1, 1])
+    if x-1 >= 0 and y+1 <= y_max:
+        if not gridmap[y+1][x-1]:
+            options.append([-1, 1, math.sqrt(2)])
+    if x-1 >= 0:
+        if not gridmap[y][x-1]:
+            options.append([-1, 0, 1])
+    if x-1 >= 0 and y-1 >= 0:
+        if not gridmap[y-1][x-1]:
+            options.append([-1, -1, math.sqrt(2)])
+    if y-1 >= 0:
+        if not gridmap[y-1][x]:
+            options.append([0, -1, 1])
+    if x+1 <= x_max and y-1 >= y_max:
+        if not gridmap[y-1][x+1]:
+            options.append([1, -1, math.sqrt(2)])
+    if x+1 <= x_max:
+        if not gridmap[y][x+1]:
+            options.append([1, 0, 1])
     
-    print(options)
+    # print('minimap')
+    # [print(row) for row in [gridmap[y-1][x-1:x+2], gridmap[y][x-1:x+2],gridmap[y+1][x-1:x+2],]]
+    # print('options')
+    # [print(option) for option in options]
     
     return options
 
-option(map_example(), (0, 0))
+option(map_example(), (5, 1))
 
 
 class Node:
