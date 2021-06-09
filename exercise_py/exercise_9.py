@@ -6,8 +6,165 @@ import matplotlib.pyplot as plt
 import cv2
 
 
-def map_example():
-    map = [
+
+class Node:
+    """node"""
+    
+    def __init__(self, x, y, cost, parent):
+        self.x = x
+        self.y = y
+        self.cost = cost
+        self.parent = parent
+
+
+class Dijkstra:
+    """dijkstra"""
+    
+    def __init__(self, gridmap,):
+        """
+        Parameters
+        ---
+        gridmap : ndarray
+            map
+        """
+        self.gridmap = gridmap
+    
+    
+    def option(self, id):
+        """移動可能なノードを計算"""
+        
+        x, y = id
+        x_max = self.gridmap.shape[1] - 1
+        y_max = self.gridmap.shape[0] - 1
+        
+        options = []
+        
+        if x + 1 <= x_max:
+            if y + 1 <= y_max and not self.gridmap[y + 1, x + 1]:
+                options.append([1, 1, math.sqrt(2)])
+            if y - 1 >= y_max and not self.gridmap[y - 1, x + 1]:
+                options.append([1, -1, math.sqrt(2)])
+            if not self.gridmap[y, x + 1]:
+                options.append([1, 0, 1])
+        if x - 1 >= 0:
+            if y + 1 <= y_max and not self.gridmap[y + 1, x - 1]:
+                options.append([-1, 1, math.sqrt(2)])
+            if y - 1 >= 0 and not self.gridmap[y - 1, x - 1]:
+                options.append([-1, -1, math.sqrt(2)])
+            if not self.gridmap[y, x-1]:
+                options.append([-1, 0, 1])
+        else:
+            if y + 1 <= y_max and not self.gridmap[y + 1, x]:
+                options.append([0, 1, 1])
+            if y - 1 >= 0 and not self.gridmap[y - 1, x]:
+                options.append([0, -1, 1])
+        return options
+    
+    
+    def compute_optiomal_path(self, goal_node, closed_set):
+        """startからgoalへの最短距離を計算"""
+        
+        rx, ry = [goal_node.x], [goal_node.y]
+        parent = goal_node.parent
+        while parent != (-1, -1):
+            node = closed_set[parent]
+            rx.append(node.x)
+            ry.append(node.y)
+            parent = node.parent
+        
+        return rx, ry
+    
+    
+    def planning(self, start, goal):
+        """プランニング本体
+        
+        Parameters
+        ---
+        start : tuple
+            start position
+        goal : tuple
+            goal position
+        
+        Returns
+        ---
+        out : tuple
+            (rx, ry)
+        """
+        
+        open_set = dict()
+        closed_set = dict()
+        
+        start_node = Node(start[0], start[1], 0, (-1, -1))
+        goal_node = Node(goal[0], goal[1], float('inf'), None)
+        
+        open_set = {}
+        closed_set = {}
+        
+        start_id = (start_node.x, start_node.y)
+        open_set[start_id] = start_node
+        
+        while True:
+            print(len(open_set))
+            temp_id = min(open_set, key=lambda o: open_set[o].cost)
+            print('temp_id = ', temp_id)
+            temp = open_set[temp_id]
+            
+            if temp.x == goal_node.x & temp.y == goal_node.y:
+                print('終わり')
+                goal_node.parent = temp.parent
+                goal_node.cost = temp.cost
+                break
+            
+            
+            del open_set[temp_id]
+            closed_set[temp_id] = temp
+            
+            
+            for dx, dy, dcost in self.option(temp_id):
+                node = Node(temp.x + dx, temp.y + dy, temp.cost + dcost, temp_id)
+                node_id = (node.x, node.y)
+                
+                if node_id in closed_set:
+                    """決定済みのとき"""
+                    continue
+                
+                if node_id not in open_set:
+                    """未探索のとき"""
+                    open_set[node_id] = node
+                else:
+                    """未決定のとき"""
+                    if open_set[node_id].cost >= node.cost:
+                        open_set[node_id] = node
+        
+        rx, ry = self.compute_optiomal_path(goal_node, closed_set)
+        
+        return rx, ry, closed_set
+    
+    
+    def draw(self, rx, ry):
+        """図示"""
+        
+        obs = np.where(self.gridmap == 1)
+        
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.plot(rx, ry, marker = '.', color = 'r', label = 'optiomal path')
+        ax.scatter(obs[1], obs[0], color = 'k', marker = '+', label = 'obstacle')
+        ax.scatter(rx[0], ry[0], marker = '*', color = 'r', label = 'goal')
+        ax.scatter(rx[-1], ry[-1], marker = 'o', color = 'g', label = 'start')
+        
+        ax.grid(True)
+        #ax.axis('equal')
+        ax.set_xlim(-1, self.gridmap.shape[1])
+        ax.set_ylim(-1, self.gridmap.shape[0])
+        
+        plt.show()
+
+
+
+
+def main():
+    map_example = [
         [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
         [0, 1, 0, 0, 0, 0, 0, 0, 1, 0],
         [0, 1, 1, 1, 1, 0, 0, 0, 1, 0],
@@ -19,112 +176,16 @@ def map_example():
         [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
     ]  # mapの例．0は通過可能な点，1は通貨不可能な点を示す
-    return np.array(map)
-
-def one_step(x, y, map):
     
-    option = {
-        (1, 0) : 1,
-        (0, 1) : 1,
-        (-1, 0) : 1,
-        (0, -1) : 1,
-        (-1, -1) : math.sqrt(2),
-        (-1, 1) : math.sqrt(2),
-        (1, -1) : math.sqrt(2),
-        (1, 1) : math.sqrt(2),
-    }
-
-    sur = map[x-1:x+1, y-1:y+1]
-    movable_index = np.where(sur == 0)
+    map_example = np.array(map_example)
     
-    z = option(movable_index)
-    print(z)
-    return z
+    simu = Dijkstra(map_example)
+    rx, ry, _ = simu.planning((0, 0), (9, 9))
+    simu.draw(rx, ry)
 
-    # z = [
-    #     [ 1,  0, 1],
-    #     [ 0,  1, 1],
-    #     [-1,  0, 1],
-    #     [ 0, -1, 1],
-    #     [-1, -1, math.sqrt(2)],
-    #     [-1,  1, math.sqrt(2)],
-    #     [ 1, -1, math.sqrt(2)],
-    #     [ 1,  1, math.sqrt(2)],
-    # ]
-    
-
-
-class Node:
-    """node"""
-
-    def __init__(self, x, y, cost, parent):
-        self.x = x
-        self.y = y
-        self.cost = cost
-        self.parent = parent
-
-
-class Dijkstra:
-    """dijkstra"""
-
-    def __init__(self, map, start, goal):
-
-        self.map = map
-        self.start = start
-        self.goal = goal
-
-
-    def get_node_intex(node):
-        return (node.x, node.y)
-
-    def planning(self,):
-
-        start_node = Node(x=self.start[0], y=self.start[1], cost=0, parent=-1)
-        goal_node = Node(x=self.goal[0], y=self.goal[1], cost=0, parent=-1)
-
-        open_set = dict()
-        closed_set = dict()
-
-        open_set[(start_node.x, start_node.y)] = start_node
-
-        while True:
-
-            temp_id = min(open_set, key=lambda o: open_set[o].cost)
-            temp = open_set[temp_id]
-
-            if temp.x == self.goal.x & temp.y == self.goal.y:
-                print('end node')
-                goal_node.parent = temp.parent
-                goal_node.cost = temp.cost
-                break
-
-            del open_set[temp_id]
-            closed_set[temp_id] = temp
-
-
-            for x_, y_, cost_ in one_step():
-                node = Node(temp.x + x_, temp.y + y_, temp.cost + cost_, temp_id)
-                node_id = self.get_node_intex(node)
-
-                if node_id in closed_set:
-                    continue
-                elif node_id not in open_set:
-                    open_set[node_id] = node
-                else:
-                    if open_set[node_id].cost >= node.cost:
-                        open_set[node_id] = node
-
-
-        print('OK')
 
 
 if __name__ == '__main__':
-    # hoge = Dijkstra(map_example(), (0, 0), (10, 0))
-    # hoge.planning()
-    
-    one_step(1, 2, map_example())
-    
-    
-    
+    main()
 
 

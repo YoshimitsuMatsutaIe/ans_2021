@@ -1,5 +1,4 @@
 import math
-from os import close
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -55,16 +54,15 @@ def option(gridmap, id):
         if not gridmap[y][x+1]:
             options.append([1, 0, 1])
     
-    print('center')
-    print(x, y)
-    #print('minimap')
-    #[print(row) for row in [gridmap[y-1][x-1:x+2], gridmap[y][x-1:x+2],gridmap[y+1][x-1:x+2],]]
-    print('options')
-    [print(option) for option in options]
+    # print('center')
+    # print(x, y)
+    # #print('minimap')
+    # #[print(row) for row in [gridmap[y-1][x-1:x+2], gridmap[y][x-1:x+2],gridmap[y+1][x-1:x+2],]]
+    # print('options')
+    # [print(option) for option in options]
     
     return options
 
-#option(map_example(), (5, 1))
 
 
 def calc_path(goal_node, closet_set):
@@ -100,21 +98,11 @@ open_set[start_id] = start_node
 
 
 while True:
-    
-    
+    print(len(open_set))
     temp_id = min(open_set, key=lambda o: open_set[o].cost)
     print('temp_id = ', temp_id)
     temp = open_set[temp_id]
-    # time.sleep(0.5)
-    # plt.plot(temp.x, temp.y, "xc")
-    # plt.gcf().canvas.mpl_connect(
-    #     'key_release_event',
-    #     lambda event: [exit(0) if event.key == 'escape' else None])
-    # if len(closed_set.keys()) % 10 == 0:
-    #     plt.pause(0.001)
-    
-    
-    
+
     if temp.x == goal_node.x & temp.y == goal_node.y:
         print('終わり')
         goal_node.parent = temp.parent
@@ -143,20 +131,10 @@ while True:
                 open_set[node_id] = node
 
 
-print('OK!')
-
-
-
 rx, ry = calc_path(goal_node, closed_set)
-
-print(rx)
-print(ry)
-#ry = np.array(ry)
-#ry = 10 - ry
 
 map_ = np.array(map_example())
 obs = np.where(map_ == 1)
-#obsy = 9 - obs[1]
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
