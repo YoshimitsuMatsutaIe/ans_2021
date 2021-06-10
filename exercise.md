@@ -153,6 +153,9 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 ## 練習問題9：最短経路探索（いろいろ）
 任意のスタート位置からゴール位置までの最短経路を探索するプログラムを作成してください．  
 
+👇イメージ  
+<img src="https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/misc/exercise_9.png" alt="ani" title="pendulum">  
+
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_9.py)  
 [matlab]()  
 
