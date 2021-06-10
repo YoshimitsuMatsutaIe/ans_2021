@@ -22,6 +22,7 @@
 * sympy 1.8
 * pandas 1.2.4
 * control 0.9.0
+* opencv 4.5.1
 
 
 ## Note
