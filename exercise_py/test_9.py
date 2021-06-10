@@ -82,9 +82,6 @@ class Node:
         self.cost = cost
         self.parent = parent
 
-open_set = dict()
-closed_set = dict()
-
 
 start_node = Node(0, 0, 0, (-1, -1))
 goal_node = Node(9, 9, float('inf'), None)

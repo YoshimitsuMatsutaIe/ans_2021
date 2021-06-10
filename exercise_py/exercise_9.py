@@ -31,7 +31,18 @@ class Dijkstra:
     
     
     def option(self, id):
-        """移動可能なノードを計算"""
+        """移動可能なノードを計算
+        
+        Parameters
+        ---
+        id : tuple
+            (x, y)
+        
+        Returns
+        ---
+        out : list
+            [dx, dy, dcost]
+        """
         
         x, y = id
         x_max = self.gridmap.shape[1] - 1
@@ -58,21 +69,37 @@ class Dijkstra:
                 options.append([0, 1, 1])
             if y - 1 >= 0 and not self.gridmap[y - 1, x]:
                 options.append([0, -1, 1])
+        
         return options
     
     
     def compute_optiomal_path(self, goal_node, closed_set):
-        """startからgoalへの最短距離を計算"""
+        """startからgoalへの最短距離を計算
+        
+        Prameters
+        ---
+        goal_node : class
+            node class
+        closed_set : dict
+            ***
+        
+        Returns
+        ---
+        out : tuple
+            rx, ry : optiomal x,y sequence. cost : goukei of cost.
+        """
         
         rx, ry = [goal_node.x], [goal_node.y]
         parent = goal_node.parent
+        cost = goal_node.cost
         while parent != (-1, -1):
             node = closed_set[parent]
             rx.append(node.x)
             ry.append(node.y)
+            cost += node.cost
             parent = node.parent
         
-        return rx, ry
+        return rx, ry, cost
     
     
     def planning(self, start, goal):
@@ -91,9 +118,6 @@ class Dijkstra:
             (rx, ry)
         """
         
-        open_set = dict()
-        closed_set = dict()
-        
         start_node = Node(start[0], start[1], 0, (-1, -1))
         goal_node = Node(goal[0], goal[1], float('inf'), None)
         
@@ -104,9 +128,9 @@ class Dijkstra:
         open_set[start_id] = start_node
         
         while True:
-            print(len(open_set))
+            #print(len(open_set))
             temp_id = min(open_set, key=lambda o: open_set[o].cost)
-            print('temp_id = ', temp_id)
+            #print('temp_id = ', temp_id)
             temp = open_set[temp_id]
             
             if temp.x == goal_node.x & temp.y == goal_node.y:
@@ -136,9 +160,9 @@ class Dijkstra:
                     if open_set[node_id].cost >= node.cost:
                         open_set[node_id] = node
         
-        rx, ry = self.compute_optiomal_path(goal_node, closed_set)
+        rx, ry, cost = self.compute_optiomal_path(goal_node, closed_set)
         
-        return rx, ry, closed_set
+        return rx, ry, cost, closed_set
     
     
     def draw(self, rx, ry):
@@ -159,6 +183,8 @@ class Dijkstra:
         ax.set_ylim(-1, self.gridmap.shape[0])
         
         plt.show()
+        
+        return
 
 
 
@@ -180,8 +206,11 @@ def main():
     map_example = np.array(map_example)
     
     simu = Dijkstra(map_example)
-    rx, ry, _ = simu.planning((0, 0), (9, 9))
+    rx, ry, cost, _ = simu.planning((0, 0), (9, 9))
+    print('cost = ', cost)
     simu.draw(rx, ry)
+    
+    return
 
 
 
