@@ -1,17 +1,3 @@
-# using DifferentialEquations
-# using Plots
-# using CPUTime
-
-
-# a = 1.2
-# f(x, t) = 1.2 * x  # 微分方程式
-# t0 = 0.0  # 初期値
-# tspan = (0.0, 1.0)  # 時間範囲
-# prob = ODEProblem(f, t0, tspan)  # ソルバで解く
-
-# @CPUtime sol = solve(prob)
-
-
 using DifferentialEquations
 using Plots;gr()
 
