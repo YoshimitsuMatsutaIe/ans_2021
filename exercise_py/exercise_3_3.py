@@ -16,11 +16,11 @@ class Particles:
     
     def __init__(self, **kwargs):
         
-        self.N = kwargs.pop('N', 4)
+        self.N = kwargs.pop('N', 2)
         self.L = kwargs.pop('L', 1)
         self.DX_MAX = kwargs.pop('DX_MAX', 1.5)
-        self.TIME_SPAN = kwargs.pop('TIME_SPAN', 20)
-        self.TIME_INTERVAL = kwargs.pop('TIME_INTERVAL', 0.001)
+        self.TIME_SPAN = kwargs.pop('TIME_SPAN', 5)
+        self.TIME_INTERVAL = kwargs.pop('TIME_INTERVAL', 0.0005)
         
         self.x = [(np.random.rand(3, 1) - 0.5)*self.L for i in range(self.N)]
         self.dx = [(np.random.rand(3, 1)*2 - 1)*self.DX_MAX for i in range(self.N)]
