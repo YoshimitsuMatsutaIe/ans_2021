@@ -1,5 +1,5 @@
 using CPUTime
-using DifferentialEquations
+#using DifferentialEquations
 using Plots
 
 
@@ -28,21 +28,36 @@ using Plots
 
 
 # オイラー法で解く（自作）
+function jisaku_euler()
+    K = 1.0
+    Δt = 0.001
+    time_span = 50.0
+    x0 = [0.1, 0.1]
 
-K = 2.0
-Δt = 1
-time_span = 10.0
-x0 = [1.0, 1.0]
-
-dx(x, K) = K * (1 - x[1]^2) * x[2] - x[1]
+    dx(x, K) = [x[2], K * (1 - x[1]^2) * x[2] - x[1]]
 
 
-sol = [x0]
-global  x
-x = x0
-println(x)
-for i in 0:Δt:time_span
-    x += dx(x, K) * Δt
-    println(x)
-    push!(sol, x)
+    sol_x = []
+    sol_dx = []
+
+    for i in 0:Δt:time_span
+        global x
+        if i ==0
+            x = x0
+        end
+        x = x + dx(x, K) * Δt
+        push!(sol_x, x[1])
+        push!(sol_dx, x[2])
+    end
+
+    plot(
+        sol_x,
+        sol_dx,
+        linewidth=3,
+        xaxis="x",
+        yaxis="dx",
+        label="trajectory",
+    )
 end
+
+@time jisaku_euler()
