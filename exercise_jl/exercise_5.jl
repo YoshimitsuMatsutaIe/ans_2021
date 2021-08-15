@@ -68,67 +68,46 @@ function simu(A, B, C, D, Q, R, x0)
     
     # 解
     x(t) = exp(Ā .* t) * x0  # 状態方程式の解
-    # u(t) = -K * x(t)  # 最適入力
-    # y(t) = C * x(t) + D * u(t)  # 出力方程式の解
-
-    # Plot
-    # t = 0:0.01:10
-    # sol = x.(t)
-    # println(typeof(sol))
-    # plot(sol)
-
-    
-    for i in 1:size(A)[1]
-        println(i)
-        if i == 1
-            plot(t -> x(t)[1], 0, 10)
-        else
-            plot!(t -> x[t][i], 0, 10)
-        end
-    end
+    u(t) = -K * x(t)  # 最適入力
+    y(t) = C * x(t) + D * u(t)  # 出力方程式の解
 
 
-    # x1(t) = x(t)[1]
-    # x2(t) = x(t)[2]
-    # #x3(t) = x(t)[3]
-    # plot(x1, 0, 10)
-    # plot!(x2, 0, 10)
-    # #plot!(x3, 0, 10)
+    # Plot．システムの次元に合わせてplotの数を変更．
+    plot(xlims=(0, 10), xaxis="time", )
+    plot!(t -> x.(t)[1], label="x1")
+    plot!(t -> x.(t)[2], label="x2")
+    plot!(t -> x.(t)[3], label="x3")
 end
 
 
 
 
-
-# A = [
-#     1.1 2.0 3.0
-#     0 0.95 1.20
-#     1.2 0.01 10.5
-# ]
-# B = [
-#     1.0
-#     0.0
-#     0.847
-# ]
-# C = Matrix(I, 2, 2)
-
-# # 重み行列
-# Q = diagm(0 => [1,1,1]) .* 1000
-# R = ones((1,1))
-
-# D = [1 1 1]
-
-# x0 = [1, 2, 3]
+### システムの例1 ###
+A = [
+    1.1 2.0 3.0
+    0 0.95 1.20
+    1.2 0.01 10.5
+]
+B = [
+    1.0
+    0.0
+    0.847
+]
+C = Matrix(I, 2, 2)
+D = [1 1 1]
+# 重み行列
+Q = diagm(0 => [1,1,1]) .* 1000
+R = ones((1,1))
+x0 = [1, 2, 3]
 
 
-A = [0.0 1.0; -10.0 -1.0]
-B = [0.0, 1.0]
-Q = [300 0; 0 60]
-R = ones((1, 1))
-C = ones((2, 2))
-D = B
-x0 = [1, 2]
+# ### システムの例2 ###
+# A = [0.0 1.0; -10.0 -1.0]
+# B = [0.0, 1.0]
+# Q = [300 0; 0 60]
+# R = ones((1, 1))
+# C = ones((2, 2))
+# D = B
+# x0 = [1, 2]
 
-#P = AREbyMatrixEquations(A, B, Q, R)
-
-@time simu(A, B, C, D, Q, R, x0)
+@time simu(A, B, C, D, Q, R, x0)  # 実行
