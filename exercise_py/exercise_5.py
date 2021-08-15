@@ -2,8 +2,8 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import control
-import control.matlab
+# import control
+# import control.matlab
 import scipy as sp
 import scipy.integrate as integrate
 import scipy.optimize as optimize
@@ -196,8 +196,8 @@ def main():
     
     #simu = ByLQR(A, B, C, Q, R, solver = 'scipy')
     
-    sol = ByLQR.solve_are_by_o(A, B, Q, R)
-    print(sol)
+    # sol = ByLQR.solve_are_by_o(A, B, Q, R)
+    # print(sol)
     sol2 = sp.linalg.solve_continuous_are(a = A, b = B, q = Q, r = R)
     print(sol2)
     
