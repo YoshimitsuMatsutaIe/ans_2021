@@ -8,28 +8,37 @@ f = @ode_def begin
     du = -Kp*u + Ki*(xg-x) - Kd/m*(-c*v - k*x + u)
 end m c k xg Kp Ki Kd
 
-m = 1.0
-c = 1.0
-k = 1.0
-xg = 0.0
-Kp = 3
-Ki = 1
-Kd = 0.05
 
-p = [m, c, k, xg, Kp, Ki, Kd]
+function do_1()
+    m = 1.0
+    c = 1.0
+    k = 1.0
+    xg = 0.0
+    Kp = 3
+    Ki = 1
+    Kd = 0.05
 
-x0 = [1.0, 0.0, Kp*(xg - 1.0)]  # 初期値を設定
-tspan = (0.0, 10.0)  # 解く範囲を設定
+    p = [m, c, k, xg, Kp, Ki, Kd]
 
-#prob = ODEProblem(dx , x0 , tspan, xg, Kp, Ki, Kd)
-prob = ODEProblem(f ,x0 ,tspan, p)
-sol = solve(prob)  # ソルバで解く
+    x0 = [1.0, 0.0, Kp*(xg - 1.0)]  # 初期値を設定
+    tspan = (0.0, 10.0)  # 解く範囲を設定
 
-# plot
-plot(
-    sol,
-    linewidth=2,
-    xaxis="time [sec]",
-    yaxis="",
-    label=["position" "velocity" "input"]
-)
+    prob = ODEProblem(f ,x0 ,tspan, p)
+    sol = solve(prob)  # ソルバで解く
+
+    # plot
+    plot(
+        sol,
+        linewidth=2,
+        xaxis="time [sec]",
+        yaxis="",
+        label=["position" "velocity" "input"]
+    )
+
+end
+
+
+
+
+
+@time hoge()
