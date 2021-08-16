@@ -10,6 +10,7 @@
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_0.py)  
 [matlab]()  
+[julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_0.jl)  
 
 
 
@@ -27,6 +28,7 @@
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_1.py)  
 [matlab]()  
+[julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_1.jl)  
 
 
 ## 練習問題2：van del Pol振動子（SciPy，制御構文，グラフ作成）
@@ -48,6 +50,7 @@
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_2.py)  
 [matlab]()  
+[julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_2.jl)  
 
 
 ## 練習問題3：アニメーション（グラフ作成）
@@ -61,6 +64,7 @@
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_3_1.py)  
 [matlab]()  
+[julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_3_1.jl)  
 
 
 ### 2. 的あてゲーム
@@ -73,6 +77,7 @@
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_3_2.py)  
 [matlab]()  
+[julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_3_2.jl)  
 
 
 ### 3. 3次元粒子
@@ -89,6 +94,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_3_3.py)  
 [matlab]()  
+[julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_3_3.jl)  
 
 
 ## 練習問題4：PID制御（いろいろ）
@@ -109,6 +115,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_4.py)  
 [matlab]()  
+[julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_4.jl)  
 
 
 ## 練習問題5：最適レギュレータ（いろいろ）
@@ -119,6 +126,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_5.py)  
 [matlab]()  
+[julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_5.jl)  
 
 
 ## 練習問題6：（クラス）
@@ -135,6 +143,8 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_7.py)  
 [matlab]()  
+[julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_7.jl)  
+
 
 ## 練習問題8：倒立振り子（いろいろ）
 ~~実験室にある倒立振り子を制御するプログラムを作成してください．~~  
@@ -149,6 +159,8 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_8.py)  
 [matlab]()  
+[julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_8.jl)  
+
 
 ## 練習問題9：最短経路探索（いろいろ）
 任意のスタート位置からゴール位置までの最短経路を探索するプログラムを作成してください．  
@@ -158,6 +170,8 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_9.py)  
 [matlab]()  
+[julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_9.jl)  
+
 
 ## 練習問題10：卒研に向けて
 自分が選択した前期英語文献の再現実験を行ってください．  
