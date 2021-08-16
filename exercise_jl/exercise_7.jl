@@ -84,7 +84,7 @@ function origins(q)
         H + L0 - L2*sin(q[2]) - L3*cos(q[2])*cos(q[3]) - L4*(sin(q[2])*cos(q[4]) + sin(q[4])*cos(q[2])*cos(q[3])) + L5*((sin(q[2])*sin(q[4]) - cos(q[2])*cos(q[3])*cos(q[4]))*cos(q[5]) + sin(q[3])*sin(q[5])*cos(q[2])) + L6*(((sin(q[2])*sin(q[4]) - cos(q[2])*cos(q[3])*cos(q[4]))*cos(q[5]) + sin(q[3])*sin(q[5])*cos(q[2]))*sin(q[6]) + (-sin(q[2])*cos(q[4]) - sin(q[4])*cos(q[2])*cos(q[3]))*cos(q[6]))
     ]
 
-    return [o_Wo, o_BL, o_0, o_1, o_2, o_3, o_4, o_5, o_6, o_7, o_GL]
+    return [o_Wo o_BL o_0 o_1 o_2 o_3 o_4 o_5 o_6 o_7 o_GL]
 end
 
 # ヤコビ行列
@@ -108,40 +108,54 @@ function jacobi_GL(q)
 end
 
 
-function inv_kinematics(xd)
+function inv_kinematics(xd, trial=10, α=1, allowance_error=0.001)
     """逆運動学を解く"""
-end
 
+    q1_min, q1_max = -141, 51
+    q2_min, q2_max = -123, 60
+    q3_min, q3_max = -173, 173
+    q4_min, q4_max = -3, 150
+    q5_min, q5_max = -175, 175
+    q6_min, q6_max = -90, 120
+    q7_min, q7_max = -175, 175
+    q_min = [q1_min, q2_min, q3_min, q4_min, q5_min, q6_min, q7_min] * π / 180
+    q_max = [q1_max, q2_max, q3_max, q4_max, q5_max, q6_max, q7_max] * π / 180
 
-function dq(α, q, Δx)
-    dq = α * pinv(jacobi_GL(q)) * Δx
-end
-
-xd = [0.3, -0.6, 1]
-α = 1
-Δt = 0.01
-q0 = (rand((7)) .-0.5) .* π  # 初期値
-
-
-println(typeof(origins(q0)[11]))
-
-q = q0
-for t in 0:Δt:10
-    Δx = xd - origins(q)[11]
-    error = norm(Δx)
-    #println(error)
-    if error < 0.001
-        break
-    else
-        dq = α * pinv(jacobi_GL(q)) * Δx
-        global q += dq * Δt
+    Δt = 0.01
+    for i in 1:trial
+        println(i, "回目の試行")
+        global q = (rand((7)) .-0.5) .* π  # ランダムな初期値
+        for t in 0:Δt:10
+            Δx = xd - origins(q)[:, 11]
+            error = norm(Δx)
+            if error < allowance_error
+                break
+            else
+                dq = α * pinv(jacobi_GL(q)) * Δx
+                global q += dq * Δt
+            end
+        end
+        
+        if q_min <= q <= q_max
+            return q
+        else
+            continue
+        end
     end
 end
 
 
-# Plot
-data = origins(q)
+
+xd = [0.3, -0.6, 1]  # 所望のエンドエフェクタ位置
+qd = inv_kinematics(xd)  # 逆運動学の解を計算
+
+### plot ###
+plot(aspect_ratio=1, xlabel="x", ylabel="y", zlabel="z")
+plot!(
+    [xd[1]], [xd[2]], [xd[3]],
+    marker=:circle, markersize = 10, label="desired ef position"
+)
 
 
-
-plot3d(data[11][1], data[11][2], data[11][3])
+data = origins(qd)  # アームの位置データを用意
+plot!(data[1, :], data[2, :], data[3, :], marker=:circle, label="arm")
