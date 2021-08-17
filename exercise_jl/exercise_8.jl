@@ -17,7 +17,9 @@ end
 
 f = @ode_def begin
     dx = v
-    dv = -4*(-D*v + ω^2*l*m
+    dv = -4*(-D*v + ω^2*l*m*sin(θ))/(-4*M + 3*m*cos(θ)^2 - 4*m) + 3*cos(θ)*(-d + dθ + g*l*m*sin(θ))/(l*(-4*M + 3*m*cos(θ)^2 -4*m)) -4/(-4*M + 3*m*cos(θ)^2 -4*m)
+    dθ = ω
+    dω = 3*cos(θ)*(D*v + ω^2*l*m*sin(θ))/(l*())
 end M, m, L, l, D, d, g
 
 
