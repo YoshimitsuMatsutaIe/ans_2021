@@ -5,7 +5,7 @@ import pathlib
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-#import cv2
+import cv2
 
 
 class Node:
@@ -302,8 +302,8 @@ def exercise_9_main_2():
 
 
 if __name__ == '__main__':
-    exercise_9_main()
+    #exercise_9_main()
     
-    #exercise_9_main_2()
+    exercise_9_main_2()
 
 

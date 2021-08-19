@@ -1,7 +1,9 @@
 using CPUTime
 using Plots, Colors
-using PyCall
-
+using PyCall: pyimport
+#using Conda
+#cv2 = pyimport("cv2")
+cv2 = pyimport_conda("cv2", "opencv")
 
 mutable struct Node
     x::Int64
