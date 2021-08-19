@@ -14,9 +14,11 @@
 * python 3.8.8
 
 
+Python, MATLAB, Julia, c++ での作成例を作る予定
+
 ## Requirement
 
-### python
+### Python
 * numpy 1.19.2
 * scipy 1.6.2
 * matplotlib 3.3.4
@@ -25,7 +27,7 @@
 * control 0.9.0
 * opencv 4.5.1
 
-### julia
+### Julia
 * CPUTime
 * Plots
 * CSV
