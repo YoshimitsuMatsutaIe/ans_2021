@@ -5,7 +5,7 @@ import pathlib
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-import cv2
+#import cv2
 
 
 class Node:
@@ -68,7 +68,7 @@ class Dijkstra:
         if x + 1 <= self.x_max:
             if y + 1 <= self.y_max and not self.gridmap[y + 1][x + 1]:
                 options.append([1, 1, math.sqrt(2)])
-            if y - 1 >= self.y_max and not self.gridmap[y - 1][x + 1]:
+            if y - 1 >= 0 and not self.gridmap[y - 1][x + 1]:
                 options.append([1, -1, math.sqrt(2)])
             if not self.gridmap[y][x + 1]:
                 options.append([1, 0, 1])
@@ -302,8 +302,8 @@ def exercise_9_main_2():
 
 
 if __name__ == '__main__':
-    #exercise_9_main()
+    exercise_9_main()
     
-    exercise_9_main_2()
+    #exercise_9_main_2()
 
 
