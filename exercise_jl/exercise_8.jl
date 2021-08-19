@@ -1,6 +1,6 @@
 using Plots
-using DifferentialEquations
-using ParameterizedFunctions
+# using DifferentialEquations
+# using ParameterizedFunctions
 using LinearAlgebra
 using MatrixEquations
 using CPUTime
@@ -16,63 +16,54 @@ mutable struct InvertedPendulumParameter
 end
 
 
-f = @ode_def begin
-    dx = v
-    dv = -4*(-D*v + ω^2*l*m*sin(θ))/(-4*M + 3*m*cos(θ)^2 - 4*m) +
-    3*cos(θ)*(-d + ω + g*l*m*sin(θ))/(l*(-4*M + 3*m*cos(θ)^2 -4*m)) -
-    -4/(-4*M + 3*m*cos(θ)^2 -4*m) +
-    (K * [x; v; θ; ω])[1]
-    dθ = ω
-    dω = 3*cos(θ)*(D*v + ω^2*l*m*sin(θ))/(l*(-4*M + 3*m^2*cos(θ)^2 -4*m^2)) +
-    3*(M + m)*(-d + ω + g*l*m*sin(θ))/(l^2*(-4M + 3*m^2)*cos(θ)^2 - 4*m^2) + 
-    3*cos(θ)/(l*(-4M + 3*m*cos(θ)^2 - 4*m)) -
-    (K * [x; v; θ; ω])[1]
-end M m L l D d g K
+# f = @ode_def begin
+#     dx = v
+#     dv = -4*(-D*v + ω^2*l*m*sin(θ))/(-4*M + 3*m*cos(θ)^2 - 4*m) +
+#     3*cos(θ)*(-d + ω + g*l*m*sin(θ))/(l*(-4*M + 3*m*cos(θ)^2 -4*m)) -
+#     -4/(-4*M + 3*m*cos(θ)^2 -4*m) +
+#     (K * [x; v; θ; ω])[1]
+#     dθ = ω
+#     dω = 3*cos(θ)*(D*v + ω^2*l*m*sin(θ))/(l*(-4*M + 3*m^2*cos(θ)^2 -4*m^2)) +
+#     3*(M + m)*(-d + ω + g*l*m*sin(θ))/(l^2*(-4M + 3*m^2)*cos(θ)^2 - 4*m^2) + 
+#     3*cos(θ)/(l*(-4M + 3*m*cos(θ)^2 - 4*m)) -
+#     (K * [x; v; θ; ω])[1]
+# end M m L l D d g K
 
 
 
-# function dx(x, p, t)
-# #function dx(x, t, M, m, L, l, D, d, g)
-#     """微分方程式"""
-#     M = 5.0
-#     m = 1.0
-#     L = 1.5
-#     l = L/2
-#     D = 0.01
-#     d = 0.01
-#     g = 9.80665
-#     println("x = ", size(x))
-#     multi = [
-#         1 0 0 0
-#         0 0 1 0
-#         0 M+m 0 m*l*cos(x[3])
-#         0 m*l*cos(x[3]) 0 4/3*m*l^2
-#     ]
-#     offset_x = [
-#         x[2]
-#         x[4]
-#         m*l*x[4]^2*sin(x[3])-D*x[2]
-#         m*g*l*sin(x[3])-d*x[4]
-#     ]
-#     offset_u = [
-#         0
-#         0
-#         1
-#         0
-#     ]
+function dx(x, param)
+    """微分方程式"""
 
-#     #u = input(x, input_param)
-#     u = 0.0
+    M, m, L, l, D, d, g = param
 
-#     Fa = inv(multi) * offset_x
-#     Fb = inv(multi) * offset_u
+    multi = [
+        1 0 0 0
+        0 0 1 0
+        0 M+m 0 m*l*cos(x[3])
+        0 m*l*cos(x[3]) 0 4/3*m*l^2
+    ]
+    offset_x = [
+        x[2]
+        x[4]
+        m*l*x[4]^2*sin(x[3])-D*x[2]
+        m*g*l*sin(x[3])-d*x[4]
+    ]
+    offset_u = [
+        0
+        0
+        1
+        0
+    ]
+
+    #u = input(x, input_param)
+    u = 0.0
+
+    Fa = inv(multi) * offset_x
+    Fb = inv(multi) * offset_u
 
     
-#     #dx = Fa + Fb.*u
-#     dx = x
-#     println(dx)
-#     println("dx = ", size(dx), typeof(dx))
-# end
+    dx = Fa + Fb.*u
+end
 
 
 function ByLQR(M, m, L, l, D, d, g,)
@@ -130,13 +121,13 @@ function ByLQR(M, m, L, l, D, d, g,)
 end
 
 
-M = 1.0
+M = 5.0
 m = 1.0
-L = 1.0
+L = 1.5
 l = L/2
-D = 1.0
-d = 1.0
-g = 9.8
+D = 0.01
+d = 0.01
+g = 9.80665
 
 
 

@@ -1,55 +1,92 @@
 using CPUTime
 using Plots
+using StaticArrays
+using ArraysOfArrays
 
 
-function jisaku_euler()
-    """オイラー法で解く（自作）"""
-    K = 1.0
-    Δt = 0.001
-    time_span = 50.0
-    x0 = [0.1, 0.1]
-
-    dx(x, K) = [x[2], K * (1 - x[1]^2) * x[2] - x[1]]
-
-
-    sol_x = []
-    sol_dx = []
-
-    for i in 0:Δt:time_span
-        global x
-        if i ==0
-            x = x0
-        end
-        x = x + dx(x, K) * Δt
-        push!(sol_x, x[1])
-        push!(sol_dx, x[2])
-    end
-
-    fig1 = plot(
-        sol_x,
-        linewidth=3,
-        xaxis="time",
-        label="x",
-    )
-
-    plot!(fig1, sol_dx, label = "dx")
-
-    fig2 = plot(
-        sol_x,
-        sol_dx,
-        linewidth=3,
-        xaxis="x",
-        yaxis="dx",
-        label="trajectory",
-    )
-
-    plot(fig1, fig2, layout=(2,1),size=(600,900))
-
+function split_vec_of_arrays(u)
+    vec.(u) |>
+    x -> VectorOfSimilarVectors(x).data |>
+    transpose |>
+    VectorOfSimilarVectors
 end
 
 
+function jisaku_solve_euler(dx, x₀, t_span, Δt)
+    """オイラー法
+    ・参考にしました: https://twitter.com/genkuroki/status/1301832571131633665/photo/1
+    """
+
+    t = range(t_span..., step = Δt)  # 時間軸
+    x = Vector{typeof(x₀)}(undef, length(t))  # 解を格納する1次元配列
+
+    x[1] = x₀  # 初期値
+    for i in 1:length(x)-1
+        x[i+1] = x[i] + dx(x[i])*Δt
+    end
+
+    t, x
+end
 
 
+function jisaku_solve_RungeKutta(dx, x₀, t_span, Δt)
+    """ルンゲクッタ法（4次）"""
+
+    t = range(t_span..., step = Δt)  # 時間軸
+    x = Vector{typeof(x₀)}(undef, length(t))  # 解を格納する1次元配列
+
+    x[1] = x₀  # 初期値
+    for i in 1:length(x)-1
+        k₁ = Δt * 
+
+        x[i+1] = x[i] + (k₁ + 2k₂ + 2k₃ +k₄)/6
+    end
+
+    t, x
+end
 
 
-@time jisaku_euler()
+function VanDerPol(x)
+    K = 1.0
+    [
+        x[2]
+        K * (1 - x[1]^2) * x[2] - x[1]
+    ]
+end
+
+
+# 数値シミュレーション実行
+x₀ = [0.1, 0.1]  # 初期値
+t_span = (0.0, 30.0)  # 時間幅
+Δt = 0.01  # 刻み時間
+t, x = jisaku_solve_euler(VanDerPol, x₀, t_span, Δt)  # 解く
+
+
+# plot
+x, v = split_vec_of_arrays(x)  # 解をplotしやすいように分割
+fig1 = plot(
+    t, x,
+    #linewidth=3,
+    xaxis="time",
+    label="x",
+)
+plot!(fig1, t, v, label = "ẋ")
+
+fig2 = plot(
+    x, v,
+    #linewidth=3,
+    xaxis="x",
+    yaxis="dx",
+    label="trajectory",
+)
+
+fig3 = plot(
+    t, x, v,
+    xaxis="time", yaxis="x", zaxis="v",
+    label="trajectory"
+)
+
+plot(
+    fig1, fig2, fig3, layout=(3,1),
+    size=(600,900)
+)
