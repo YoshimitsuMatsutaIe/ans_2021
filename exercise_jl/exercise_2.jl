@@ -22,7 +22,7 @@ function jisaku_solve_euler(dx, x₀, t_span, Δt)
 
     x[1] = x₀  # 初期値
     for i in 1:length(x)-1
-        x[i+1] = x[i] + dx(x[i])*Δt
+        x[i+1] = x[i] + dx(t[i], x[i])*Δt
     end
 
     t, x
@@ -37,16 +37,18 @@ function jisaku_solve_RungeKutta(dx, x₀, t_span, Δt)
 
     x[1] = x₀  # 初期値
     for i in 1:length(x)-1
-        k₁ = Δt * 
-
-        x[i+1] = x[i] + (k₁ + 2k₂ + 2k₃ +k₄)/6
+        k₁ = dx(t[i], x[i])
+        k₂ = dx(t[i]+Δt/2, x[i]+k₁/2)
+        k₃ = dx(t[i]+Δt/2, x[i]+k₂/2)
+        k₄ = dx(t[i]+Δt, x[i]+k₃)
+        x[i+1] = x[i] + 1/6*(k₁ + 2k₂ + 2k₃ +k₄)*Δt
     end
 
     t, x
 end
 
 
-function VanDerPol(x)
+function VanDerPol(t, x)
     K = 1.0
     [
         x[2]
@@ -57,10 +59,10 @@ end
 
 # 数値シミュレーション実行
 x₀ = [0.1, 0.1]  # 初期値
-t_span = (0.0, 30.0)  # 時間幅
+t_span = (0.0, 50.0)  # 時間幅
 Δt = 0.01  # 刻み時間
-t, x = jisaku_solve_euler(VanDerPol, x₀, t_span, Δt)  # 解く
-
+#t, x = jisaku_solve_euler(VanDerPol, x₀, t_span, Δt)  # 解く
+@time t, x = jisaku_solve_RungeKutta(VanDerPol, x₀, t_span, Δt)  # 解く
 
 # plot
 x, v = split_vec_of_arrays(x)  # 解をplotしやすいように分割
