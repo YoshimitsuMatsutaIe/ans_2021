@@ -1,11 +1,5 @@
 #!/usr/bin/env python
 
-"""
-
-
-
-"""
-
 import numpy as np
 #import math
 from math import pi, sin, cos, tan
@@ -18,7 +12,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as anm
 import matplotlib.patches as patches
 #import time
-import cvxpy as cvx
+#import cvxpy as cvx
 
 #import exercise_5
 
@@ -188,7 +182,7 @@ class InvertedPendulum:
         
         pen_init, = ax_ani.plot([], [], lw = 2, color = '#a9a9a9')  # pendulum
         pen_init.set_data(
-            [x_list[0], x_list[0] + self.L*cos(-pi/2-theta_list[0])],
+            [x_list[0], x_list[0] + self.L*cos(pi/2-theta_list[0])],
             [0, self.L*sin(pi/2-theta_list[0])],
         )
         
@@ -556,10 +550,10 @@ if __name__ == '__main__':
     # simu.do_exercise_8()
     
     
-    # simu = ByLQR(DX_INIT=1, DTHETA_INIT=1)
-    # simu.do_exercise_8()
+    simu = ByLQR()
+    simu.do_exercise_8()
     
     # main_no_input()
     
-    simu = ByMPC()
-    simu.do_exercise_8(ani_save=True)
+    # simu = ByMPC()
+    # simu.do_exercise_8(ani_save=True)

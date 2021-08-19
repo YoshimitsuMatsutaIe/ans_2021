@@ -62,6 +62,7 @@ end
 
 
 function ByLQR(M, m, L, l, D, d, g,)
+    """LQRで制御"""
 
     # 原点近傍での線形化システム
     multi = [
@@ -85,8 +86,6 @@ function ByLQR(M, m, L, l, D, d, g,)
 
     A = inv(multi) * offset_x
     B = inv(multi) * offset_u
-
-
     
     # リカッチ方程式を解く
     Q = diagm(0 => [10,10,100,100])  # 重み行列
@@ -115,7 +114,7 @@ function ByLQR(M, m, L, l, D, d, g,)
             linewidth=5,
             xlims = (-3L, 3L),
             ylims = (-1.1L, 1.1L),
-            aspect_ratio =1,
+            aspect_ratio = 1,
             legend=false,
         )
     end
@@ -124,14 +123,14 @@ function ByLQR(M, m, L, l, D, d, g,)
 end
 
 
-M = 5.0
-m = 1.0
-L = 1.5
+# パラメータ
+M = 5.0  # 車両質量[kg]
+m = 1.0  # 振子質量[kg]
+L = 1.5  # 振子長さ[m]
 l = L/2
-D = 0.01
-d = 0.01
-g = 9.80665
-
+D = 0.01  # 車両と地面の動摩擦係数
+d = 0.01  # 振子と車両の動摩擦係数
+g = 9.80665  # 重力加速度[m/s²]
 
 
 @time ByLQR(M, m, L, l, D, d, g)
