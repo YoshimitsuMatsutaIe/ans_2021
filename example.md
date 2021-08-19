@@ -6,6 +6,9 @@
 二次関数  
 <img src="https://latex.codecogs.com/gif.latex?\bg_white&space;y=x^2&plus;x&plus;1"/>  
 を考えます．xの値を0.1ずつ動かしたときの二次関数のとる値の入ったリストを作成してください．  
+イメージ  
+[0, 1.11, ...]
+
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_py/example_0.py)  
 [matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_mat/example_0.m)  
