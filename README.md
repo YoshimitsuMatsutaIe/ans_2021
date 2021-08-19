@@ -1,5 +1,5 @@
 # ans_2021
-
+Python, MATLAB, Julia, c++ での作成例を作る予定
 
 ## Description
 例題，練習問題とその解答例
@@ -11,10 +11,7 @@
 
 ## Dependencies
 
-* python 3.8.8
-
-
-Python, MATLAB, Julia, c++ での作成例を作る予定
+* python 3.8.8  
 
 ## Requirement
 
