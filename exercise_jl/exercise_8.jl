@@ -1,40 +1,37 @@
 using Plots
-# using DifferentialEquations
-# using ParameterizedFunctions
 using LinearAlgebra
 using MatrixEquations
 using CPUTime
 
-mutable struct InvertedPendulumParameter
-    M::Float64
-    m::Float64
-    L::Float64
-    l::Float64
-    D::Float64
-    d::Float64
-    g::Float64
+
+function split_vec_of_arrays(u)
+    vec.(u) |>
+    x -> VectorOfSimilarVectors(x).data |>
+    transpose |>
+    VectorOfSimilarVectors
 end
 
 
-# f = @ode_def begin
-#     dx = v
-#     dv = -4*(-D*v + ω^2*l*m*sin(θ))/(-4*M + 3*m*cos(θ)^2 - 4*m) +
-#     3*cos(θ)*(-d + ω + g*l*m*sin(θ))/(l*(-4*M + 3*m*cos(θ)^2 -4*m)) -
-#     -4/(-4*M + 3*m*cos(θ)^2 -4*m) +
-#     (K * [x; v; θ; ω])[1]
-#     dθ = ω
-#     dω = 3*cos(θ)*(D*v + ω^2*l*m*sin(θ))/(l*(-4*M + 3*m^2*cos(θ)^2 -4*m^2)) +
-#     3*(M + m)*(-d + ω + g*l*m*sin(θ))/(l^2*(-4M + 3*m^2)*cos(θ)^2 - 4*m^2) + 
-#     3*cos(θ)/(l*(-4M + 3*m*cos(θ)^2 - 4*m)) -
-#     (K * [x; v; θ; ω])[1]
-# end M m L l D d g K
+function jisaku_solve_euler(dx, x₀, t_span, Δt, args)
+    """オイラー法
+    ・参考にしました: https://twitter.com/genkuroki/status/1301832571131633665/photo/1
+    """
 
+    t = range(t_span..., step = Δt)  # 時間軸
+    x = Vector{typeof(x₀)}(undef, length(t))  # 解を格納する1次元配列
 
+    x[1] = x₀  # 初期値
+    for i in 1:length(x)-1
+        x[i+1] = x[i] + dx(t[i], x[i], args)*Δt
+    end
 
-function dx(x, param)
+    t, x
+end
+
+function dx(t, x, param)
     """微分方程式"""
 
-    M, m, L, l, D, d, g = param
+    M, m, L, l, D, d, g, K = param
 
     multi = [
         1 0 0 0
@@ -55,12 +52,10 @@ function dx(x, param)
         0
     ]
 
-    #u = input(x, input_param)
-    u = 0.0
-
     Fa = inv(multi) * offset_x
     Fb = inv(multi) * offset_u
 
+    u = -K*x
     
     dx = Fa + Fb.*u
 end
@@ -94,8 +89,8 @@ function ByLQR(M, m, L, l, D, d, g,)
 
     
     # リカッチ方程式を解く
-    Q = diagm(0 => [1,1,1,1]) .* 100  # 重み行列
-    R = ones((1,1))  # 重み行列
+    Q = diagm(0 => [10,10,100,100])  # 重み行列
+    R = ones((1,1)) .* 0.01  # 重み行列
 
     S = zero(B)
     P, _, _ = arec(A, B, R, Q, S)
@@ -104,20 +99,28 @@ function ByLQR(M, m, L, l, D, d, g,)
     println(K)
 
     ### 数値シミュレーション ###
-    param = [M, m, L, l, D, d, g, K]
-    println(param)
-    x0 = [
-        0
-        0
-        2
-        0
-    ]
-    tspan = (0.0, 1.0)  # 範囲を設定
-    prob = ODEProblem(dx, x0, tspan, param)  # 問題を設定
-    sol = solve(prob)  # ソルバで解く
+    param = M, m, L, l, D, d, g, K
+    x0 = [0, 0, pi/6, 0]
+    tspan = (0.0, 5.0)  # 範囲を設定
+    t, x = jisaku_solve_euler(dx, x0, tspan, 0.01, param)
+    x, v, θ, ω = split_vec_of_arrays(x)
 
     # plot
-    plot(sol)
+    #plot([x, v, θ, ω], label=["x" "v" "θ" "ω"])
+    anim = @animate for i in 1:length(t)
+        plot(
+            [x[i], x[i]+L*cos(-θ[i]+π/2)],
+            [0, L*sin(-θ[i]+π/2)],
+            #size=(400,400),
+            linewidth=5,
+            xlims = (-3L, 3L),
+            ylims = (-1.1L, 1.1L),
+            aspect_ratio =1,
+            legend=false,
+        )
+    end
+    gif(anim, "ex.gif", fps = 30)
+
 end
 
 
@@ -131,14 +134,6 @@ g = 9.80665
 
 
 
-ByLQR(M, m, L, l, D, d, g)
+@time ByLQR(M, m, L, l, D, d, g)
 
 
-# p = [M, m, L, l, D, d, g]
-# x0 = [0; 0; 2; 0]
-# tspan = (0.0, 1.0)  # 範囲を設定
-# prob = ODEProblem(f, x0, tspan, p)  # 問題を設定
-# sol = solve(prob)  # ソルバで解く
-
-
-# plot(sol)
