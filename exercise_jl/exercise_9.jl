@@ -13,20 +13,54 @@ end
 
 
 
-function dijkstra(gridmap::Matrix{Int32})
+function dijkstra(gridmap::Matrix{Int64}, start::Tuple{Int64}, goal::Tuple{Int64})
     """ダイクストラで最短経路探索"""
     
     x_max = size(gridmap)[1]
     y_max = size(gridmap)[2]
 
-    function option(x, y)
-        """移動可能なノードを返す"""
-        option = []
+    function options(x, y)
+        """移動可能なノード"""
+        options = []
         if x+1 <= x_max
-            if y+1 <= y_max & gridmap[y+1, x+1]==0
-                push!(option, (1, 1, sqrt(2)))
+            if y+1 <= y_max & gridmap[y+1, x+1] == 0
+                push!(options, (1, 1, sqrt(2)))
             end
-            if 
+            if y-1 >= y_max & gridmap[y-1, x+1] == 0
+                push!(options, (1, -1, sqrt(2)))
+            end
+            if gridmap[y, x+1] == 0
+                push!(options, (1, 0, 1))
+            end
+        end
+        if x-1 >= 0
+            if y+1 <= y_max & gridmap[y+1, x-1] == 0
+                push!(options, (-1, 1, sqrt(2)))
+            end
+            if y-1 >= y_max & gridmap[y-1, x-1] == 0
+                push!(options, (-1, -1, sqrt(2)))
+            end
+            if gridmap[y, x-1] == 0
+                push!(options, (-1, 0, 1))
+            end
+        else
+            if y+1 <= y_max & gridmap[y+1, x] == 0
+                push!(options, (0, 1, 1))
+            end
+            if y-1 >= 0 & gridmap[y-1, x] == 0
+                push!(options, (0, -1, 1))
+            end
+        end
+    end
+
+    start_node = Node(start[1], start[2], 0, nothing)
+    goal_node = Node(goal[1], goal[2], typemax(Float64), nothing)
+
+    open_set = Dict()
+    closed_set = Dict()
+
+    
+
 
 
 
@@ -67,4 +101,3 @@ function main_1()
 end
 
 
-m = main_1()
