@@ -2,6 +2,7 @@ using Plots
 using LinearAlgebra
 using MatrixEquations
 using CPUTime
+using ArraysOfArrays
 
 
 function split_vec_of_arrays(u)
@@ -12,21 +13,24 @@ function split_vec_of_arrays(u)
 end
 
 
-function jisaku_solve_euler(dx, x₀, t_span, Δt, args)
-    """オイラー法
-    ・参考にしました: https://twitter.com/genkuroki/status/1301832571131633665/photo/1
-    """
+function jisaku_solve_RungeKutta(dx, x₀, t_span, Δt, args)
+    """ルンゲクッタ法（4次）"""
 
     t = range(t_span..., step = Δt)  # 時間軸
     x = Vector{typeof(x₀)}(undef, length(t))  # 解を格納する1次元配列
 
     x[1] = x₀  # 初期値
     for i in 1:length(x)-1
-        x[i+1] = x[i] + dx(t[i], x[i], args)*Δt
+        k₁ = dx(t[i], x[i], args)
+        k₂ = dx(t[i]+Δt/2, x[i]+k₁*Δt/2, args)
+        k₃ = dx(t[i]+Δt/2, x[i]+k₂*Δt/2, args)
+        k₄ = dx(t[i]+Δt, x[i]+k₃*Δt, args)
+        x[i+1] = x[i] + (k₁ + 2k₂ + 2k₃ +k₄)Δt/6
     end
 
     t, x
 end
+
 
 function dx(t, x, param)
     """微分方程式"""
@@ -95,18 +99,22 @@ function ByLQR(M, m, L, l, D, d, g,)
     P, _, _ = arec(A, B, R, Q, S)
 
     K = inv(R) * B' * P  # 最適フィードバックゲイン
-    println(K)
+    #println(K)
 
     ### 数値シミュレーション ###
     param = M, m, L, l, D, d, g, K
     x0 = [0, 0, pi/6, 0]
     tspan = (0.0, 5.0)  # 範囲を設定
-    t, x = jisaku_solve_euler(dx, x0, tspan, 0.01, param)
+    Δt = 0.01
+    t, x = jisaku_solve_RungeKutta(dx, x0, tspan, Δt, param)
     x, v, θ, ω = split_vec_of_arrays(x)
 
     # plot
     #plot([x, v, θ, ω], label=["x" "v" "θ" "ω"])
-    anim = @animate for i in 1:length(t)
+
+    anim = @animate for i in 1:2:length(t)
+        now = round(i * Δt, digits=1)
+        s = "t = " * string(now) * " [s]"
         plot(
             [x[i], x[i]+L*cos(-θ[i]+π/2)],
             [0, L*sin(-θ[i]+π/2)],
@@ -116,9 +124,11 @@ function ByLQR(M, m, L, l, D, d, g,)
             ylims = (-1.1L, 1.1L),
             aspect_ratio = 1,
             legend=false,
+            annotate=(0, -1, s),
         )
     end
-    gif(anim, "ex.gif", fps = 30)
+    gif(anim, "example_8_jl.gif", fps = 30)
+    #mp4(anim, "example_8_jl.mp4", fps = 30)
 
 end
 

@@ -1,5 +1,6 @@
 using CPUTime
 using DifferentialEquations
+using ParameterizedFunctions
 using Plots
 
 f = @ode_def begin
@@ -39,6 +40,4 @@ end
 
 
 
-
-
-@time hoge()
+@time do_1()
