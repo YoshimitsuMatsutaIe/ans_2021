@@ -1,5 +1,6 @@
 [deps]
 ArraysOfArrays = "65a8f2f4-9b39-5baf-92e2-a9cc46fdf018"
+CPUTime = "a9c8d775-2e2e-55fc-8582-045d282d599e"
 Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
 Conda = "8f4d0f93-b110-5947-807f-2305c1781a2d"
 ParameterizedFunctions = "65888b18-ceab-5e60-b2b9-181511a3b968"

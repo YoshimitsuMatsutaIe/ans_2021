@@ -172,5 +172,5 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_9.jl)  
 
 
-## 練習問題10：卒研に向けて
+## 練習問題10：
 自分が選択した前期英語文献の再現実験を行ってください．  
