@@ -11,7 +11,7 @@
 
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_py/example_0.py)  
-[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_mat/example_0.m)  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_m/example_0.m)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_jl/example_0.jl)  
 
 ## 例題1：ファイル操作
@@ -20,7 +20,7 @@
 ただし結果のファイル名には実行時刻が入るようにしてください．  
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_py/example_1.py)  
-[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_mat/example_1.m)  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_m/example_1.m)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_jl/example_1.jl)  
 
 ## 例題2：微分方程式
@@ -30,12 +30,12 @@
 
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_py/example_2.py)  
-[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_mat/example_2.m)  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_m/example_2.m)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_jl/example_2.jl)  
 
 ## 例題3：アニメーション
 点が等速で円軌道上を回るアニメーションを作成してください．  
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_py/example_3.py)  
-[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_mat/example_3.m)  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_m/example_3.m)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/example_jl/example_3.jl)  
