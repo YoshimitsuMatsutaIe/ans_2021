@@ -1,4 +1,6 @@
+function exercise_2()
 clearvars
+
 
 global dt myu
 t0 = 0; %初期時刻
@@ -41,4 +43,20 @@ box on;
 grid on;
 xlabel('x_1','FontSize',30,'FontName','Times New Roman')
 ylabel('x_2','FontSize',30,'FontName','Times New Roman')
+end
 
+function dx = func1(x,t)
+global myu
+x_1 = x(1);
+x_2 = x(2);
+    dx = [x_2;myu*(1-x_1^2)*x_2-x_1];
+end
+
+function [next_x]  = runge_kutta(f,x,t)
+global dt;
+k1 = f(x,t);
+k2 = f(x+k1*dt/2,t+dt/2);
+k3 = f(x+k2*dt/2,t+dt/2);
+k4 = f(x+k3*dt,t+dt);
+next_x = x + (k1 + 2*(k2+k3) + k4)*dt/6;
+end
