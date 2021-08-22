@@ -9,7 +9,7 @@
 ~~ヒント：2では1で作った関数を利用すると良い~~  
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_0.py)  
-[matlab]()  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_mat/exercise_0.mat)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_0.jl)  
 
 
@@ -27,7 +27,7 @@
 ただしグラフのファイル名には実行時刻と使用したcsvファイル名が入るようにする．  
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_1.py)  
-[matlab]()  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_mat/exercise_1.mat)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_1.jl)  
 
 
@@ -49,7 +49,7 @@
 <img src="https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/misc/exercise_2.png" alt="ani" title="vandelpol">
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_2.py)  
-[matlab]()  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_mat/exercise_2.mat)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_2.jl)  
 
 
@@ -63,7 +63,7 @@
 2次元平面で振り子が往復運動するアニメーションを作成してください．  
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_3_1.py)  
-[matlab]()  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_mat/exercise_3_1.mat)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_3_1.jl)  
 
 
@@ -76,7 +76,7 @@
 ・実行結果をアニメーションで示す  
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_3_2.py)  
-[matlab]()  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_mat/exercise_3_2.mat)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_3_2.jl)  
 
 
@@ -92,7 +92,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 ※余裕があれば粒子に半径を設けて，粒子間の衝突も実装して下さい．  
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_3_3.py)  
-[matlab]()  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_mat/exercise_3_3.mat)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_3_3.jl)  
 
 
@@ -113,7 +113,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 <img src="https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/misc/exercise_4.gif" alt="ani" title="PID">  
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_4.py)  
-[matlab]()  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_mat/exercise_4.mat)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_4.jl)  
 
 
@@ -124,7 +124,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 またuを用いてモデルを制御した結果をグラフで示してください．  
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_5.py)  
-[matlab]()  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_mat/exercise_5.mat)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_5.jl)  
 
 
@@ -141,7 +141,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 ロボットの逆運動問題を解くプログラムを作成してください．  
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_7.py)  
-[matlab]()  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_mat/exercise_7.mat)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_7.jl)  
 
 
@@ -157,7 +157,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 <img src="https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/misc/exercise_8__by_" alt="ani" title="pendulum">
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_8.py)  
-[matlab]()  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_mat/exercise_8.mat)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_8.jl)  
 
 
@@ -168,7 +168,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 <img src="https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/misc/exercise_9.png" alt="ani" title="pendulum">  
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_9.py)  
-[matlab]()  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_mat/exercise_9.mat)  
 [julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_9.jl)  
 
 
