@@ -1,7 +1,8 @@
 function exercise_5()
-%EXERCISE_5 ç·´ç¿’å•é¡Œ5
-%  
+%EXERCISE_5 
+%   icare‚ğg‚Á‚Ä‰ğ‚­ Œö®doc:https://jp.mathworks.com/help/control/ref/icare.html
 
+%% ó‘Ô•û’ö®
 A = [
     1.1 2.0 3.0
     0 0.95 1.20
@@ -13,7 +14,38 @@ B = [
     0.847
     ];
 
-P = icare();
 
+%% d‚İs—ñ
+Q = diag([1000 1000 1000]);
+R = 1;
+
+%% ƒŠƒJƒbƒ`•û’ö®‚ğ‰ğ‚­
+S = [];
+E = [];
+G = [];
+
+[P, K, L] = icare(A, B, Q, R, S, E, G);
+
+disp("P = ");
+disp(P);
+
+%% ”’lƒVƒ~ƒ…ƒŒ[ƒVƒ‡ƒ“
+newA = A - B * K;  % Å“KƒŒƒMƒ…ƒŒ[ƒ^‚ÌV‚µ‚¢A
+
+dt = 0.01;
+tend = 5;
+n = tend/dt;
+t = linspace(0, tend, n);
+X0 = [10; 2; 3];  % ‰Šú’l
+X = zeros(3, n);
+for i = 1:n
+    X(:, i) = expm(newA * (i-1)*dt) * X0;
+end
+%disp(X(:, 1:10));
+%% ƒvƒƒbƒg
+plot(X(1, :))
+plot(t, X(1, :), t, X(2, :), t, X(3, :));
+legend('x1', 'x2', 'x3')
+xlabel('time [s]')
 end
 

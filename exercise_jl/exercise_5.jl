@@ -52,8 +52,8 @@ function AREbyMatrixEquations(A, B, Q, R)
     """
     S = zero(B)
     P, E, F = arec(A, B, R, Q, S)
-    return P
     println("P = ", P)
+    return P
 end
 
 
