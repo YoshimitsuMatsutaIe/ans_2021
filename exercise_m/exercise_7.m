@@ -81,11 +81,11 @@ zs = origins(3, :);
 fig = figure;
 plot3(xs, ys, zs, 'o-', ...
     xd(1), xd(2), xd(3), '*', 'MarkerSize',10);
-legend('joint positions', 'desired end-effector position')
+legend('joint positions', 'desired end-effector position', 'FontName','Times New Roman')
 grid on
-xlabel('x[m]')
-ylabel('y[m]')
-zlabel('z[m]')
+xlabel('x[m]', 'FontName','Times New Roman')
+ylabel('y[m]', 'FontName','Times New Roman')
+zlabel('z[m]', 'FontName','Times New Roman')
 axis equal
 end
 
