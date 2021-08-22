@@ -51,36 +51,36 @@ for i = 1:n
 end
 
 
-%% アニメ化
-disp("アニメーション作成中...");
-axis tight manual 
-set(gca,'nextplot','replacechildren'); 
-
-v = VideoWriter('exercise_4_mat.avi');
-open(v);
-
-plot(t, ones(n_t, 1).* xg);
-xlabel('time t');
-ylabel('x');
-xlim([0 10]);
-ylim([0.0 xg*1.5]);
-%legend('goal');
-hold on
-p = plot(t, xs(:, 1));
-hold off
-
-for i = 2:n
-    p.XData = t;
-    p.YData = xs(:, i);
-    s = "Kp = " + string(round(Kp(i), 1)) + ...
-        ", Ki = " + string(round(Ki(i), 1)) + ...
-        ", Kd = " + string(round(Kd(i), 1));
-    str = text(5, 0.2, s);
-    frame = getframe(gcf);
-    writeVideo(v,frame);
-    delete(str)
-end
-close(v);
-disp("アニメーション作成完了");
+% %% アニメ化
+% disp("アニメーション作成中...");
+% axis tight manual 
+% set(gca,'nextplot','replacechildren'); 
+% 
+% v = VideoWriter('exercise_4_mat.avi');
+% open(v);
+% 
+% plot(t, ones(n_t, 1).* xg);
+% xlabel('time t');
+% ylabel('x');
+% xlim([0 10]);
+% ylim([0.0 xg*1.5]);
+% %legend('goal');
+% hold on
+% p = plot(t, xs(:, 1));
+% hold off
+% 
+% for i = 2:n
+%     p.XData = t;
+%     p.YData = xs(:, i);
+%     s = "Kp = " + string(round(Kp(i), 1)) + ...
+%         ", Ki = " + string(round(Ki(i), 1)) + ...
+%         ", Kd = " + string(round(Kd(i), 1));
+%     str = text(5, 0.2, s);
+%     frame = getframe(gcf);
+%     writeVideo(v,frame);
+%     delete(str)
+% end
+% close(v);
+% disp("アニメーション作成完了");
 end
 
