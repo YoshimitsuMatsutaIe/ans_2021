@@ -19,17 +19,27 @@ function is_prime_simple(n)
     return true
 end
 
-function do_2(n₀, n₁)
-    ns = n₀:n₁
-    prime_list = is_prime_simple.(ns)
-    num = prime_list' * prime_list
-    println(n₀, " から ", n₁ ," に素数は", num, "個ある")
-end
+# function do_2(n₀, n₁)
+#     ns = n₀:n₁
+#     prime_list = is_prime_simple.(ns)
+#     num = prime_list' * prime_list
+#     println(n₀, " から ", n₁ ," に素数は", num, "個ある")
+# end
 
+
+function do_2(n0, n1)
+    global num = 0
+    for i in n0:n1
+        if is_prime_simple(i)
+            num =num + 1
+        end
+    end
+    println(num)
+end
 
 #is_prime_simple(999961)
 #@time is_prime(999961)  # 100万以下で最大の素数
 
 
 #do_2(1, 10)
-@time do_2(1, 999961)
+@time do_2(1, 1000)

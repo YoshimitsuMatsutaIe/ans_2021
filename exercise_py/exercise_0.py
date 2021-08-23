@@ -69,7 +69,7 @@ def do_2_using_sieve(start, end):
 
 if __name__ == '__main__':
     #print(primality_test_simple(999961))  # 100万以下で最大の素数
-    do_2(1, 999961, primality_test_using_sieve)
+    do_2(1, 1000)
     
     #do_2_using_sieve(2, 999961)
 
