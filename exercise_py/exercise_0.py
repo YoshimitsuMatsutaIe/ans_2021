@@ -10,6 +10,8 @@ def primality_test_simple(n):
     n = int(n)
     if n < 2:
         return False
+    elif n == 2:
+        return True
     else:
         for i in range(2, n, 1):
             if n % i == 0:
@@ -47,7 +49,7 @@ def primality_test_using_sieve(n):
         return False
 
 
-def do_2_using_sievve(start, end):
+def do_2_using_sieve(start, end):
     """sieve使用"""
     
     t1 = time.time()
@@ -55,7 +57,7 @@ def do_2_using_sievve(start, end):
     end = int(end)
     print("start ...")
     
-    prime_list = [i for i in sieve.primerange(start, end)]
+    prime_list = [i for i in sieve.primerange(start, end+1)]
 
     print('prime number is ...')
     #print(prime_list)
@@ -67,7 +69,7 @@ def do_2_using_sievve(start, end):
 
 if __name__ == '__main__':
     #print(primality_test_simple(999961))  # 100万以下で最大の素数
-    #do_2(2, 1000000, primality_test_using_sieve)
+    do_2(1, 999961, primality_test_using_sieve)
     
-    do_2_using_sievve(2, 1000000)
+    #do_2_using_sieve(2, 999961)
 
