@@ -5,7 +5,7 @@ using CPUTime
 function primality_test_1(n)
     print(n)
     println(" is ...")
-    if n == 1
+    if n < 2
         println("no")
     else
         for i in 2:n
@@ -19,6 +19,8 @@ function primality_test_1(n)
         end
     end
 end
+
+
 
 
 @time primality_test_1(41263)
