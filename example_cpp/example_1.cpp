@@ -12,11 +12,12 @@ using namespace std;
 
 /**
 * @brief フォルダ以下のファイル一覧を取得する関数
-* @param[in]    folderPath  フォルダパス
+* @param[in]    folder_Path  フォルダパス
 * @param[out]   file_names  ファイル名一覧
 */
 void get_csv_FileNames(std::string folder_Path, std::vector<std::string> &file_names){
     using namespace std::filesystem;
+    
     directory_iterator iter(folder_Path), end;
     std::error_code err;
 

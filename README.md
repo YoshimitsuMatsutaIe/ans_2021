@@ -1,5 +1,6 @@
 # ans_2021
-Python, MATLAB, Julia, c++ での作成例を作る予定
+Python, MATLAB, Julia, c++ での作成例を作る予定．  
+技術力不足のためc++ではグラフ化とアニメーションは実装しません．  
 
 ## Description
 例題，練習問題とその解答例
