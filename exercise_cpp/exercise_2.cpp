@@ -91,4 +91,22 @@ int main(){
     double x0[N] = {0.1, 0.1};
 
 
+    // 数値シミュレーション実行
+    std::cout << "数値シミュレーション実行中..." << std::endl;
+
+    double x[N];  // 状態ベクトル
+    std::ofstream file("exercise_2_cpp_data.csv");
+    file << "t, x, v" << std::endl;
+    for (int i=0; i < N; i++){
+        x[i] = x0[i];
+    }  // 初期化
+    for (double t=0; t < t_end+dt; t+=dt){
+        RungeKutta_method(t, x, dt, K);
+        file << t;
+        for (int i=0; i < N; i++){
+            file << "," << x[i];
+        }
+        file << std::endl;
+    }
+
 }
