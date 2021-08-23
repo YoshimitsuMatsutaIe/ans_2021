@@ -15,7 +15,8 @@ int main(){
     double start = 0;
     double end = 10;
     double step = 0.1;
-    int iend = (end - start) / step;
+    int iend;
+    iend = (end - start) / step;
     double x = start;
     double y;
 
