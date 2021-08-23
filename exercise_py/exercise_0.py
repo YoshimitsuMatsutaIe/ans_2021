@@ -1,71 +1,57 @@
 #!/usr/bin/env python
 
 from sympy import sieve
+import time
 
 
-def main_1():
-    """単純な実装"""
-    def primality_test_1(n):
-        """素数判定（単純な実装）"""
-        n = int(n)
-        print(n, 'is...')
+def primality_test_simple(n):
+    """素数判定（単純な実装）"""
+    
+    n = int(n)
+    if n < 2:
+        return False
+    else:
         for i in range(2, n, 1):
             if n % i == 0:
-                rezult = False
-                break
-            else:
-                rezult = True
-        print(rezult)
-        return rezult
+                return False
+    return True
 
-    def primality_test_2(n_list):
-        rezult = []
-        for n in n_list:
-            rezult.append(primality_test_1(n))
-        if True in rezult:
-            print('There are prime numbers in the list!')
-        else:
-            print('There are no prime numbers in the list...')
+def do_2(start, end, test_func):
+    """素直な実装"""
     
-    # 実行例
-    primality_test_1(999961)  # 100万以下で最大の素数
-    #primality_test_1(1)
-    #primality_test_2([1, 6, 8, 108778979])
+    t1 = time.time()
+    start = int(start)
+    end = int(end)
+    prime_list = []
+    print("start ...")
     
-    return
+    for n in range(start, end+1, 1):
+        if test_func(n):
+            prime_list.append(n)
+
+    print('prime number is ...')
+    #print(prime_list)
+    print("Total = ", len(prime_list))
+    print("time = ", time.time() - t1)
+    return prime_list
 
 
-def main_2():
-    """SciPyの素数判定モジュール？を仕様"""
+def primality_test_using_sieve(n):
+    """素数判定（sieve使用）
     
-    def primality_test_1(n):
-        n = int(n)
-        if n in sieve:
-            print("True")
-            rezult = True
-        else:
-            print('False')
-            rezult =False
-        return rezult
-
-    def primality_test_2(n_list):
-        rezult = []
-        for n in n_list:
-            rezult.append(primality_test_1(n))
-        if True in rezult:
-            print('There are prime numbers in the list!')
-        else:
-            print('There are no prime numbers in the list...')
+    本来の使い方じゃないので遅いかも
+    """
     
-    # 実行例
-    primality_test_1(999961)  # 100万以下で最大の素数
-    primality_test_1(1)
-    primality_test_2([1, 6, 8, 108778979])
-    
-    return
+    n = int(n)
+    if n in sieve:
+        return True
+    else:
+        return False
 
 
 
 if __name__ == '__main__':
-    main_1()
-    #main_2()
+
+    #print(primality_test_simple(999961))  # 100万以下で最大の素数
+    do_2(2, 34678, primality_test_using_sieve)
+
