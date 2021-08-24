@@ -102,57 +102,57 @@ class ByLQR(Model):
         return sol
     
     
-    @classmethod
-    def controllability(cls, A, B):
-        """可制御性を判定"""
+    # @classmethod
+    # def controllability(cls, A, B):
+    #     """可制御性を判定"""
         
-        U = B
-        for n in range(A.shape[0]):
-            U = np.concatenate([U, np.linalg.matrix_power(A, n) @ B], axis = 1)
-        rank = np.linalg.matrix_rank(U)
+    #     U = B
+    #     for n in range(A.shape[0]):
+    #         U = np.concatenate([U, np.linalg.matrix_power(A, n) @ B], axis = 1)
+    #     rank = np.linalg.matrix_rank(U)
         
-        if rank == A.shape[0]:
-            return True
-        else:
-            return False
+    #     if rank == A.shape[0]:
+    #         return True
+    #     else:
+    #         return False
     
     
-    @classmethod
-    def solve_are_by_arimoto_potter(cls, A, B, Q, R):
-        """有本・ポッターの方法
+    # @classmethod
+    # def solve_are_by_arimoto_potter(cls, A, B, Q, R):
+    #     """有本・ポッターの方法
         
-        https://qiita.com/trgkpc/items/8210927d5b035912a153
+    #     https://qiita.com/trgkpc/items/8210927d5b035912a153
         
-        Return
-        ---
-        P : ndarray
-            リッカチ方程式の解
-        """
-        n = A.shape[0]
+    #     Return
+    #     ---
+    #     P : ndarray
+    #         リッカチ方程式の解
+    #     """
+    #     n = A.shape[0]
         
-        H = np.block([
-            [A, -B @ np.linalg.inv(R) @ B.T],
-            [-Q, -A.T],
-        ])  # ハミルトン行列
+    #     H = np.block([
+    #         [A, -B @ np.linalg.inv(R) @ B.T],
+    #         [-Q, -A.T],
+    #     ])  # ハミルトン行列
         
-        eigen_value, eigen_vector = np.linalg.eig(H)
+    #     eigen_value, eigen_vector = np.linalg.eig(H)
         
-        Y_, Z_ = [], []
-        index_array = sorted(
-            [i for i in range(2*n)],
-            key = lambda x:eigen_value[x].real
-        )
-        for i in index_array[:n]:
-            Y_.append(eigen_vector.T[i][:n])
-            Z_.append(eigen_vector.T[i][n:])
-        Y = np.array(Y_).T
-        Z = np.array(Z_).T
+    #     Y_, Z_ = [], []
+    #     index_array = sorted(
+    #         [i for i in range(2*n)],
+    #         key = lambda x:eigen_value[x].real
+    #     )
+    #     for i in index_array[:n]:
+    #         Y_.append(eigen_vector.T[i][:n])
+    #         Z_.append(eigen_vector.T[i][n:])
+    #     Y = np.array(Y_).T
+    #     Z = np.array(Z_).T
         
-        if np.linalg.det(Y) != 0:
-            return Z @ np.linalg.inv(Y)
-        else:
-            print("Warning: Y is not regular matrix. Result may be wrong!")
-            return Z @ np.linalg.pinv(Y)
+    #     if np.linalg.det(Y) != 0:
+    #         return Z @ np.linalg.inv(Y)
+    #     else:
+    #         print("Warning: Y is not regular matrix. Result may be wrong!")
+    #         return Z @ np.linalg.pinv(Y)
     
     
     @classmethod

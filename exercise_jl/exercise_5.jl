@@ -4,47 +4,47 @@ using DifferentialEquations
 using LinearAlgebra
 using MatrixEquations
 
-function ARE(A, B, Q, R)
-    """有本ポッターで解く（未完成）"""
-    ℋ = [
-        A' -B*inv(R)*B'
-        -Q -A
-    ]  #  ハミルトン行列
-    println("ℋ = ", ℋ)
+# function ARE(A, B, Q, R)
+#     """有本ポッターで解く（未完成）"""
+#     ℋ = [
+#         A' -B*inv(R)*B'
+#         -Q -A
+#     ]  #  ハミルトン行列
+#     println("ℋ = ", ℋ)
 
-    λ_ = eigvals(ℋ)  # ハミルトン行列の固有値
-    ω_ = eigvecs(ℋ)  # ハミルトン行列の固有ベクトル
-    println("ℋ の固有値 = ", λ_)
-    println("ℋ の固有ベクトル", ω_)
+#     λ_ = eigvals(ℋ)  # ハミルトン行列の固有値
+#     ω_ = eigvecs(ℋ)  # ハミルトン行列の固有ベクトル
+#     println("ℋ の固有値 = ", λ_)
+#     println("ℋ の固有ベクトル", ω_)
 
-    # ハミルトン行列の固有値が負のものを探す
-    index = []
-    for i in 1:size(λ_)[1]
-        print(i)
-        if real(λ_[i]) < 0
-            println("実部が負")
-            push!(index, i)
-        else
-            println("実部が正")
-        end
-    end
-    println("ℋ の固有値の実部が負なのは, ", index)
-    n = size(index)[1]
+#     # ハミルトン行列の固有値が負のものを探す
+#     index = []
+#     for i in 1:size(λ_)[1]
+#         print(i)
+#         if real(λ_[i]) < 0
+#             println("実部が負")
+#             push!(index, i)
+#         else
+#             println("実部が正")
+#         end
+#     end
+#     println("ℋ の固有値の実部が負なのは, ", index)
+#     n = size(index)[1]
 
-    # Y,Zを計算
-    ω = Matrix{ComplexF64}(undef, size(ω_)[1], n)  # 未初期化のMatrix
+#     # Y,Zを計算
+#     ω = Matrix{ComplexF64}(undef, size(ω_)[1], n)  # 未初期化のMatrix
 
-    for i in 1:n
-        global ω[:, i] .= ω_[:, index[i]]
-    end
+#     for i in 1:n
+#         global ω[:, i] .= ω_[:, index[i]]
+#     end
 
-    Y = ω[1:n, :]
-    Z = ω[n+1:end, :]
+#     Y = ω[1:n, :]
+#     Z = ω[n+1:end, :]
 
-    P = Z * inv(Y)
-    println("P = ", P)
-    return P
-end
+#     P = Z * inv(Y)
+#     println("P = ", P)
+#     return P
+# end
 
 function AREbyMatrixEquations(A, B, Q, R)
     """ライブラリ使用
