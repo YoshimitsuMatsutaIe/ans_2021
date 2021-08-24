@@ -29,8 +29,8 @@ end
 
 
 #is_prime_simple(999961)
-#@time is_prime(999961)  # 100万以下で最大の素数
+@time is_prime_simple(999961)  # 100万以下で最大の素数
 
 
 #do_2(1, 10)
-@time do_2(1, 999961)
+#@time do_2(1, 999961)

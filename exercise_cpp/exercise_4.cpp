@@ -24,6 +24,17 @@ struct Param_PID {
     double d;  // 微分ゲイン
 }
 
+/**
+    @brief  PIDのゲインレンジ
+*/
+struct range_PID {
+    double p_max;  // 比例ゲインの最大値
+    double p_min;  // 比例ゲインの最小値
+    double i_max;  // 積分ゲインの最大値
+    double i_min;  // 積分ゲインの最小値
+    double d_max;  // 微分ゲインの最大値
+    double d_min;  // 微分ゲインの最小値
+}
 
 /**
  * @brief 状態方程式
@@ -31,9 +42,10 @@ struct Param_PID {
  * @param[in] x[2]  状態ベクトル
  * @param[in] dx[2]  状態ベクトルの微分
  * @param[in] K  パラメータ
+ * @param[in] xg  目標値
 */
-void Dynamics(double t, double x[N], double dx[N], double K){
-    dx[0] = x[1];
+void Dynamics(double t, double x[N], double dx[N], Param_PID K, double xg){
+    dx[0] = ;
     dx[1] = -K * (std::pow(x[0], 2) - 1) * x[1] - x[0];
 }
 
@@ -98,7 +110,14 @@ void RungeKutta_method(double t, double x[N], double dt, double K){
 }
 
 
-void do_2(std::tuple<double, double> Kp_range, std::tuple<double, double> Ki_range, std::tuple<double, double> Kd_range){
+/**
+ * @brief アニメーションのデータ作成
+ * @param[in] rangeK  ゲインの幅
+ * @param[in] n  アニメーションの枚数
+ * @param[in] p  バネマスダンパのパラメータ
+*/
+void do_2(range_PID rangeK, double n, Param_SpringMassDamperModel p){
+
 
 }
 
@@ -114,9 +133,8 @@ int main(){
     param_basic = {1.0, 1.0, 1.0, 9.8};
 
     // PIDのゲイン幅
-    std::tuple<double, double> Kp_range = std::make_tuple(4.5, 5.0);
-    std::tuple<double, double> Ki_range = std::make_tuple(4.5, 5.0);
-    std::tuple<double, double> Kd_range = std::make_tuple(0.0, 5.0);
+    range_PID K;
+    K = {5.0, 4.5, 5.0, 4.5, 0.05, 0.0};
 
     // 初期値
     double x0[N] = {0.1, 0.1};
