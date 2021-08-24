@@ -38,7 +38,7 @@ a = 1
 ```python
 print('hello')
 ```
-出力時に改行したいときは\nを入れる．
+出力時に改行したいときは`\n`を入れる．
 ```python
 print('hello, \n', 'World!')
 ```
