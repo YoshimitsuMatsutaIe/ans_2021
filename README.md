@@ -33,6 +33,11 @@ Python, MATLAB, Julia, c++ での作成例を作る予定．
 * CSV
 * DataFrames
 * DifferentialEquations
+  
+`]`を押しPkgモードに入り，以下のコマンドで一括インストール
+```julia
+add CPUTime, PLot, CSV, DataFrames, DifferentialEquations
+```
 
 ### MATLAB
 なし
