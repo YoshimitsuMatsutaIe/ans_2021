@@ -44,26 +44,10 @@ struct range_PID {
  * @param[in] K  パラメータ
  * @param[in] xg  目標値
 */
-void Dynamics(double t, double x[N], double dx[N], Param_PID K, double xg){
-    dx[0] = ;
-    dx[1] = -K * (std::pow(x[0], 2) - 1) * x[1] - x[0];
-}
-
-
-/**
- * @brief オイラー法
- * @param t  時間
- * @param[in] x[2]  状態ベクトル
- * @param[in] dt  刻み時間
- * @param[in] K パラメータ
-*/
-void euler_method(double t, double x[N], double dt, double K){
-    double dx[2];
-    Dynamics(t, x, dx, K);  // 傾き計算
-
-    for (int i=0; i < N; i++){
-        x[i] = x[i] + (dx[i] * dt);
-    }
+void Dynamics(double t, double x[N], double dx[N], Param_SpringMassDamperModel p, Param_PID K, double xg){
+    dx[0] = x[1];
+    dx[1] = (-p.c*x[1] -p.k*x[0] + x[2]) / p.m;
+    dx[2] = -K.p*x[1] + K.i*(xg - x[0]) - K.d*dx[1];
 }
 
 
@@ -74,34 +58,33 @@ void euler_method(double t, double x[N], double dt, double K){
  * @param[in] dt  刻み時間
  * @param[in] K パラメータ
 */
-void RungeKutta_method(double t, double x[N], double dt, double K){
+void RungeKutta_method(double t, double x[N], double dt, Param_SpringMassDamperModel p, Param_PID K, double xg){
     double dx[N], k1[N], k2[N], k3[N], k4[N];
     
-
     // 係数計算
     // k1
     for (int i=0; i < N; i++){
         k1[i] = x[i];
     }
-    Dynamics(t, k1, dx, K);
+    Dynamics(t, k1, dx, p, K, xg);
 
     // k2
     for (int i=0; i < N; i++){
         k2[i] = 2 * k1[i] * dt/2;
     }
-    Dynamics(t+dt/2, k2, dx, K);
+    Dynamics(t+dt/2, k2, dx, p, K, xg);
 
     // k3
     for (int i=0; i < N; i++){
         k3[i] = 2 * k2[i] * dt/2;
     }
-    Dynamics(t+dt/2, k3, dx, K);
+    Dynamics(t+dt/2, k3, dx, p, K, xg);
 
     // k4
     for (int i=0; i < N; i++){
         k4[i] = k3[i] * dt;
     }
-    Dynamics(t+dt, k4, dx, K);
+    Dynamics(t+dt, k4, dx, p, K, xg);
 
     // 状態ベクトルを更新
     for (int i=0; i < N; i++){
@@ -116,7 +99,33 @@ void RungeKutta_method(double t, double x[N], double dt, double K){
  * @param[in] n  アニメーションの枚数
  * @param[in] p  バネマスダンパのパラメータ
 */
-void do_2(range_PID rangeK, double n, Param_SpringMassDamperModel p){
+void do_2(double dt, double t_end, range_PID rangeK, double n, Param_SpringMassDamperModel p, double xg, double x_init, double v_init){
+
+    for
+
+    double x0[N];  // 初期値
+    double x[N];  // 状態ベクトル
+
+    // 数値シミュレーション実行
+    std::cout << "数値シミュレーション実行中..." << std::endl;
+    std::ofstream file("exercise_4_cpp_data.csv");
+
+    for (int j=0; j < n; j++){
+        Param_PID K = {}
+        file << "t, x, v" << std::endl;
+        for (int i=0; i < N; i++){
+            x[i] = x0[i];
+        }  // 初期化
+        for (double t=0; t < t_end+dt; t+=dt){
+            RungeKutta_method(t, x, dt, p, K, xg);
+            file << t;
+            for (int i=0; i < N; i++){
+                file << "," << x[i];
+            }
+            file << std::endl;
+        }
+    }
+    
 
 
 }
@@ -132,30 +141,17 @@ int main(){
     Param_SpringMassDamperModel param_basic;
     param_basic = {1.0, 1.0, 1.0, 9.8};
 
-    // PIDのゲイン幅
-    range_PID K;
+    range_PID K;  // PIDのゲイン幅
     K = {5.0, 4.5, 5.0, 4.5, 0.05, 0.0};
+    int n = 50;  // アニメーションの枚数
 
-    // 初期値
-    double x0[N] = {0.1, 0.1};
+    double xg = 1.0;  // 目標位置
 
+    // 初期値に関するもの
+    double x0 = 0.0;  // 初期位置
+    double v0 = 0.0;  // 初期測度
 
-    // 数値シミュレーション実行
-    std::cout << "数値シミュレーション実行中..." << std::endl;
+    do_2(dt, t_end, K, n, param_basic, xg, x0, v0);
 
-    double x[N];  // 状態ベクトル
-    std::ofstream file("exercise_2_cpp_data.csv");
-    file << "t, x, v" << std::endl;
-    for (int i=0; i < N; i++){
-        x[i] = x0[i];
-    }  // 初期化
-    for (double t=0; t < t_end+dt; t+=dt){
-        RungeKutta_method(t, x, dt, K);
-        file << t;
-        for (int i=0; i < N; i++){
-            file << "," << x[i];
-        }
-        file << std::endl;
-    }
-
+    return 0;
 }
