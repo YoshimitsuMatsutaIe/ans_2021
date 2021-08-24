@@ -98,7 +98,9 @@ void RungeKutta_method(double t, double x[N], double dt, double K){
 }
 
 
-void do_2(double K_max)
+void do_2(std::tuple<double, double> Kp_range, std::tuple<double, double> Ki_range, std::tuple<double, double> Kd_range){
+
+}
 
 
 int main(){
