@@ -100,18 +100,25 @@ void RungeKutta_method(double t, double x[N], double dt, Param_SpringMassDamperM
  * @param[in] p  バネマスダンパのパラメータ
 */
 void do_2(double dt, double t_end, range_PID rangeK, double n, Param_SpringMassDamperModel p, double xg, double x_init, double v_init){
-
-    for
-
     double x0[N];  // 初期値
     double x[N];  // 状態ベクトル
+    Param_PID K:  // ゲイン
+
+    double calc_gain(double K_init, double K_end, double n_now){
+        return K_init + (K_end - K_init) / n * n_now;
+    }
 
     // 数値シミュレーション実行
     std::cout << "数値シミュレーション実行中..." << std::endl;
     std::ofstream file("exercise_4_cpp_data.csv");
 
     for (int j=0; j < n; j++){
-        Param_PID K = {}
+        
+        K = {
+            calc_gain(rangeK.p_min, rangeK.p_max, j),
+            calc_gain(rangeK.i_min, rangeK.i_max, j),
+            calc_gain(rangeK.d_min, rangeK.d_max, j)
+            };
         file << "t, x, v" << std::endl;
         for (int i=0; i < N; i++){
             x[i] = x0[i];
