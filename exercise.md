@@ -47,7 +47,7 @@
 
 
 👇イメージ  
-<img src="https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/misc/exercise_2.png" alt="ani" title="vandelpol">
+<img src="https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/misc/solution_of_exercise_2.png" alt="ani" title="vandelpol">
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_2.py)  
 [matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_m/exercise_2.m)  
@@ -167,7 +167,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 ~~ただし使用する振子以下のものとします~~  
 ~~長さL[m]で重さM[kg]，密度は一定で厚さが無視できる棒~~  
 
-倒立振り子を制御するプログラムを作成してください．
+倒立振り子を制御するプログラムを作成してください．  
 
 👇イメージ  
 <img src="https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/misc/exercise_8__by_LQR.gif" alt="ani" title="pendulum">
