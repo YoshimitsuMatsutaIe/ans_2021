@@ -123,7 +123,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 [c++](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_cpp/exercise_4.cpp)  
 
 
-## 練習問題5：最適レギュレータ（いろいろ）
+## 練習問題5：最適制御（いろいろ）
 次の線形システムを考えます．  
 <img src='https://latex.codecogs.com/gif.latex?\bg_white&space;\left\{\begin{matrix}&space;\dot{x}=&space;&&space;Ax&plus;Bu\\&space;y=&space;&&space;Cx&space;&plus;&space;Du&space;\end{matrix}\right.'/>  
 リカッチ方程式を解いて最適な制御入力uを計算してください．  
@@ -170,7 +170,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 倒立振り子を制御するプログラムを作成してください．
 
 👇イメージ  
-<img src="https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/misc/exercise_8__by_" alt="ani" title="pendulum">
+<img src="https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/misc/exercise_8__by_LQR.gif" alt="ani" title="pendulum">
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_8.py)  
 [matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_m/exercise_8.m)  

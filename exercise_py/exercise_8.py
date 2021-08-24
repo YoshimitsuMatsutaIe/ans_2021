@@ -23,7 +23,7 @@ class InvertedPendulum:
     G_ACCEL = 9.80665  # 
     GOAL = 0  # goal of theta
     TIME_INTERVAL = 0.1  #[sec]
-    TIME_SPAN = 2  # [sec]
+    TIME_SPAN = 5  # [sec]
     
     def __init__(
         self,
@@ -227,7 +227,7 @@ class InvertedPendulum:
             fig = fig_ani,
             func = update,
             frames = np.arange(0, len(self.t)),
-            interval = 25,
+            interval = 25*4,
         )
         
         if ani_save:
@@ -551,7 +551,7 @@ if __name__ == '__main__':
     
     
     simu = ByLQR()
-    simu.do_exercise_8()
+    simu.do_exercise_8(ani_save=True)
     
     # main_no_input()
     
