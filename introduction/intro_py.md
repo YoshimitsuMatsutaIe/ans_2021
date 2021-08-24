@@ -46,7 +46,7 @@ print('hello, \n', 'World!')
 ### 文字列の結合
 `+`で結合できる．
 ```python
-print("hello, " + "World!")
+"hello, " + "World!"
 ```
 
 ## 数値
@@ -58,7 +58,7 @@ print("hello, " + "World!")
 ```
 浮動小数点数として次の表記が可能．
 ```python
-1.5e3  # = 1500
+1.5e3  # ()= 1500)
 ```
 
 ### 四則演算 + アルファ
