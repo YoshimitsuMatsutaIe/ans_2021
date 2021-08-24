@@ -135,13 +135,21 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 [c++](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_cpp/exercise_5.cpp)  
 
 
-## 練習問題6：（クラス）
+## 練習問題6：軌道追従制御（いろいろ）
 ~~クラスを用いてexercise_2の内容を実装してください．~~  
 
 ~~ヒント：メソッドで微分方程式を解いたりグラフを作ったりできるVanDelPolクラスを作るとよい~~  
 ~~ヒント：exercise_2.pyモジュールをインポートしてファイル内の関数を使うと良い~~  
 
-* 練習問題2と同じ，意味不明なので廃止しました
+
+軌道追従制御を行うプログラムを作成してください．対象は何でもいいです．  
+
+* 練習問題2と同じなので変更しました
+
+[python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_6.py)  
+[matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_m/exercise_6.m)  
+[julia](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_jl/exercise_6.jl)  
+[c++](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_cpp/exercise_6.cpp)  
 
 
 ## 練習問題7：逆運動学（いろいろ）
