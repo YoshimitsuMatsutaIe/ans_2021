@@ -38,6 +38,7 @@ Python, MATLAB, Julia, c++ での作成例を作る予定．
 ```julia
 add CPUTime, PLot, CSV, DataFrames, DifferentialEquations
 ```
+`return`キーでPkgモード終了
 
 ### MATLAB
 なし
