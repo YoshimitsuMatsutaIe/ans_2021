@@ -141,7 +141,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 ~~ヒント：メソッドで微分方程式を解いたりグラフを作ったりできるVanDelPolクラスを作るとよい~~  
 ~~ヒント：exercise_2.pyモジュールをインポートしてファイル内の関数を使うと良い~~  
 
-
+  
 軌道追従制御を行うプログラムを作成してください．対象は何でもいいです．  
 
 * 練習問題2と同じなので変更しました
@@ -153,7 +153,7 @@ n個の粒子が立方体容器内を動き回るシミュレーションを行�
 
 
 ## 練習問題7：逆運動学（いろいろ）
-ロボットの逆運動問題を解くプログラムを作成してください．  
+ロボットの逆運動問題を解くプログラムを作成してください．対象は何でもいいです．  
 
 [python](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_py/exercise_7.py)  
 [matlab](https://github.com/YoshimitsuMatsutaIe/ans_2021/blob/main/exercise_m/exercise_7.m)  
