@@ -34,7 +34,6 @@
 
 ## 練習問題2：van del Pol振動子（SciPy，制御構文，グラフ作成）
 以下の状態方程式を解いてください．
-数値積分の手法はなんでも良いです．  
 
 <img src="https://latex.codecogs.com/png.latex?\bg_white&space;\frac{\mathrm{d}^2&space;x}{\mathrm{d}&space;t^2}&space;=&space;K(1-x^2)\frac{\mathrm{d}&space;x}{\mathrm{d}&space;t}-x">
 
@@ -43,7 +42,6 @@
 ・横軸：時間，縦軸：速度  
 ・横軸：位置，縦軸：速度  
 
-ヒント：位置x_1と速度x_2を使って一階の微分方程式に直すと良い  
 
 
 👇イメージ  
