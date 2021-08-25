@@ -1,1 +1,3 @@
 *.exe
+matplotlibcpp.h
+CMakeLists.txt
