@@ -1,7 +1,7 @@
-# include <iostream>
-# include <fstream>
-# include <cmath>
-
+#include <iostream>
+#include <fstream>
+#include <math.h>
+//#include "../exercise_cpp/Eigen/Core"
 
 const static int N = 3;  // システムの次元
 
@@ -13,7 +13,7 @@ struct Param_SpringMassDamperModel {
     double c;  // 摩擦係数
     double k;  // ばね定数
     double g;  // 重力加速度
-}
+};
 
 /**
     @brief  PIDのパラメータ
@@ -22,7 +22,7 @@ struct Param_PID {
     double p;  // 比例ゲイン
     double i;  // 積分ゲイン
     double d;  // 微分ゲイン
-}
+};
 
 /**
     @brief  PIDのゲインレンジ
@@ -34,7 +34,7 @@ struct range_PID {
     double i_min;  // 積分ゲインの最小値
     double d_max;  // 微分ゲインの最大値
     double d_min;  // 微分ゲインの最小値
-}
+};
 
 /**
  * @brief 状態方程式
@@ -92,6 +92,9 @@ void RungeKutta_method(double t, double x[N], double dt, Param_SpringMassDamperM
     }
 }
 
+double calc_gain(double K_init, double K_end, double n, double n_now){
+    return K_init + (K_end - K_init) / n * n_now;
+}
 
 /**
  * @brief アニメーションのデータ作成
@@ -100,46 +103,44 @@ void RungeKutta_method(double t, double x[N], double dt, Param_SpringMassDamperM
  * @param[in] p  バネマスダンパのパラメータ
 */
 void do_2(double dt, double t_end, range_PID rangeK, double n, Param_SpringMassDamperModel p, double xg, double x_init, double v_init){
-    double x0[N];  // 初期値
-    double x[N];  // 状態ベクトル
-    Param_PID K:  // ゲイン
 
-    double calc_gain(double K_init, double K_end, double n_now){
-        return K_init + (K_end - K_init) / n * n_now;
-    }
+    double x[N];  // 状態ベクトル
+    Param_PID K;  // ゲイン
 
     // 数値シミュレーション実行
     std::cout << "数値シミュレーション実行中..." << std::endl;
     std::ofstream file("exercise_4_cpp_data.csv");
 
+    file << "t, x, v, u, Kp, Ki, Kd" << std::endl;
     for (int j=0; j < n; j++){
         
         K = {
-            calc_gain(rangeK.p_min, rangeK.p_max, j),
-            calc_gain(rangeK.i_min, rangeK.i_max, j),
-            calc_gain(rangeK.d_min, rangeK.d_max, j)
+            calc_gain(rangeK.p_min, rangeK.p_max, n, j),
+            calc_gain(rangeK.i_min, rangeK.i_max, n, j),
+            calc_gain(rangeK.d_min, rangeK.d_max, n, j),
             };
-        file << "t, x, v" << std::endl;
-        for (int i=0; i < N; i++){
-            x[i] = x0[i];
-        }  // 初期化
+        // 初期値を代入
+        x[0] = x_init;
+        x[1] = v_init;
+        x[2] = K.p*(xg - x[0]) + K.d*(0.0 - v_init);
+
         for (double t=0; t < t_end+dt; t+=dt){
             RungeKutta_method(t, x, dt, p, K, xg);
             file << t;
             for (int i=0; i < N; i++){
                 file << "," << x[i];
             }
+            file << "," << K.p;
+            file << "," << K.i;
+            file << "," << K.d;
             file << std::endl;
         }
     }
-    
-
-
 }
 
 
 int main(){
-
+    std::cout << "running..." << std::endl;
     // 時間に関すtるパラメータ
     double dt = 0.01;  // 刻み時間
     double t_end = 10;  // ケツの時間
@@ -159,6 +160,7 @@ int main(){
     double v0 = 0.0;  // 初期測度
 
     do_2(dt, t_end, K, n, param_basic, xg, x0, v0);
-
+    
+    std::cout << "done." << std::endl;
     return 0;
 }

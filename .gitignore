@@ -1,3 +1,4 @@
 *.exe
 matplotlibcpp.h
 CMakeLists.txt
+Eigen/

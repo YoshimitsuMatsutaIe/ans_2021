@@ -1,7 +1,5 @@
-# include <iostream>
-# include <fstream>
-#include <cmath>
-using namespace std;
+#include <iostream>
+#include <math.h>
 
 
 double QuadraticFunc(double x){
@@ -10,23 +8,22 @@ double QuadraticFunc(double x){
 }
 
 int main(){
-    cout << "value..." << endl;
+    std::cout << "running..." << std::endl;
 
-    double start = 0;
-    double end = 10;
-    double step = 0.1;
+    double start = 0;  // 開始
+    double end = 10;  // 終わり
+    double step = 0.1;  // 刻み幅
     int iend;
     iend = (end - start) / step;
     double x = start;
     double y;
 
     double y_list[iend];
-    
 
     for (int i = 0; i < iend+1; i++){
         x = x + step;
         y = QuadraticFunc(x);
-        cout << y << " , ";
+        std::cout << y << " , ";
         y_list[i] = y;
     }
 
