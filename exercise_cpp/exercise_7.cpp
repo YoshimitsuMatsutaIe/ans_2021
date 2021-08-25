@@ -6,11 +6,13 @@
  */
 
 
-# include <iostream>
-# include <fstream>
-# include <math.h>
-# include "Eigen/Core"  // Eigen
+#include <iostream>
+#include <fstream>
+#include <math.h>
+#include "Eigen/Core"  // Eigen
+#include "Eigen/Dense"
 #include <typeinfo>
+
 const static double PI = 3.141592653589793;  // 円周率
 
 
@@ -159,7 +161,7 @@ class BaxterKinematics{
  * @class InvKinematics
  * @brief 逆運動学を計算する
  */
-class InvKinematics : BaxterKinematics {
+class InvKinematics : public BaxterKinematics {
     public:
         Eigen::Matrix<double, 7, 1> calc_desired_joint_angle(Eigen::Matrix<double, 3, 1> xg, double alpha){
             Eigen::Matrix<double, 7, 1> qd;  // 所望の関節角度
@@ -187,8 +189,8 @@ class InvKinematics : BaxterKinematics {
                     }
                     else{
                         J = jacobian_GL(q);
-                        dq = alpha * J.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(dx);
-                        q += dq;
+                        dq = J.bdcSvd().solve(dx);
+                        q += alpha * dq;
                     }
                     
                 }
@@ -211,9 +213,42 @@ int main(){
     Eigen::Matrix<double, 7, 1> qd;  // 所望の関節角度
     
     InvKinematics kinem;
+    kinem.Q_MIN <<
+    -141 * PI / 180,
+    -123 * PI / 180,
+    -173 * PI / 180,
+    -3 * PI / 180,
+    -175 * PI / 180,
+    -90 * PI / 180,
+    -175 * PI / 180;
+    kinem.Q_MAX <<
+    51 * PI / 180,
+    60 * PI / 180,
+    173 * PI / 180,
+    150 * PI / 180,
+    175 * PI / 180,
+    120 * PI / 180,
+    175 * PI / 180;
+    kinem.Q_INIT <<
+    0 * PI / 180,
+    -31 * PI / 180,
+    0 * PI / 180,
+    43 * PI / 180,
+    0 * PI / 180,
+    72 * PI / 180,
+    0 * PI / 180;
+
     qd = kinem.calc_desired_joint_angle(xd, alpha);
 
     std::cout << qd << std::endl;
+
+
+    // Eigen::MatrixXf A = Eigen::MatrixXf::Random(3, 2);
+    // std::cout << "Here is the matrix A:\n" << A << std::endl;
+    // Eigen::VectorXf b = Eigen::VectorXf::Random(3);
+    // std::cout << "Here is the right hand side b:\n" << b << std::endl;
+    // std::cout << "The least-squares solution is:\n"
+    //     << A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b) << std::endl;
 
     return 0;
 }
