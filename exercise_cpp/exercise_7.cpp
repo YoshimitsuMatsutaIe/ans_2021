@@ -189,7 +189,7 @@ class InvKinematics : public BaxterKinematics {
                     }
                     else{
                         J = jacobian_GL(q);
-                        dq = J.bdcSvd().solve(dx);
+                        dq = J.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(dx);
                         q += alpha * dq;
                     }
                     
