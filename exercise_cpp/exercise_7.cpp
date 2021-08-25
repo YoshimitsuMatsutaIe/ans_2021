@@ -35,6 +35,7 @@ class BaxterKinematics{
     public:
         Eigen::Matrix<double, 7, 1> Q_MIN;  // 実現可能な関節角度の最大値
         Eigen::Matrix<double, 7, 1> Q_MAX;  // 実現可能な関節角度の最大値
+        Eigen::Matrix<double, 7, 1> Q_INIT;  // ロボットの初期姿勢
 
     private:
         Eigen::Matrix<double, 3, 1> joint_origin_Wo(Eigen::Matrix<double, 7, 1> q){
@@ -163,8 +164,11 @@ class InvKinematics : BaxterKinematics {
         Eigen::Matrix<double, 7, 1> calc_desired_joint_angle(Eigen::Matrix<double, 3, 1> xg, double alpha){
             Eigen::Matrix<double, 7, 1> qd;  // 所望の関節角度
             Eigen::Matrix<double, 7, 1> q;  // 関節角度
+            Eigen::Matrix<double, 7, 1> dq;  // 関節角度の増分
+            Eigen::Matrix<double, 3, 7> J;  // エンドエフェクタ位置のヤコビ行列
             Eigen::Matrix<double, 3, 1> x;  // エンドエフェクタ位置
             Eigen::Matrix<double, 3, 1> dx;  // エンドエフェクタ位置と目標位置の誤差ベクトル
+
             double e;  // エンドエフェクタと目標位置との誤差
             double error_t = 0.0001; // 誤差の許容値
 
@@ -178,44 +182,38 @@ class InvKinematics : BaxterKinematics {
                 for (int i=0; i < 10000; i++){
                     dx = xg - x;
                     e = dx.norm();
-                    if (e < error_t && q < Q_MAX && q > Q_MIN){
+                    if (e < error_t && ((Q_MAX - q).array()>0.0).all() && ((q - Q_MIN).array()>0.0).all()){
                         return q;
+                    }
+                    else{
+                        J = jacobian_GL(q);
+                        dq = alpha * J.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(dx);
+                        q += dq;
                     }
                     
                 }
             }
-
+            return Q_INIT;
         }
 };
 
 
 int main(){
     std::cout << "running..." <<std::endl;
-    //Eigen::VectorXd q0 = Eigen::VectorXd::Ones(2, 7);
 
-    Eigen::Matrix<double, 7, 1> q0;  //
-    q0 <<
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0;
-    std::cout << q0 << std::endl;
+    Eigen::Matrix<double, 3, 1> xd;  // 所望のエンドエフェクタ位置
+    xd <<
+    0.3,
+    -0.6,
+    1;
+    double alpha = 0.5;  // 重み
 
-    Eigen::Matrix<double, 7, 1> q2;  //
-    q2 <<
-    10,
-    10,
-    10,
-    10,
-    10,
-    20,
-    10;
-    std::cout << q2 << std::endl;
+    Eigen::Matrix<double, 7, 1> qd;  // 所望の関節角度
+    
+    InvKinematics kinem;
+    qd = kinem.calc_desired_joint_angle(xd, alpha);
 
-    std::cout << "norm = " << typeid(q2.norm()).name() << std::endl;
+    std::cout << qd << std::endl;
 
     return 0;
 }
