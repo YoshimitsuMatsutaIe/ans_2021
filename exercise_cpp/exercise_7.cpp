@@ -2,16 +2,22 @@
  * @file 
  * @brief 逆運動学を解くシミュレーション．
  * @author matsuta
- * @note Eigenが必要
+ * @note Eigenが必要（今の所ビルドできない．原因不明）
  */
 
 
 #include <iostream>
 #include <fstream>
 #include <math.h>
-#include "Eigen/Core"  // Eigen
+//#include "Eigen/Core"  // Eigen
 #include "Eigen/Dense"
-#include <typeinfo>
+
+// int main(){
+//     std::cout << "OK" << std::endl;
+//     return 0;
+// }
+
+
 
 const static double PI = 3.141592653589793;  // 円周率
 
