@@ -20,7 +20,7 @@ import matplotlib.patches as patches
 class InvertedPendulum:
     """model of inverted pendulum"""
     
-    G_ACCEL = 9.80665  # 
+    G_ACCEL = 9.80665  # 重力加速度
     GOAL = 0  # goal of theta
     TIME_INTERVAL = 0.1  #[sec]
     TIME_SPAN = 5  # [sec]
@@ -70,22 +70,22 @@ class InvertedPendulum:
         self.integral_error = self.GOAL - THETA_INIT
         
         # linertheta=0, dtheta=0
-        offset_x = np.array([
+        OFFSET_X = np.array([
             [0, 1, 0, 0],
             [0, 0, 0, 1],
             [0, -self.D_CAR, 0, 0],
             [0, 0, self.M_PEN*self.G_ACCEL*self.HALF_L, -self.D_PEN],
         ])
-        offset_u = np.array([[0, 0, 1, 0]]).T
-        multi = np.array([
+        OFFSET_U = np.array([[0, 0, 1, 0]]).T
+        MULTI = np.array([
             [1, 0, 0, 0],
             [0, 0, 1, 0],
             [0, self.M_CAR + self.M_PEN, 0, self.M_PEN*self.HALF_L],
             [0, self.M_PEN*self.HALF_L, 0, 4/3*self.M_PEN*self.HALF_L**2],
         ])
         
-        self.A_linier = np.linalg.inv(multi) @ offset_x
-        self.B_linier = np.linalg.inv(multi) @ offset_u
+        self.A_LINIER = np.linalg.inv(MULTI) @ OFFSET_X  # 線形化した状態方程式の係数
+        self.B_LINIER = np.linalg.inv(MULTI) @ OFFSET_U  # 線形化した状態方程式の係数
         
         self.t = np.arange(0.0, self.TIME_SPAN, self.TIME_INTERVAL)
         self.time_list = list(self.t)
@@ -360,13 +360,13 @@ class ByLQR(InvertedPendulum):
         self.method = 'LQR'
         
         P = sp.linalg.solve_continuous_are(
-            a = self.A_linier,
-            b = self.B_linier,
+            a = self.A_LINIER,
+            b = self.B_LINIER,
             q = Q,
             r = R,
         )  # solve ricatti eq
         
-        self.F = -np.linalg.inv(R) @ self.B_linier.T @ P  # optiomal feedback gain
+        self.F = -np.linalg.inv(R) @ self.B_LINIER.T @ P  # optiomal feedback gain
         
         return
     
@@ -430,13 +430,13 @@ class ByMPC(InvertedPendulum):
         
         super().__init__(X_INIT, DX_INIT, THETA_INIT, DTHETA_INIT)
         self.n_horizon = int(time_horizon / self.TIME_INTERVAL)
-        dim = self.A_linier.shape[0]  # dimension
+        dim = self.A_LINIER.shape[0]  # dimension
         
         self.free = False
         self.method = 'MPC'
         
         # calculate coefficient matrix
-        F_list = [np.linalg.matrix_power(self.A_linier, n) for n in range(1, self.n_horizon+1)]
+        F_list = [np.linalg.matrix_power(self.A_LINIER, n) for n in range(1, self.n_horizon+1)]
         F = np.block(F_list).T * self.TIME_INTERVAL
         #print(self.F)
         
@@ -447,9 +447,9 @@ class ByMPC(InvertedPendulum):
                 if i - j < 0:
                     col_G.append(np.zeros((dim, 1)))
                 elif i == j:
-                    col_G.append(self.B_linier)
+                    col_G.append(self.B_LINIER)
                 else:
-                    col_G.append(np.linalg.matrix_power(self.A_linier, i-j) @ self.B_linier)
+                    col_G.append(np.linalg.matrix_power(self.A_LINIER, i-j) @ self.B_LINIER)
             G_list.append(col_G)
         G = np.block(G_list) * self.TIME_INTERVAL
         #print(self.G)
@@ -551,7 +551,7 @@ if __name__ == '__main__':
     
     
     simu = ByLQR()
-    simu.do_exercise_8(ani_save=True)
+    simu.do_exercise_8()
     
     # main_no_input()
     
