@@ -3,6 +3,7 @@ import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 
+
 def diff_eq(x, t, a):
     """微分方程式"""
     return a * x

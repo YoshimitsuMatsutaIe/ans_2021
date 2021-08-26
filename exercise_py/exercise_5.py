@@ -2,8 +2,8 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-# import control
-# import control.matlab
+import control
+import control.matlab
 import scipy as sp
 import scipy.integrate as integrate
 import scipy.optimize as optimize
