@@ -338,7 +338,7 @@ class ByLQR(InvertedPendulum):
     """
     
     def __init__(
-        self, Q=np.diag([10, 10, 100, 100]), R=np.array([[1]]) * 0.01,
+        self, Q=np.diag([10, 0, 100, 0]), R=np.array([[1]]) * 0.01,
         X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6, DTHETA_INIT=0.0,
     ):
         """
