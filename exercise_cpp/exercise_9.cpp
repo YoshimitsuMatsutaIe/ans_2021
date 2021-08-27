@@ -21,19 +21,28 @@ using std::pair;
 /**
     @brief  Node
 */
-struct Node{
+struct Node {
     int x;  // x座標
     int y;  // y座標
     double cost;
     int parent;
 };
 
-struct Option{
+struct Option {
     int dx;
     int dy;
     double dcost;
 };
 
+
+struct NodeIndex {
+    int x;
+    int y;
+};
+
+bool operator<(const NodeIndex& a, const NodeIndex& b){
+    return std::tie(a.x, a.y) < std::tie(b.x, b.y);
+}
 
 vector<Option> calc_options(int x, int y, int x_max, int y_max, vector<vector<bool>> gridmap){
     vector<Option> options;
@@ -81,12 +90,15 @@ vector<Option> calc_options(int x, int y, int x_max, int y_max, vector<vector<bo
     return options;
 }
 
-int find_MinCostNode_id(map<int, Node> m){
-    int min_cost_id;
+/**
+ * @brief コストが最小のノードを探す
+ */
+NodeIndex find_MinCostNode_id(map<NodeIndex, Node> m){
+    NodeIndex min_cost_id;
     auto begin = m.begin();
     auto end = m.end();
 
-    map<int, Node>::iterator pm;
+    map<NodeIndex, Node>::iterator pm;
     //int min_cost_id = m[begin->first];
     while (pm != m.end()){
         if (pm == m.begin()){
@@ -104,18 +116,19 @@ std::tuple<vector<int>, vector<int>, double, map<int, Node>> planning(int start_
     Node start_node = {start_x, start_y, 0.0, -1};
     Node goal_node = {goal_x, goal_y, -1, -2};
     Node temp_node;
-    int temp_x, temp_y, temp_id;
+    int temp_x, temp_y;
+    NodeIndex temp_id;
     int x_max = gridmap.size();
     int y_max = gridmap[0].size();
     vector<Option> os;
     Node node;
     int node_id;
 
-    map<int, Node> open_set;  // 未決定のノード
-    map<int, Node> closed_set;  // 決定済みのノード
+    map<NodeIndex, Node> open_set;  // 未決定のノード
+    map<NodeIndex, Node> closed_set;  // 決定済みのノード
 
-    int start_id = 0;
-    open_set.insert(pair<int, Node>(start_id, start_node));
+    NodeIndex start_id = {start_node.x, start_node.y};
+    open_set.insert(pair<NodeIndex, Node>(start_id, start_node));
 
     while (1){
         temp_id = find_MinCostNode_id(open_set);
@@ -137,7 +150,8 @@ std::tuple<vector<int>, vector<int>, double, map<int, Node>> planning(int start_
                 temp_node.y + os[i].dy,
                 temp_node.cost + os[i].dcost
             };
-            node_id = 1;  // どうするか考え中
+            node_id += 1;  // 1つ増やす
+
         }
     }
 
