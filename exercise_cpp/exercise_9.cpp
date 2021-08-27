@@ -100,11 +100,16 @@ int find_MinCostNode_id(map<int, Node> m){
 }
 
 
-std::tuple<vector<int>, vector<int>, double, map<int, Node>> planning(int start_x, int start_y, int goal_x, int goal_y){
+std::tuple<vector<int>, vector<int>, double, map<int, Node>> planning(int start_x, int start_y, int goal_x, int goal_y, vector<vector<bool>> gridmap){
     Node start_node = {start_x, start_y, 0.0, -1};
     Node goal_node = {goal_x, goal_y, -1, -2};
     Node temp_node;
     int temp_x, temp_y, temp_id;
+    int x_max = gridmap.size();
+    int y_max = gridmap[0].size();
+    vector<Option> os;
+    Node node;
+    int node_id;
 
     map<int, Node> open_set;  // 未決定のノード
     map<int, Node> closed_set;  // 決定済みのノード
@@ -112,11 +117,28 @@ std::tuple<vector<int>, vector<int>, double, map<int, Node>> planning(int start_
     int start_id = 0;
     open_set.insert(pair<int, Node>(start_id, start_node));
 
-    while (temp_x == goal_node.x && temp_y == goal_node.y){
+    while (1){
         temp_id = find_MinCostNode_id(open_set);
         temp_node = open_set[temp_id];
 
-        if 
+        if (temp_node.x == goal_node.x && temp_node.y == goal_node.y){
+            goal_node.parent = temp_node.parent;
+            goal_node.cost = temp_node.cost;
+            break;
+        }
+
+        open_set.erase(temp_id);  // 未決定の集合から削除
+        closed_set[temp_id] = temp_node;
+
+        os = calc_options(temp_node.x, temp_node.y, x_max, y_max, gridmap);
+        for (int i=0; i<os.size(); i++){
+            node = {
+                temp_node.x + os[i].dx,
+                temp_node.y + os[i].dy,
+                temp_node.cost + os[i].dcost
+            };
+            node_id = 1;  // どうするか考え中
+        }
     }
 
 
