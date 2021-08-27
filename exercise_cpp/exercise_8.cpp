@@ -24,12 +24,6 @@ const static double PI = 3.141592653589793;  // 円周率
 
 
 
-Eigen::MatrixXd Runge_solver(){
-
-    
-}
-
-
 
 
 int main(){
