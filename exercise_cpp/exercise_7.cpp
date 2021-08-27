@@ -1,25 +1,14 @@
 /**
- * @file 
+ * @file
  * @brief 逆運動学を解くシミュレーション．
  * @author matsuta
- * @note Eigenが必要（今の所ビルドできない．原因不明）
+ * @note Eigenが必要（minggw-W64でビルドできない．原因不明．linuxのg++ -9だといける）
  */
 
 
 #include <iostream>
-#include <fstream>
 #include <math.h>
-// #include "Eigen/Core"  // Eigen
-// #include "Eigen/Dense"
-// #include "Eigen/QR"
-#include "Eigen/Eigen"
-
-// int main(){
-//     std::cout << "OK" << std::endl;
-//     return 0;
-// }
-
-using namespace Eigen;
+#include "Eigen/Dense"  // 自分の環境に合わせて適宜変更
 
 const static double PI = 3.141592653589793;  // 円周率
 
@@ -31,21 +20,24 @@ const static double PI = 3.141592653589793;  // 円周率
 class BaxterKinematics{
 
     private:
-        double L = 278e-3;
-        double h = 64e-3;
-        double H = 1104e-3;
-        double L0 = 270.35e-3;
-        double L1 = 69e-3;
-        double L2 = 364.35e-3;
-        double L3 = 69e-3;
-        double L4 = 374.29e-3;
-        double L5 = 10e-3;
-        double L6 = 368.3e-3;
+        double L;
+        double h;
+        double H;
+        double L0;
+        double L1;
+        double L2;
+        double L3;
+        double L4;
+        double L5;
+        double L6;
 
     public:
         Eigen::Matrix<double, 7, 1> Q_MIN;  // 実現可能な関節角度の最大値
         Eigen::Matrix<double, 7, 1> Q_MAX;  // 実現可能な関節角度の最大値
         Eigen::Matrix<double, 7, 1> Q_INIT;  // ロボットの初期姿勢
+        
+        
+        BaxterKinematics();
 
     private:
         Eigen::Matrix<double, 3, 1> joint_origin_Wo(Eigen::Matrix<double, 7, 1> q){
@@ -53,10 +45,7 @@ class BaxterKinematics{
             o(0, 0) = 0;
             o(1, 0) = 0;
             o(2, 0) = 0;
-            // o << 
-            // 0,
-            // 0,
-            // 0;
+
             return o;
         }
     private:
@@ -65,10 +54,7 @@ class BaxterKinematics{
             o(0, 0) = L;
             o(1, 0) = -h;
             o(2, 0) = H;
-            // o << 
-            // L,
-            // -h,
-            // H;
+
             return o;
         }
     private:
@@ -77,10 +63,7 @@ class BaxterKinematics{
             o(0, 0) = L;
             o(1, 0) = -h;
             o(2, 0) = H + L0;
-            // o << 
-            // L,
-            // -h,
-            // H + L0;
+
             return o;
         }
     private:
@@ -89,10 +72,7 @@ class BaxterKinematics{
             o(0, 0) = L;
             o(1, 0) = -h;
             o(2, 0) = H + L0;
-            // o << 
-            // L,
-            // -h,
-            // H + L0;
+
             return o;
         }
     private:
@@ -101,10 +81,7 @@ class BaxterKinematics{
             o(0, 0) = L + cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0));
             o(1, 0) = cos(PI/4)*L1*sin(q(0)) - cos(PI/4)*L1*cos(q(0)) - h;
             o(2, 0) = H + L0;
-            // o << 
-            // L + cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)),
-            // cos(PI/4)*L1*sin(q(0)) - cos(PI/4)*L1*cos(q(0)) - h,
-            // H + L0;
+
             return o;
         }
     private:
@@ -113,10 +90,7 @@ class BaxterKinematics{
             o(0, 0) = L + cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1));
             o(1, 0) = cos(PI/4)*L1*sin(q(0)) - cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) - cos(PI/4)*L2*cos(q(0))*cos(q(1)) - h;
             o(2, 0) = H + L0 - L2*sin(q(1));
-            // o << 
-            // L + cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1)),
-            // cos(PI/4)*L1*sin(q(0)) - cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) - cos(PI/4)*L2*cos(q(0))*cos(q(1)) - h,
-            // H + L0 - L2*sin(q(1));
+
             return o;
         }
     private:
@@ -125,13 +99,7 @@ class BaxterKinematics{
             o(0, 0) = L + cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1)) + cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)));
             o(1, 0) = cos(PI/4)*L1*sin(q(0)) - cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) - cos(PI/4)*L2*cos(q(0))*cos(q(1)) - cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) - h;
             o(2, 0) = H + L0 - L2*sin(q(1)) - L3*cos(q(1))*cos(q(2));
-            
-            // o << 
-            // L + cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1)) + cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))),
-            // cos(PI/4)*L1*sin(q(0)) - cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) - cos(PI/4)*L2*cos(q(0))*cos(q(1)) - cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) - h,
-            // H + L0 - L2*sin(q(1)) - L3*cos(q(1))*cos(q(2));
-            
-            //o << 0,0,0;
+
             return o;
         }
     private:
@@ -140,13 +108,7 @@ class BaxterKinematics{
             o(0, 0) = L + cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1)) + cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3)));
             o(1, 0) = cos(PI/4)*L1*sin(q(0)) - cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) - cos(PI/4)*L2*cos(q(0))*cos(q(1)) - cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) + cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))) - h;
             o(2, 0) = H + L0 - L2*sin(q(1)) - L3*cos(q(1))*cos(q(2)) - L4*(sin(q(1))*cos(q(3)) + sin(q(3))*cos(q(1))*cos(q(2)));
-            
-            // o << 
-            // L + cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1)) + cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))),
-            // cos(PI/4)*L1*sin(q(0)) - cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) - cos(PI/4)*L2*cos(q(0))*cos(q(1)) - cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) + cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))) - h,
-            // H + L0 - L2*sin(q(1)) - L3*cos(q(1))*cos(q(2)) - L4*(sin(q(1))*cos(q(3)) + sin(q(3))*cos(q(1))*cos(q(2)));
-            
-            //o << 0,0,0;
+
             return o;
         }
     private:
@@ -155,13 +117,7 @@ class BaxterKinematics{
             o(0, 0) = L + cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1)) + cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4)));
             o(1, 0) = cos(PI/4)*L1*sin(q(0)) - cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) - cos(PI/4)*L2*cos(q(0))*cos(q(1)) - cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) + cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4))) - h;
             o(2, 0) = H + L0 - L2*sin(q(1)) - L3*cos(q(1))*cos(q(2)) - L4*(sin(q(1))*cos(q(3)) + sin(q(3))*cos(q(1))*cos(q(2))) + L5*((sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(2))*sin(q(4))*cos(q(1)));
-            
-            // o << 
-            // L + cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1)) + cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4))),
-            // cos(PI/4)*L1*sin(q(0)) - cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) - cos(PI/4)*L2*cos(q(0))*cos(q(1)) - cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) + cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4))) - h,
-            // H + L0 - L2*sin(q(1)) - L3*cos(q(1))*cos(q(2)) - L4*(sin(q(1))*cos(q(3)) + sin(q(3))*cos(q(1))*cos(q(2))) + L5*((sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(2))*sin(q(4))*cos(q(1)));
-            
-            //o << 0,0,0;
+
             return o;
         }
     private:
@@ -170,13 +126,7 @@ class BaxterKinematics{
             o(0, 0) = L + cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1)) + cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4)));
             o(1, 0) = cos(PI/4)*L1*sin(q(0)) - cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) - cos(PI/4)*L2*cos(q(0))*cos(q(1)) - cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) + cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4))) - h;
             o(2, 0) = H + L0 - L2*sin(q(1)) - L3*cos(q(1))*cos(q(2)) - L4*(sin(q(1))*cos(q(3)) + sin(q(3))*cos(q(1))*cos(q(2))) + L5*((sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(2))*sin(q(4))*cos(q(1)));
-            
-            // o << 
-            // L + cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1)) + cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4))),
-            // cos(PI/4)*L1*sin(q(0)) - cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) - cos(PI/4)*L2*cos(q(0))*cos(q(1)) - cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) + cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4))) - h,
-            // H + L0 - L2*sin(q(1)) - L3*cos(q(1))*cos(q(2)) - L4*(sin(q(1))*cos(q(3)) + sin(q(3))*cos(q(1))*cos(q(2))) + L5*((sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(2))*sin(q(4))*cos(q(1)));
-            
-            //o << 0,0,0;
+
             return o;
         }
     public:
@@ -185,12 +135,7 @@ class BaxterKinematics{
             o(0, 0) = L + cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1)) + cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4))) + L6*(cos(PI/4)*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4)))*sin(q(5)) + cos(PI/4)*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4)))*sin(q(5)) + cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) + cos(q(0))*cos(q(1))*cos(q(3)))*cos(q(5)) + cos(PI/4)*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) + sin(q(0))*cos(q(1))*cos(q(3)))*cos(q(5)));
             o(1, 0) = cos(PI/4)*L1*sin(q(0)) - cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) - cos(PI/4)*L2*cos(q(0))*cos(q(1)) - cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) + cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4))) + L6*(-cos(PI/4)*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4)))*sin(q(5)) + cos(PI/4)*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4)))*sin(q(5)) - cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) + cos(q(0))*cos(q(1))*cos(q(3)))*cos(q(5)) + cos(PI/4)*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) + sin(q(0))*cos(q(1))*cos(q(3)))*cos(q(5))) - h;
             o(2, 0) = H + L0 - L2*sin(q(1)) - L3*cos(q(1))*cos(q(2)) - L4*(sin(q(1))*cos(q(3)) + sin(q(3))*cos(q(1))*cos(q(2))) + L5*((sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(2))*sin(q(4))*cos(q(1))) + L6*(((sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(2))*sin(q(4))*cos(q(1)))*sin(q(5)) + (-sin(q(1))*cos(q(3)) - sin(q(3))*cos(q(1))*cos(q(2)))*cos(q(5)));
-            
-            // o << 
-            // L + cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1)) + cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4))) + L6*(cos(PI/4)*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4)))*sin(q(5)) + cos(PI/4)*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4)))*sin(q(5)) + cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) + cos(q(0))*cos(q(1))*cos(q(3)))*cos(q(5)) + cos(PI/4)*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) + sin(q(0))*cos(q(1))*cos(q(3)))*cos(q(5))),
-            // cos(PI/4)*L1*sin(q(0)) - cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) - cos(PI/4)*L2*cos(q(0))*cos(q(1)) - cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0))) + cos(PI/4)*L4*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4))) + L6*(-cos(PI/4)*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4)))*sin(q(5)) + cos(PI/4)*(((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4)))*sin(q(5)) - cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) + cos(q(0))*cos(q(1))*cos(q(3)))*cos(q(5)) + cos(PI/4)*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) + sin(q(0))*cos(q(1))*cos(q(3)))*cos(q(5))) - h,
-            // H + L0 - L2*sin(q(1)) - L3*cos(q(1))*cos(q(2)) - L4*(sin(q(1))*cos(q(3)) + sin(q(3))*cos(q(1))*cos(q(2))) + L5*((sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(2))*sin(q(4))*cos(q(1))) + L6*(((sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(2))*sin(q(4))*cos(q(1)))*sin(q(5)) + (-sin(q(1))*cos(q(3)) - sin(q(3))*cos(q(1))*cos(q(2)))*cos(q(5)));
-            // o << 0,0,0;
+
             return o;
         }
     // public:
@@ -209,7 +154,7 @@ class BaxterKinematics{
             J(0, 4) = cos(PI/4)*L5*(-((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*sin(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*cos(q(4))) + cos(PI/4)*L5*(-((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*sin(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*cos(q(4))) + L6*((-cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*sin(q(4)) + cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*cos(q(4)))*sin(q(5)) + (-cos(PI/4)*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*sin(q(4)) + cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*cos(q(4)))*sin(q(5)));
             J(0, 5) = L6*((cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4)))*cos(q(5)) + (cos(PI/4)*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4)))*cos(q(5)) - (cos(PI/4)*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) + cos(PI/4)*cos(q(0))*cos(q(1))*cos(q(3)))*sin(q(5)) - (cos(PI/4)*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) + cos(PI/4)*sin(q(0))*cos(q(1))*cos(q(3)))*sin(q(5)));
             J(0, 6) = 0;
-            
+
             J(1, 0) = cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1)) + cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) - cos(PI/4)*L3*(sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0))) - cos(PI/4)*L4*((sin(q(0))*sin(q(2)) + sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) + cos(PI/4)*L4*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) + sin(q(0))*cos(q(1))*cos(q(3))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) - cos(PI/4)*L5*(((sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*cos(q(3)) + sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*sin(q(1))*sin(q(2)) - cos(q(0))*cos(q(2)))*sin(q(4))) + L6*((cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4)))*sin(q(5)) + (-cos(PI/4)*((sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*cos(q(3)) + sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) - cos(PI/4)*(-sin(q(0))*sin(q(1))*sin(q(2)) - cos(q(0))*cos(q(2)))*sin(q(4)))*sin(q(5)) + (cos(PI/4)*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) + cos(PI/4)*cos(q(0))*cos(q(1))*cos(q(3)))*cos(q(5)) + (-cos(PI/4)*(sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*sin(q(3)) + cos(PI/4)*sin(q(0))*cos(q(1))*cos(q(3)))*cos(q(5)));
             J(1, 1) = -cos(PI/4)*L2*sin(q(0))*sin(q(1)) + cos(PI/4)*L2*sin(q(1))*cos(q(0)) - cos(PI/4)*L3*sin(q(0))*cos(q(1))*cos(q(2)) + cos(PI/4)*L3*cos(q(0))*cos(q(1))*cos(q(2)) - cos(PI/4)*L4*(sin(q(0))*sin(q(1))*cos(q(3)) + sin(q(0))*sin(q(3))*cos(q(1))*cos(q(2))) + cos(PI/4)*L4*(sin(q(1))*cos(q(0))*cos(q(3)) + sin(q(3))*cos(q(0))*cos(q(1))*cos(q(2))) + cos(PI/4)*L5*((sin(q(0))*sin(q(1))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(0))*sin(q(2))*sin(q(4))*cos(q(1))) - cos(PI/4)*L5*((sin(q(1))*sin(q(3))*cos(q(0)) - cos(q(0))*cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(2))*sin(q(4))*cos(q(0))*cos(q(1))) + L6*((cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + cos(PI/4)*sin(q(0))*sin(q(2))*sin(q(4))*cos(q(1)))*sin(q(5)) + (-cos(PI/4)*(sin(q(1))*sin(q(3))*cos(q(0)) - cos(q(0))*cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) - cos(PI/4)*sin(q(2))*sin(q(4))*cos(q(0))*cos(q(1)))*sin(q(5)) + (-cos(PI/4)*sin(q(0))*sin(q(1))*cos(q(3)) - cos(PI/4)*sin(q(0))*sin(q(3))*cos(q(1))*cos(q(2)))*cos(q(5)) + (cos(PI/4)*sin(q(1))*cos(q(0))*cos(q(3)) + cos(PI/4)*sin(q(3))*cos(q(0))*cos(q(1))*cos(q(2)))*cos(q(5)));
             J(1, 2) = -cos(PI/4)*L3*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0))) + cos(PI/4)*L3*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2))) + cos(PI/4)*L4*(sin(q(0))*cos(q(2)) - sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(3)) - cos(PI/4)*L4*(-sin(q(0))*sin(q(1))*sin(q(2)) - cos(q(0))*cos(q(2)))*sin(q(3)) - cos(PI/4)*L5*((sin(q(0))*sin(q(2)) + sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*cos(q(3))*cos(q(4))) + cos(PI/4)*L5*((sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*cos(q(3))*cos(q(4)) + (sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*sin(q(4))) + L6*((-cos(PI/4)*(sin(q(0))*sin(q(2)) + sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(4)) - cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*cos(q(3))*cos(q(4)))*sin(q(5)) - cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(3))*cos(q(5)) + (cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*cos(q(3))*cos(q(4)) + cos(PI/4)*(sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*sin(q(4)))*sin(q(5)) + cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(3))*cos(q(5)));
@@ -217,7 +162,7 @@ class BaxterKinematics{
             J(1, 4) = -cos(PI/4)*L5*(-((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*sin(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*cos(q(4))) + cos(PI/4)*L5*(-((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*sin(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*cos(q(4))) + L6*((cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*sin(q(4)) - cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*cos(q(4)))*sin(q(5)) + (-cos(PI/4)*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*sin(q(4)) + cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*cos(q(4)))*sin(q(5)));
             J(1, 5) = L6*((-cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) - cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4)))*cos(q(5)) + (cos(PI/4)*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4)))*cos(q(5)) - (-cos(PI/4)*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(PI/4)*cos(q(0))*cos(q(1))*cos(q(3)))*sin(q(5)) - (cos(PI/4)*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) + cos(PI/4)*sin(q(0))*cos(q(1))*cos(q(3)))*sin(q(5)));
             J(1, 6) = 0;
-            
+
             J(2, 0) = 0;
             J(2, 1) = -L2*cos(q(1)) + L3*sin(q(1))*cos(q(2)) - L4*(-sin(q(1))*sin(q(3))*cos(q(2)) + cos(q(1))*cos(q(3))) + L5*((sin(q(1))*cos(q(2))*cos(q(3)) + sin(q(3))*cos(q(1)))*cos(q(4)) - sin(q(1))*sin(q(2))*sin(q(4))) + L6*(((sin(q(1))*cos(q(2))*cos(q(3)) + sin(q(3))*cos(q(1)))*cos(q(4)) - sin(q(1))*sin(q(2))*sin(q(4)))*sin(q(5)) + (sin(q(1))*sin(q(3))*cos(q(2)) - cos(q(1))*cos(q(3)))*cos(q(5)));
             J(2, 2) = L3*sin(q(2))*cos(q(1)) + L4*sin(q(2))*sin(q(3))*cos(q(1)) + L5*(sin(q(2))*cos(q(1))*cos(q(3))*cos(q(4)) + sin(q(4))*cos(q(1))*cos(q(2))) + L6*((sin(q(2))*cos(q(1))*cos(q(3))*cos(q(4)) + sin(q(4))*cos(q(1))*cos(q(2)))*sin(q(5)) + sin(q(2))*sin(q(3))*cos(q(1))*cos(q(5)));
@@ -225,20 +170,26 @@ class BaxterKinematics{
             J(2, 4) = L5*(-(sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*sin(q(4)) + sin(q(2))*cos(q(1))*cos(q(4))) + L6*(-(sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*sin(q(4)) + sin(q(2))*cos(q(1))*cos(q(4)))*sin(q(5));
             J(2, 5) = L6*(((sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(2))*sin(q(4))*cos(q(1)))*cos(q(5)) - (-sin(q(1))*cos(q(3)) - sin(q(3))*cos(q(1))*cos(q(2)))*sin(q(5)));
             J(2, 6) = 0;
-
-            // J << 
-            // 0,0,0,0,0,0,0,
-            // 0,0,0,0,0,0,0,
-            // 0,0,0,0,0,0,0;
-            // J <<
-            // -cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) - cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1)) + cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) + cos(PI/4)*L3*(sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0))) - cos(PI/4)*L4*((sin(q(0))*sin(q(2)) + sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) - cos(PI/4)*L4*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) + sin(q(0))*cos(q(1))*cos(q(3))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) + cos(PI/4)*L5*(((sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*cos(q(3)) + sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*sin(q(1))*sin(q(2)) - cos(q(0))*cos(q(2)))*sin(q(4))) + L6*((cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4)))*sin(q(5)) + (cos(PI/4)*((sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*cos(q(3)) + sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + cos(PI/4)*(-sin(q(0))*sin(q(1))*sin(q(2)) - cos(q(0))*cos(q(2)))*sin(q(4)))*sin(q(5)) + (cos(PI/4)*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) + cos(PI/4)*cos(q(0))*cos(q(1))*cos(q(3)))*cos(q(5)) + (cos(PI/4)*(sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*sin(q(3)) - cos(PI/4)*sin(q(0))*cos(q(1))*cos(q(3)))*cos(q(5))), -cos(PI/4)*L2*sin(q(0))*sin(q(1)) - cos(PI/4)*L2*sin(q(1))*cos(q(0)) - cos(PI/4)*L3*sin(q(0))*cos(q(1))*cos(q(2)) - cos(PI/4)*L3*cos(q(0))*cos(q(1))*cos(q(2)) - cos(PI/4)*L4*(sin(q(0))*sin(q(1))*cos(q(3)) + sin(q(0))*sin(q(3))*cos(q(1))*cos(q(2))) - cos(PI/4)*L4*(sin(q(1))*cos(q(0))*cos(q(3)) + sin(q(3))*cos(q(0))*cos(q(1))*cos(q(2))) + cos(PI/4)*L5*((sin(q(0))*sin(q(1))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(0))*sin(q(2))*sin(q(4))*cos(q(1))) + cos(PI/4)*L5*((sin(q(1))*sin(q(3))*cos(q(0)) - cos(q(0))*cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(2))*sin(q(4))*cos(q(0))*cos(q(1))) + L6*((cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + cos(PI/4)*sin(q(0))*sin(q(2))*sin(q(4))*cos(q(1)))*sin(q(5)) + (cos(PI/4)*(sin(q(1))*sin(q(3))*cos(q(0)) - cos(q(0))*cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + cos(PI/4)*sin(q(2))*sin(q(4))*cos(q(0))*cos(q(1)))*sin(q(5)) + (-cos(PI/4)*sin(q(0))*sin(q(1))*cos(q(3)) - cos(PI/4)*sin(q(0))*sin(q(3))*cos(q(1))*cos(q(2)))*cos(q(5)) + (-cos(PI/4)*sin(q(1))*cos(q(0))*cos(q(3)) - cos(PI/4)*sin(q(3))*cos(q(0))*cos(q(1))*cos(q(2)))*cos(q(5))), cos(PI/4)*L3*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0))) + cos(PI/4)*L3*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2))) - cos(PI/4)*L4*(sin(q(0))*cos(q(2)) - sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(3)) - cos(PI/4)*L4*(-sin(q(0))*sin(q(1))*sin(q(2)) - cos(q(0))*cos(q(2)))*sin(q(3)) + cos(PI/4)*L5*((sin(q(0))*sin(q(2)) + sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*cos(q(3))*cos(q(4))) + cos(PI/4)*L5*((sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*cos(q(3))*cos(q(4)) + (sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*sin(q(4))) + L6*((cos(PI/4)*(sin(q(0))*sin(q(2)) + sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(4)) + cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*cos(q(3))*cos(q(4)))*sin(q(5)) + cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(3))*cos(q(5)) + (cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*cos(q(3))*cos(q(4)) + cos(PI/4)*(sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*sin(q(4)))*sin(q(5)) + cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(3))*cos(q(5))), -cos(PI/4)*L4*((sin(q(0))*sin(q(2)) + sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) + sin(q(3))*cos(q(0))*cos(q(1))) - cos(PI/4)*L4*((sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*cos(q(3)) + sin(q(0))*sin(q(3))*cos(q(1))) + cos(PI/4)*L5*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3)))*cos(q(4)) + cos(PI/4)*L5*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3)))*cos(q(4)) + L6*(cos(PI/4)*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3)))*sin(q(5))*cos(q(4)) + (cos(PI/4)*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - cos(PI/4)*sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(5)) + cos(PI/4)*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3)))*sin(q(5))*cos(q(4)) + (cos(PI/4)*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - cos(PI/4)*sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(5))), cos(PI/4)*L5*(-((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*sin(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*cos(q(4))) + cos(PI/4)*L5*(-((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*sin(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*cos(q(4))) + L6*((-cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*sin(q(4)) + cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*cos(q(4)))*sin(q(5)) + (-cos(PI/4)*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*sin(q(4)) + cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*cos(q(4)))*sin(q(5))), L6*((cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4)))*cos(q(5)) + (cos(PI/4)*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4)))*cos(q(5)) - (cos(PI/4)*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) + cos(PI/4)*cos(q(0))*cos(q(1))*cos(q(3)))*sin(q(5)) - (cos(PI/4)*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) + cos(PI/4)*sin(q(0))*cos(q(1))*cos(q(3)))*sin(q(5))), 0,
-            // cos(PI/4)*L1*sin(q(0)) + cos(PI/4)*L1*cos(q(0)) + cos(PI/4)*L2*sin(q(0))*cos(q(1)) + cos(PI/4)*L2*cos(q(0))*cos(q(1)) + cos(PI/4)*L3*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2))) - cos(PI/4)*L3*(sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0))) - cos(PI/4)*L4*((sin(q(0))*sin(q(2)) + sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3))) + cos(PI/4)*L4*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) + sin(q(0))*cos(q(1))*cos(q(3))) + cos(PI/4)*L5*(((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4))) - cos(PI/4)*L5*(((sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*cos(q(3)) + sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + (-sin(q(0))*sin(q(1))*sin(q(2)) - cos(q(0))*cos(q(2)))*sin(q(4))) + L6*((cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) + cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4)))*sin(q(5)) + (-cos(PI/4)*((sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*cos(q(3)) + sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) - cos(PI/4)*(-sin(q(0))*sin(q(1))*sin(q(2)) - cos(q(0))*cos(q(2)))*sin(q(4)))*sin(q(5)) + (cos(PI/4)*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) + cos(PI/4)*cos(q(0))*cos(q(1))*cos(q(3)))*cos(q(5)) + (-cos(PI/4)*(sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*sin(q(3)) + cos(PI/4)*sin(q(0))*cos(q(1))*cos(q(3)))*cos(q(5))), -cos(PI/4)*L2*sin(q(0))*sin(q(1)) + cos(PI/4)*L2*sin(q(1))*cos(q(0)) - cos(PI/4)*L3*sin(q(0))*cos(q(1))*cos(q(2)) + cos(PI/4)*L3*cos(q(0))*cos(q(1))*cos(q(2)) - cos(PI/4)*L4*(sin(q(0))*sin(q(1))*cos(q(3)) + sin(q(0))*sin(q(3))*cos(q(1))*cos(q(2))) + cos(PI/4)*L4*(sin(q(1))*cos(q(0))*cos(q(3)) + sin(q(3))*cos(q(0))*cos(q(1))*cos(q(2))) + cos(PI/4)*L5*((sin(q(0))*sin(q(1))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(0))*sin(q(2))*sin(q(4))*cos(q(1))) - cos(PI/4)*L5*((sin(q(1))*sin(q(3))*cos(q(0)) - cos(q(0))*cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(2))*sin(q(4))*cos(q(0))*cos(q(1))) + L6*((cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + cos(PI/4)*sin(q(0))*sin(q(2))*sin(q(4))*cos(q(1)))*sin(q(5)) + (-cos(PI/4)*(sin(q(1))*sin(q(3))*cos(q(0)) - cos(q(0))*cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) - cos(PI/4)*sin(q(2))*sin(q(4))*cos(q(0))*cos(q(1)))*sin(q(5)) + (-cos(PI/4)*sin(q(0))*sin(q(1))*cos(q(3)) - cos(PI/4)*sin(q(0))*sin(q(3))*cos(q(1))*cos(q(2)))*cos(q(5)) + (cos(PI/4)*sin(q(1))*cos(q(0))*cos(q(3)) + cos(PI/4)*sin(q(3))*cos(q(0))*cos(q(1))*cos(q(2)))*cos(q(5))), -cos(PI/4)*L3*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0))) + cos(PI/4)*L3*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2))) + cos(PI/4)*L4*(sin(q(0))*cos(q(2)) - sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(3)) - cos(PI/4)*L4*(-sin(q(0))*sin(q(1))*sin(q(2)) - cos(q(0))*cos(q(2)))*sin(q(3)) - cos(PI/4)*L5*((sin(q(0))*sin(q(2)) + sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*cos(q(3))*cos(q(4))) + cos(PI/4)*L5*((sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*cos(q(3))*cos(q(4)) + (sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*sin(q(4))) + L6*((-cos(PI/4)*(sin(q(0))*sin(q(2)) + sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(4)) - cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*cos(q(3))*cos(q(4)))*sin(q(5)) - cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(3))*cos(q(5)) + (cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*cos(q(3))*cos(q(4)) + cos(PI/4)*(sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*sin(q(4)))*sin(q(5)) + cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(3))*cos(q(5))), cos(PI/4)*L4*((sin(q(0))*sin(q(2)) + sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) + sin(q(3))*cos(q(0))*cos(q(1))) - cos(PI/4)*L4*((sin(q(0))*sin(q(1))*cos(q(2)) - sin(q(2))*cos(q(0)))*cos(q(3)) + sin(q(0))*sin(q(3))*cos(q(1))) - cos(PI/4)*L5*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3)))*cos(q(4)) + cos(PI/4)*L5*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3)))*cos(q(4)) + L6*(-cos(PI/4)*(-(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(q(0))*cos(q(1))*cos(q(3)))*sin(q(5))*cos(q(4)) + (-cos(PI/4)*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) + cos(PI/4)*sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(5)) + cos(PI/4)*(-(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) - sin(q(0))*cos(q(1))*cos(q(3)))*sin(q(5))*cos(q(4)) + (cos(PI/4)*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - cos(PI/4)*sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(5))), -cos(PI/4)*L5*(-((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*sin(q(4)) + (-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*cos(q(4))) + cos(PI/4)*L5*(-((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*sin(q(4)) + (sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*cos(q(4))) + L6*((cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*sin(q(4)) - cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*cos(q(4)))*sin(q(5)) + (-cos(PI/4)*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*sin(q(4)) + cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*cos(q(4)))*sin(q(5))), L6*((-cos(PI/4)*((-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*cos(q(3)) - sin(q(3))*cos(q(0))*cos(q(1)))*cos(q(4)) - cos(PI/4)*(-sin(q(0))*cos(q(2)) + sin(q(1))*sin(q(2))*cos(q(0)))*sin(q(4)))*cos(q(5)) + (cos(PI/4)*((-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*cos(q(3)) - sin(q(0))*sin(q(3))*cos(q(1)))*cos(q(4)) + cos(PI/4)*(sin(q(0))*sin(q(1))*sin(q(2)) + cos(q(0))*cos(q(2)))*sin(q(4)))*cos(q(5)) - (-cos(PI/4)*(-sin(q(0))*sin(q(2)) - sin(q(1))*cos(q(0))*cos(q(2)))*sin(q(3)) - cos(PI/4)*cos(q(0))*cos(q(1))*cos(q(3)))*sin(q(5)) - (cos(PI/4)*(-sin(q(0))*sin(q(1))*cos(q(2)) + sin(q(2))*cos(q(0)))*sin(q(3)) + cos(PI/4)*sin(q(0))*cos(q(1))*cos(q(3)))*sin(q(5))), 0,
-            // 0, -L2*cos(q(1)) + L3*sin(q(1))*cos(q(2)) - L4*(-sin(q(1))*sin(q(3))*cos(q(2)) + cos(q(1))*cos(q(3))) + L5*((sin(q(1))*cos(q(2))*cos(q(3)) + sin(q(3))*cos(q(1)))*cos(q(4)) - sin(q(1))*sin(q(2))*sin(q(4))) + L6*(((sin(q(1))*cos(q(2))*cos(q(3)) + sin(q(3))*cos(q(1)))*cos(q(4)) - sin(q(1))*sin(q(2))*sin(q(4)))*sin(q(5)) + (sin(q(1))*sin(q(3))*cos(q(2)) - cos(q(1))*cos(q(3)))*cos(q(5))), L3*sin(q(2))*cos(q(1)) + L4*sin(q(2))*sin(q(3))*cos(q(1)) + L5*(sin(q(2))*cos(q(1))*cos(q(3))*cos(q(4)) + sin(q(4))*cos(q(1))*cos(q(2))) + L6*((sin(q(2))*cos(q(1))*cos(q(3))*cos(q(4)) + sin(q(4))*cos(q(1))*cos(q(2)))*sin(q(5)) + sin(q(2))*sin(q(3))*cos(q(1))*cos(q(5))), -L4*(-sin(q(1))*sin(q(3)) + cos(q(1))*cos(q(2))*cos(q(3))) + L5*(sin(q(1))*cos(q(3)) + sin(q(3))*cos(q(1))*cos(q(2)))*cos(q(4)) + L6*((sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(5)) + (sin(q(1))*cos(q(3)) + sin(q(3))*cos(q(1))*cos(q(2)))*sin(q(5))*cos(q(4))), L5*(-(sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*sin(q(4)) + sin(q(2))*cos(q(1))*cos(q(4))) + L6*(-(sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*sin(q(4)) + sin(q(2))*cos(q(1))*cos(q(4)))*sin(q(5)), L6*(((sin(q(1))*sin(q(3)) - cos(q(1))*cos(q(2))*cos(q(3)))*cos(q(4)) + sin(q(2))*sin(q(4))*cos(q(1)))*cos(q(5)) - (-sin(q(1))*cos(q(3)) - sin(q(3))*cos(q(1))*cos(q(2)))*sin(q(5))), 0;
             return J;
         }
 
 };
 
+
+BaxterKinematics::BaxterKinematics()
+    : L(278e-3),
+    h(64e-3),
+    H(1104e-3),
+    L0(270.35e-3),
+    L1(69e-3),
+    L2(364.35e-3),
+    L3(69e-3),
+    L4(374.29e-3),
+    L5(10e-3),
+    L6(368.3e-3)
+    {
+        std::cout << "BaxterKinematicsのコンストラクタが呼ばれました" << std::endl;
+    }
 
 /**
  * @class InvKinematics
@@ -273,16 +224,9 @@ class InvKinematics : public BaxterKinematics {
                     else{
                         J = jacobian_GL(q);
                         dq = J.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(dx);
-
-                        //dq = J.inverse() * dx;
-                        //dq << 0,0,0,0,0,0,0;
-                        //dq = Eigen::pesudoInverse(J)* dx;
-                        //dq = J.pseudoinverse();
-                        //Eigen::Matrix<float, 2, 2> B = pseudoInverse<float, 2>(J, epsilon);
-                        //dq = Inverse(const J) * dx;
                         q += alpha * dq;
                     }
-                    
+
                 }
             }
             return Q_INIT;
@@ -301,7 +245,7 @@ int main(){
     double alpha = 0.5;  // 重み
 
     Eigen::Matrix<double, 7, 1> qd;  // 所望の関節角度
-    
+
     InvKinematics kinem;
     kinem.Q_MIN <<
     -141 * PI / 180,
@@ -331,14 +275,6 @@ int main(){
     qd = kinem.calc_desired_joint_angle(xd, alpha);
 
     std::cout << qd << std::endl;
-
-
-    // Eigen::MatrixXf A = Eigen::MatrixXf::Random(3, 2);
-    // std::cout << "Here is the matrix A:\n" << A << std::endl;
-    // Eigen::VectorXf b = Eigen::VectorXf::Random(3);
-    // std::cout << "Here is the right hand side b:\n" << b << std::endl;
-    // std::cout << "The least-squares solution is:\n"
-    //     << A.bdcSvd().solve(b) << std::endl;
 
     return 0;
 }
