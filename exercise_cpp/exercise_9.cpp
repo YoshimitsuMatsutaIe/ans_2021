@@ -11,12 +11,26 @@
 #include <math.h>
 #include <vector>
 #include <map>
+#include <tuple>
 
 using std::cout;
 using std::endl;
 using std::vector;
 using std::map;
 using std::pair;
+
+
+/**
+ * @brief Nodeのキー
+ */
+struct NodeIndex {
+    int x;  // x座標
+    int y;  // y座標
+};
+
+bool operator<(const NodeIndex& a, const NodeIndex& b){
+    return std::tie(a.x, a.y) < std::tie(b.x, b.y);
+}
 
 /**
     @brief  Node
@@ -25,7 +39,7 @@ struct Node {
     int x;  // x座標
     int y;  // y座標
     double cost;
-    int parent;
+    NodeIndex parent;
 };
 
 struct Option {
@@ -35,14 +49,7 @@ struct Option {
 };
 
 
-struct NodeIndex {
-    int x;
-    int y;
-};
 
-bool operator<(const NodeIndex& a, const NodeIndex& b){
-    return std::tie(a.x, a.y) < std::tie(b.x, b.y);
-}
 
 vector<Option> calc_options(int x, int y, int x_max, int y_max, vector<vector<bool>> gridmap){
     vector<Option> options;
@@ -112,7 +119,35 @@ NodeIndex find_MinCostNode_id(map<NodeIndex, Node> m){
 }
 
 
-std::tuple<vector<int>, vector<int>, double, map<int, Node>> planning(int start_x, int start_y, int goal_x, int goal_y, vector<vector<bool>> gridmap){
+/**
+ * @brief 決定済みノード集合から最短パスを構築
+ */
+std::tuple<vector<int>, vector<int>, double> compute_optiomal_path(
+    Node start_node, Node goal_node, map<NodeIndex, Node> closed_set
+){
+    vector<int> rx, ry;
+    NodeIndex parent = goal_node.parent;
+    double cost = goal_node.cost;
+    Node node;
+
+    NodeIndex start_id = {start_node.x, start_node.y};
+
+    while (parent.x != start_id.x && parent.y != start_id.y){
+        node = closed_set[parent];
+        rx.push_back(node.x);
+        ry.push_back(node.y);
+        cost += node.cost;
+        parent = node.parent;
+    }
+
+    std::tuple<vector<int>, vector<int>, double> z = std::make_tuple(rx, ry, cost);
+    return z;
+}
+
+
+map<NodeIndex, Node> planning(
+    int start_x, int start_y, int goal_x, int goal_y, vector<vector<bool>> gridmap
+){
     Node start_node = {start_x, start_y, 0.0, -1};
     Node goal_node = {goal_x, goal_y, -1, -2};
     Node temp_node;
@@ -122,7 +157,7 @@ std::tuple<vector<int>, vector<int>, double, map<int, Node>> planning(int start_
     int y_max = gridmap[0].size();
     vector<Option> os;
     Node node;
-    int node_id;
+    NodeIndex node_id;
 
     map<NodeIndex, Node> open_set;  // 未決定のノード
     map<NodeIndex, Node> closed_set;  // 決定済みのノード
@@ -150,19 +185,60 @@ std::tuple<vector<int>, vector<int>, double, map<int, Node>> planning(int start_
                 temp_node.y + os[i].dy,
                 temp_node.cost + os[i].dcost
             };
-            node_id += 1;  // 1つ増やす
+            node_id = {node.x, node.y};
 
+            if (closed_set.count(node_id) == 1){
+                // 決定済み
+                continue;
+            }
+            else if(open_set.count(node_id) == 0){
+                // 未探索のとき
+                open_set[node_id] = node;
+            }
+            else{
+                // 探索済みだが未決定
+                if (open_set[node_id].cost >= node.cost){
+                    open_set[node_id] = node;
+                }
+            }
         }
     }
 
+    return closed_set;
+}
+
+
+void ex1(){
+    vector<vector<bool>> gridmap = {
+        {0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
+        {0, 1, 0, 0, 0, 0, 0, 0, 1, 0},
+        {0, 1, 1, 1, 1, 0, 0, 0, 1, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
+        {0, 0, 0, 1, 1, 0, 0, 0, 1, 0},
+        {0, 0, 0, 1, 1, 0, 0, 0, 1, 0},
+        {0, 0, 0, 1, 1, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
+    };  // 生マップ
+
+    int start_x = 0;
+    int start_y = 0;
+    int goal_x = 9;
+    int goal_y = 9;
+
+    map<NodeIndex, Node> closed_set = planning(start_x, start_y, goal_x, goal_y, gridmap);
+    //std::tuple<vector<int>, vector<int>, double> z = compute_optiomal_path();
+    
 
 }
+
 
 
 int main(){
     cout << "running..." << endl;
 
-
+    ex1();
 
     cout << "終了" << endl;
     return 0;
