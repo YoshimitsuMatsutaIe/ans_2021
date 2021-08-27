@@ -59,6 +59,7 @@ class Dijkstra {
         int y_max;
         Node start_node;
         Node goal_node;
+        map<NodeIndex, Node> closed_map;
 
     public:
         Dijkstra(vector<vector<bool>> gridmap_, int start_x_, int start_y_, int goal_x_, int goal_y_){
@@ -146,7 +147,6 @@ class Dijkstra {
      * @brief 決定済みノード集合から最短パスを構築
      */
         std::tuple<vector<int>, vector<int>, double> compute_optiomal_path(
-            map<NodeIndex, Node> closed_set
         ){
             vector<int> rx, ry;
             NodeIndex parent = goal_node.parent;
@@ -156,7 +156,7 @@ class Dijkstra {
             NodeIndex start_id = {start_node.x, start_node.y};
 
             while (parent.x != start_id.x && parent.y != start_id.y){
-                node = closed_set[parent];
+                node = closed_map[parent];
                 rx.push_back(node.x);
                 ry.push_back(node.y);
                 cost += node.cost;
@@ -169,7 +169,7 @@ class Dijkstra {
 
 
     private:
-        map<NodeIndex, Node> planning(
+        void planning(
         ){
             Node temp_node;
             int temp_x, temp_y;
@@ -191,6 +191,7 @@ class Dijkstra {
                 if (temp_node.x == goal_node.x && temp_node.y == goal_node.y){
                     goal_node.parent = temp_node.parent;
                     goal_node.cost = temp_node.cost;
+                    cout << "serch complete" << endl;
                     break;
                 }
 
@@ -222,14 +223,23 @@ class Dijkstra {
                     }
                 }
             }
+        }
+    
 
-            return closed_set;
+    public:
+        void do_exercise(){
+            map<NodeIndex, Node> closed_map;
+            planning();
+            std::tuple<vector<int>, vector<int>, double> z = compute_optiomal_path();
         }
 };
 
 
 
-void ex1(){
+
+int main(){
+    cout << "running..." << endl;
+
     vector<vector<bool>> gridmap = {
         {0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
         {0, 1, 0, 0, 0, 0, 0, 0, 1, 0},
@@ -245,16 +255,8 @@ void ex1(){
 
 
     Dijkstra sim(gridmap, 0, 0, 9, 9);
-    //map<NodeIndex, Node> closed_set = sim.planning(start_x, start_y, goal_x, goal_y, gridmap);
-    //std::tuple<vector<int>, vector<int>, double> z = compute_optiomal_path();
-    
+    sim.do_exercise();
 
-}
-
-int main(){
-    cout << "running..." << endl;
-
-    ex1();
     cout << "終了" << endl;
     return 0;
 }
