@@ -250,12 +250,12 @@ class InvKinematics : public BaxterKinematics {
             Eigen::Matrix<double, 7, 1> qd;  // 所望の関節角度
             Eigen::Matrix<double, 7, 1> q;  // 関節角度
             Eigen::Matrix<double, 7, 1> dq;  // 関節角度の増分
-            Eigen::Matrix<double, 3, 7> J;  // エンドエフェクタ位置のヤコビ行列
+            Eigen::MatrixXd J(3, 7);  // エンドエフェクタ位置のヤコビ行列
             Eigen::Matrix<double, 3, 1> x;  // エンドエフェクタ位置
             Eigen::Matrix<double, 3, 1> dx;  // エンドエフェクタ位置と目標位置の誤差ベクトル
 
             double e;  // エンドエフェクタと目標位置との誤差
-            double error_t = 0.0001; // 誤差の許容値
+            double error_t = 0.001; // 誤差の許容値
 
             int n_trial = 10;  // 試行回数の最大値
 
@@ -272,13 +272,13 @@ class InvKinematics : public BaxterKinematics {
                     }
                     else{
                         J = jacobian_GL(q);
-                        //dq = J.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(dx);
+                        dq = J.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(dx);
 
                         //dq = J.inverse() * dx;
                         //dq << 0,0,0,0,0,0,0;
                         //dq = Eigen::pesudoInverse(J)* dx;
                         //dq = J.pseudoinverse();
-                        Eigen::Matrix<float, 2, 2> B = pseudoInverse<float, 2>(J, epsilon);
+                        //Eigen::Matrix<float, 2, 2> B = pseudoInverse<float, 2>(J, epsilon);
                         //dq = Inverse(const J) * dx;
                         q += alpha * dq;
                     }
