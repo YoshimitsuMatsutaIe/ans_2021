@@ -146,7 +146,7 @@ class Particles:
             fig = fig_ani,
             func = update,
             frames = range(0, len(self.t), 20),
-            interval = self.TIME_INTERVAL * 1.e-3,
+            interval = self.TIME_INTERVAL * 1e-3,
         )
         
         if save:

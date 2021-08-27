@@ -41,12 +41,6 @@ class ByLQR(Model):
         self.Q = Q
         self.R = R
         
-        if self.controllability(self.A, self.B):
-            print('可制御')
-        else:
-            print('可制御でない')
-            return
-        
         sol = self.run_simu(solver)
         self.draw(sol)
     
@@ -64,11 +58,11 @@ class ByLQR(Model):
             return sp.linalg.solve_continuous_are(
                 a=self.A, b=self.B, r=self.R, q=self.Q
             )
-        elif solver == 'arimoto_potter':
-            """自作"""
-            return self.solve_are_by_arimoto_potter(
-                self.A, self.B, self.Q, self.R,
-            )
+        # elif solver == 'arimoto_potter':
+        #     """自作"""
+        #     return self.solve_are_by_arimoto_potter(
+        #         self.A, self.B, self.Q, self.R,
+        #     )
     
     
     def run_simu(self, solver):
@@ -85,7 +79,7 @@ class ByLQR(Model):
         P = self.solve_ricatti(solver)
         print('riccati_eqの解\n', P)
         K = np.linalg.inv(self.R) @ self.B.T @ P
-        A_bar = A - B @ K
+        A_bar = self.A - self.B @ K
         
         t = np.arange(self.t_range[0], self.t_range[1], 0.01)
         self.t_list = list(t)
@@ -100,21 +94,6 @@ class ByLQR(Model):
         )
         
         return sol
-    
-    
-    # @classmethod
-    # def controllability(cls, A, B):
-    #     """可制御性を判定"""
-        
-    #     U = B
-    #     for n in range(A.shape[0]):
-    #         U = np.concatenate([U, np.linalg.matrix_power(A, n) @ B], axis = 1)
-    #     rank = np.linalg.matrix_rank(U)
-        
-    #     if rank == A.shape[0]:
-    #         return True
-    #     else:
-    #         return False
     
     
     # @classmethod
@@ -155,25 +134,25 @@ class ByLQR(Model):
     #         return Z @ np.linalg.pinv(Y)
     
     
-    @classmethod
-    def solve_are_by_o(cls, A, B, Q, R):
-        """数値解法で求める"""
+    # @classmethod
+    # def solve_are_by_o(cls, A, B, Q, R):
+    #     """数値解法で求める"""
         
-        n = A.shape[0]
-        P_init = np.zeros((n, n))
+    #     n = A.shape[0]
+    #     P_init = np.zeros((n, n))
         
-        def diff_reccati(P, n, A, B, Q, R):
-            """ricattiの非線形行列微分方程式"""
-            P = np.array([P]).reshape((n, n))
-            dP = -(P @ A) - (A.T @ P) + (P @ B @ np.linalg.inv(R) @ B.T @ P) - Q
-            return np.ravel(dP).tolist()
+    #     def diff_reccati(P, n, A, B, Q, R):
+    #         """ricattiの非線形行列微分方程式"""
+    #         P = np.array([P]).reshape((n, n))
+    #         dP = -(P @ A) - (A.T @ P) + (P @ B @ np.linalg.inv(R) @ B.T @ P) - Q
+    #         return np.ravel(dP).tolist()
         
-        sol = optimize.fsolve(
-            func = diff_reccati,
-            x0 = P_init,
-            args = (n, A, B, Q, R),
-        )
-        return np.array([sol]).reshape((n, n))
+    #     sol = optimize.fsolve(
+    #         func = diff_reccati,
+    #         x0 = P_init,
+    #         args = (n, A, B, Q, R),
+    #     )
+    #     return np.array([sol]).reshape((n, n))
 
 
 def main():
@@ -194,12 +173,12 @@ def main():
     Q = np.diag([1, 1, 1]) * 1000
     R = np.array([[10]])
     
-    #simu = ByLQR(A, B, C, Q, R, solver = 'scipy')
+    simu = ByLQR(A, B, C, Q, R, solver = 'scipy')
     
     # sol = ByLQR.solve_are_by_o(A, B, Q, R)
     # print(sol)
-    sol2 = sp.linalg.solve_continuous_are(a = A, b = B, q = Q, r = R)
-    print(sol2)
+    # sol2 = sp.linalg.solve_continuous_are(a = A, b = B, q = Q, r = R)
+    # print(sol2)
     
 
 if __name__ == '__main__':
