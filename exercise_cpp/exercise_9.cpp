@@ -63,16 +63,19 @@ class Dijkstra {
 
     public:
         Dijkstra(vector<vector<bool>> gridmap_, int start_x_, int start_y_, int goal_x_, int goal_y_){
+            cout << "コンストラクタが呼ばれました" << endl;
             gridmap = gridmap_;
             x_max = gridmap.size();
             y_max = gridmap[0].size();
             start_node = {start_x_, start_y_, 0.0, -1};
-            goal_node = {goal_x_, goal_y_, -1, -2};
+            goal_node = {goal_x_, goal_y_, INT_MAX, -2};
         }
 
 
     private:
         vector<Option> calc_options(int x, int y){
+            cout << "calc_options is called" << endl;
+
             vector<Option> options;
             Option o;
             
@@ -115,6 +118,8 @@ class Dijkstra {
                 }
             }
             
+            cout << "o's size = " << options.size() << endl;
+            cout << "calc_options finish" << endl;
             return options;
         }
 
@@ -124,20 +129,27 @@ class Dijkstra {
          * @brief コストが最小のノードを探す
          */
         NodeIndex find_MinCostNode_id(map<NodeIndex, Node> m){
+            cout << "find_MinCostNode_id called" << endl;
             NodeIndex min_cost_id;
             auto begin = m.begin();
             auto end = m.end();
 
             map<NodeIndex, Node>::iterator pm;
-            //int min_cost_id = m[begin->first];
-            while (pm != m.end()){
-                if (pm == m.begin()){
+            pm = m.begin();
+            //int i = 0;
+            
+            while (pm != end){
+                //i += 1;
+                cout << (pm->first).x << ", " << (pm->first).y << endl;
+                if (pm == begin){
                     min_cost_id = pm->first;
                 }
                 else if (pm->second.cost < m[min_cost_id].cost){
                     min_cost_id = pm->first;
                 }
+                ++pm;  // 次に動かす
             }
+            cout << "find_MinCostNode_id quite" << endl;
             return min_cost_id;
         }
 
@@ -171,6 +183,7 @@ class Dijkstra {
     private:
         void planning(
         ){
+            cout << "run planning" << endl;
             Node temp_node;
             int temp_x, temp_y;
             NodeIndex temp_id;
@@ -183,18 +196,26 @@ class Dijkstra {
 
             NodeIndex start_id = {start_node.x, start_node.y};
             open_set.insert(pair<NodeIndex, Node>(start_id, start_node));
+            
+            cout << "while is loop running..." << endl;
 
+            int counter = 0;
             while (1){
+                counter += 1;
+                cout << endl << "while count = " << counter << endl;
                 temp_id = find_MinCostNode_id(open_set);
                 temp_node = open_set[temp_id];
-
+                //cout << "" << endl;
                 if (temp_node.x == goal_node.x && temp_node.y == goal_node.y){
                     goal_node.parent = temp_node.parent;
                     goal_node.cost = temp_node.cost;
                     cout << "serch complete" << endl;
                     break;
                 }
-
+                else{
+                    cout << "try again" << endl;
+                }
+                
                 open_set.erase(temp_id);  // 未決定の集合から削除
                 closed_set[temp_id] = temp_node;
 
@@ -209,20 +230,24 @@ class Dijkstra {
 
                     if (closed_set.count(node_id) == 1){
                         // 決定済み
+                        cout << "pattern 1" << endl;
                         continue;
                     }
                     else if(open_set.count(node_id) == 0){
                         // 未探索のとき
+                        cout << "pattern 2" << endl;
                         open_set[node_id] = node;
                     }
                     else{
                         // 探索済みだが未決定
+                        cout << "pwttern 3" << endl;
                         if (open_set[node_id].cost >= node.cost){
                             open_set[node_id] = node;
                         }
                     }
                 }
             }
+            cout << "quite planning" << endl;
         }
     
 
@@ -238,7 +263,7 @@ class Dijkstra {
 
 
 int main(){
-    cout << "running..." << endl;
+    cout << "main is running..." << endl;
 
     vector<vector<bool>> gridmap = {
         {0, 0, 0, 0, 0, 0, 1, 0, 0, 0},
