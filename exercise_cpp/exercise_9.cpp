@@ -2,7 +2,7 @@
  * @file 
  * @brief 最短経路探索
  * @author matsuta
- * @note 
+ * @note planningは可能．compute~にバグがある．
  */
 
 
