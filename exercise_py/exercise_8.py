@@ -11,7 +11,7 @@ import scipy.optimize as optimize
 import matplotlib.pyplot as plt
 import matplotlib.animation as anm
 import matplotlib.patches as patches
-#import time
+import time
 #import cvxpy as cvx
 
 #import exercise_5
@@ -64,6 +64,7 @@ class InvertedPendulum:
         self.D_PEN = D_PEN
         self.D_CAR = D_CAR
         
+        # デフォルトは自由運動（入力無し）
         self.free = True
         self.method = 'free'
         
@@ -131,6 +132,8 @@ class InvertedPendulum:
         """
         
         print('control by ' + self.method)
+        print("running simulation...")
+        t0 = time.time()
         state_init = [
             self.X_INIT, self.DX_INIT, self.THETA_INIT, self.DTHETA_INIT,
         ]
@@ -145,7 +148,8 @@ class InvertedPendulum:
             #rtol = 1.e-12,
             #atol = 1.e-14,
         )
-        
+        print("simulation is finished")
+        print("実行時間 = ", time.time() - t0)
         return sol
     
     
@@ -160,6 +164,8 @@ class InvertedPendulum:
         ani_save : bool
             save animation.
         """
+        
+        print("グラフ作成中...")
         
         fig_ani = plt.figure()
         ax_ani = fig_ani.add_subplot(111)
@@ -253,7 +259,7 @@ class InvertedPendulum:
             ax.grid(True)
         
         plt.show()
-        
+        print("グラフ作成完了")
         return
 
 
@@ -264,6 +270,7 @@ def main_no_input():
     sol = sim.run_simu()
     sim.draw(sol.y[0], sol.y[2])
     return
+
 
 
 class ByPID(InvertedPendulum):
@@ -408,14 +415,14 @@ class ByMPC(InvertedPendulum):
     def __init__(
         self,
         q = np.array([
-            [1000, 0, 0, 0],
-            [0, 1000, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
             [0, 0, 1000, 0],
-            [0, 0, 0, 1000],
+            [0, 0, 0, 1],
             ]),
-        r = 0.001,
+        r = 0.0001,
         time_horizon = 0.5,
-        X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6, DTHETA_INIT=0.0,
+        X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6*0.9, DTHETA_INIT=0.0,
     ):
         """
         Parameters
@@ -510,50 +517,67 @@ class ByMPC(InvertedPendulum):
         
     #     return 
 
+    # def input(self, state):
+    #     """compute input value
+        
+    #     Parameter
+    #     ---
+    #     state : list
+    #         state vector
+        
+    #     Return
+    #     ---
+    #     out : float
+    #         input value
+    #     """
+        
+    #     x = np.array([state]).T
+    #     self.x0 = x
+        
+    #     self.multi_B = self.x0.T @ self.multi_B_coeff
+        
+    #     def obj(U_list):
+    #         """object func"""
+    #         U = np.array([U_list]).T
+    #         J = U.T @ self.multi_A @ U + 2 * self.x0 @ self.multi_B @ U
+    #         return J[0, 0]
+        
+    #     x0 = [0] * self.n_horizon
+    #     # print(x0)
+    #     opt_U_list = optimize.minimize(obj, x0, method="nelder-mead")
+    #     #print(opt_U_list.x)
+        
+    #     if opt_U_list.x[0] > 1000:
+    #         print("発散")
+    #     print(opt_U_list.x[0])
+    #     return opt_U_list.x[0]
+
     def input(self, state):
-        """compute input value
-        
-        Parameter
-        ---
-        state : list
-            state vector
-        
-        Return
-        ---
-        out : float
-            input value
-        """
-        
+        """制約条件なし"""
         x = np.array([state]).T
         self.x0 = x
-        
         self.multi_B = self.x0.T @ self.multi_B_coeff
-        
-        def obj(U_list):
-            """object func"""
-            U = np.array([U_list]).T
-            J = U.T @ self.multi_A @ U + 2 * self.x0 @ self.multi_B @ U
-            return J[0, 0]
-        
-        x0 = [0] * self.n_horizon
-        # print(x0)
-        opt_U_list = optimize.minimize(obj, x0, method="nelder-mead")
-        #print(opt_U_list.x)
-        
-        if opt_U_list.x[0] > 1000:
-            print("発散")
-        print(opt_U_list.x[0])
-        return opt_U_list.x[0]
+        # print(self.multi_A.shape)
+        # print(self.multi_B.shape)
+        U_star = -np.linalg.inv(self.multi_A) @ self.multi_B.T
+        return U_star[0, 0]
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
     # simu = ByPID(THETA_INIT=pi/10,)
     # simu.do_exercise_8()
     
     
-    simu = ByLQR()
-    simu.do_exercise_8()
+    # simu = ByLQR()
+    # simu.do_exercise_8()
     
     # main_no_input()
     
-    # simu = ByMPC()
-    # simu.do_exercise_8(ani_save=True)
+    simu = ByMPC()
+    simu.do_exercise_8()
