@@ -28,8 +28,19 @@ struct NodeIndex {
     int y;  // y座標
 };
 
+/**
+ * @brief 比較演算子が定義されていないとmapのkeyに使えないので定義
+ */
 bool operator<(const NodeIndex& a, const NodeIndex& b){
     return std::tie(a.x, a.y) < std::tie(b.x, b.y);
+}
+
+bool operator==(const NodeIndex& a, const NodeIndex& b){
+    return a.x == b.x && a.y == b.y;
+}
+
+bool operator!=(const NodeIndex& a, const NodeIndex& b){
+    return a.x != b.x && a.y != b.y;
 }
 
 /**
@@ -207,7 +218,8 @@ class Dijkstra {
                     node = {
                         temp_node.x + os[i].dx,
                         temp_node.y + os[i].dy,
-                        temp_node.cost + os[i].dcost
+                        temp_node.cost + os[i].dcost,
+                        temp_id,
                     };
                     node_id = {node.x, node.y};
 
@@ -245,16 +257,19 @@ class Dijkstra {
             double cost = goal_node.cost;
             NodeIndex parent = goal_node.parent;
             Node node;
-            cout << parent.x << ", " << parent.y << endl;
+            cout << "tempid = " << parent.x << ", " << parent.y << endl;
+            cout << "startid = " << start_id.x << ", " << start_id.y << endl;
 
-            while (parent.x != start_id.x && parent.y != start_id.y){
+            //while (parent.x != start_id.x && parent.y != start_id.y)
+            while (parent != start_id)
+            {
                 node = closed_map[parent];
                 rx.push_back(node.x);
                 ry.push_back(node.y);
                 cost += node.cost;
                 parent = node.parent;
             }
-            cout << "passsize = "<< rx.size() << endl;
+            cout << "pass_size = "<< rx.size() << endl;
             std::tuple<vector<int>, vector<int>, double> z = std::make_tuple(rx, ry, cost);
             cout << "compute_optiomal_path is finished" << endl;
             return z;
@@ -296,7 +311,7 @@ int main(){
     };  // 生マップ
 
 
-    Dijkstra sim(gridmap, 0, 0, 9, 9);
+    Dijkstra sim(gridmap, 0, 0, 2, 0);
     sim.do_exercise();
 
     cout << "main is finished" << endl;
