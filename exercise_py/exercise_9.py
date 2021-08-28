@@ -88,37 +88,6 @@ class Dijkstra:
         return options
     
     
-    def compute_optiomal_path(self, goal_node, closed_set):
-        """startからgoalへの最短距離を計算
-        
-        Prameters
-        ---
-        goal_node : class
-            node class
-        closed_set : dict
-            ***
-        
-        Returns
-        ---
-        out : tuple
-            rx, ry : optiomal x,y sequence. cost : goukei of cost.
-        """
-        #print('optiomal path')
-        rx, ry = [goal_node.x], [goal_node.y]
-        parent = goal_node.parent
-        cost = goal_node.cost
-        
-        while parent != self.start_position:
-            node = closed_set[parent]
-            rx.append(node.x)
-            ry.append(node.y)
-            cost += node.cost
-            parent = node.parent
-            #print(node.x, node.y)
-        
-        return rx, ry, cost
-    
-    
     def planning(self, start_position, goal_position):
         """プランニング本体
         
@@ -184,6 +153,36 @@ class Dijkstra:
         
         return rx, ry, cost, closed_set
     
+    
+    def compute_optiomal_path(self, goal_node, closed_set):
+        """startからgoalへの最短距離を計算
+        
+        Prameters
+        ---
+        goal_node : class
+            node class
+        closed_set : dict
+            ***
+        
+        Returns
+        ---
+        out : tuple
+            rx, ry : optiomal x,y sequence. cost : goukei of cost.
+        """
+        #print('optiomal path')
+        rx, ry = [goal_node.x], [goal_node.y]
+        parent = goal_node.parent
+        cost = goal_node.cost
+        
+        while parent != self.start_position:
+            node = closed_set[parent]
+            rx.append(node.x)
+            ry.append(node.y)
+            cost += node.cost
+            parent = node.parent
+            #print(node.x, node.y)
+        
+        return rx, ry, cost
     
     def draw(self, rx, ry, rawmap, dilmap=None, save=False):
         """図示

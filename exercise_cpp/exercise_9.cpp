@@ -57,18 +57,24 @@ class Dijkstra {
     private:
         int x_max;
         int y_max;
+        NodeIndex start_parent_id;
+        NodeIndex goal_parent_id;
+        NodeIndex start_id;
         Node start_node;
         Node goal_node;
         map<NodeIndex, Node> closed_map;
 
     public:
         Dijkstra(vector<vector<bool>> gridmap_, int start_x_, int start_y_, int goal_x_, int goal_y_){
-            cout << "コンストラクタが呼ばれました" << endl;
+            cout << "constructor is called" << endl;
             gridmap = gridmap_;
             x_max = gridmap.size();
             y_max = gridmap[0].size();
-            start_node = {start_x_, start_y_, 0.0, -1};
-            goal_node = {goal_x_, goal_y_, INT_MAX, -2};
+            start_id = {start_x_, start_y_};
+            start_parent_id = {-1, -1};
+            goal_parent_id = {-2, -2};
+            start_node = {start_x_, start_y_, 0.0, start_parent_id};
+            goal_node = {goal_x_, goal_y_, INT_MAX, goal_parent_id};
         }
 
 
@@ -79,8 +85,8 @@ class Dijkstra {
             vector<Option> options;
             Option o;
             
-            if (x+1 <= x_max){
-                if (y+1 <= y_max && !gridmap[y+1][x+1]){
+            if (x+1 < x_max){
+                if (y+1 < y_max && !gridmap[y+1][x+1]){
                     o = {1, 1, sqrt(2)};
                     options.push_back(o);
                 }
@@ -94,7 +100,7 @@ class Dijkstra {
                 }
             }
             if (x-1 >= 0){
-                if (y+1 <= y_max && !gridmap[y+1][x-1]){
+                if (y+1 < y_max && !gridmap[y+1][x-1]){
                     o = {-1, 1, sqrt(2)};
                     options.push_back(o);
                 }
@@ -108,7 +114,7 @@ class Dijkstra {
                 }
             }
             else{
-                if (y+1 <= y_max && !gridmap[y+1][x]){
+                if (y+1 < y_max && !gridmap[y+1][x]){
                     o = {0, 1, 1};
                     options.push_back(o);
                 }
@@ -118,7 +124,7 @@ class Dijkstra {
                 }
             }
             
-            cout << "o's size = " << options.size() << endl;
+            //cout << "o's size = " << options.size() << endl;
             cout << "calc_options finish" << endl;
             return options;
         }
@@ -140,7 +146,7 @@ class Dijkstra {
             
             while (pm != end){
                 //i += 1;
-                cout << (pm->first).x << ", " << (pm->first).y << endl;
+                //cout << (pm->first).x << ", " << (pm->first).y << endl;
                 if (pm == begin){
                     min_cost_id = pm->first;
                 }
@@ -154,30 +160,6 @@ class Dijkstra {
         }
 
 
-    private:
-    /**
-     * @brief 決定済みノード集合から最短パスを構築
-     */
-        std::tuple<vector<int>, vector<int>, double> compute_optiomal_path(
-        ){
-            vector<int> rx, ry;
-            NodeIndex parent = goal_node.parent;
-            double cost = goal_node.cost;
-            Node node;
-
-            NodeIndex start_id = {start_node.x, start_node.y};
-
-            while (parent.x != start_id.x && parent.y != start_id.y){
-                node = closed_map[parent];
-                rx.push_back(node.x);
-                ry.push_back(node.y);
-                cost += node.cost;
-                parent = node.parent;
-            }
-
-            std::tuple<vector<int>, vector<int>, double> z = std::make_tuple(rx, ry, cost);
-            return z;
-        }
 
 
     private:
@@ -193,27 +175,28 @@ class Dijkstra {
 
             map<NodeIndex, Node> open_set;  // 未決定のノード
             map<NodeIndex, Node> closed_set;  // 決定済みのノード
-
-            NodeIndex start_id = {start_node.x, start_node.y};
             open_set.insert(pair<NodeIndex, Node>(start_id, start_node));
             
-            cout << "while is loop running..." << endl;
+            cout << "while loop is running..." << endl;
 
             int counter = 0;
             while (1){
                 counter += 1;
                 cout << endl << "while count = " << counter << endl;
                 temp_id = find_MinCostNode_id(open_set);
+                
                 temp_node = open_set[temp_id];
+                cout << "temp = " << temp_id.x << ", " << temp_id.y << endl;
                 //cout << "" << endl;
                 if (temp_node.x == goal_node.x && temp_node.y == goal_node.y){
                     goal_node.parent = temp_node.parent;
                     goal_node.cost = temp_node.cost;
-                    cout << "serch complete" << endl;
+                    cout << "serching complete!" << endl;
+                    cout << "goal_node_paretnt = " << goal_node.parent.x << ", " << goal_node.parent.y << endl;
                     break;
                 }
                 else{
-                    cout << "try again" << endl;
+                    cout << "don't complete. try again" << endl;
                 }
                 
                 open_set.erase(temp_id);  // 未決定の集合から削除
@@ -230,32 +213,66 @@ class Dijkstra {
 
                     if (closed_set.count(node_id) == 1){
                         // 決定済み
-                        cout << "pattern 1" << endl;
+                        //cout << "pattern 1" << endl;
                         continue;
                     }
                     else if(open_set.count(node_id) == 0){
                         // 未探索のとき
-                        cout << "pattern 2" << endl;
+                        //cout << "pattern 2" << endl;
                         open_set[node_id] = node;
                     }
                     else{
                         // 探索済みだが未決定
-                        cout << "pwttern 3" << endl;
+                        //cout << "pwttern 3" << endl;
                         if (open_set[node_id].cost >= node.cost){
                             open_set[node_id] = node;
                         }
                     }
                 }
             }
-            cout << "quite planning" << endl;
+            cout << "finish planning" << endl;
         }
-    
+
+
+    private:
+    /**
+     * @brief 決定済みノード集合から最短パスを構築
+     */
+        std::tuple<vector<int>, vector<int>, double> compute_optiomal_path(
+        ){
+            cout << "compute_optiomal_path is called" << endl;
+            vector<int> rx, ry;
+            double cost = goal_node.cost;
+            NodeIndex parent = goal_node.parent;
+            Node node;
+            cout << parent.x << ", " << parent.y << endl;
+
+            while (parent.x != start_id.x && parent.y != start_id.y){
+                node = closed_map[parent];
+                rx.push_back(node.x);
+                ry.push_back(node.y);
+                cost += node.cost;
+                parent = node.parent;
+            }
+            cout << "passsize = "<< rx.size() << endl;
+            std::tuple<vector<int>, vector<int>, double> z = std::make_tuple(rx, ry, cost);
+            cout << "compute_optiomal_path is finished" << endl;
+            return z;
+        }
 
     public:
         void do_exercise(){
             map<NodeIndex, Node> closed_map;
             planning();
             std::tuple<vector<int>, vector<int>, double> z = compute_optiomal_path();
+            vector<int>& rx = std::get<0>(z);
+            vector<int>& ry = std::get<1>(z);
+            double& cost = std::get<2>(z);
+            cout << "optiomal path is " << endl << "(x, y) = " << endl;
+            for (int i=0; i<rx.size(); i++){
+                cout << rx[i] << ", " << ry[i] << endl;
+            }
+            cout << "total cost = " << cost  << "[m]" << endl;
         }
 };
 
@@ -282,6 +299,6 @@ int main(){
     Dijkstra sim(gridmap, 0, 0, 9, 9);
     sim.do_exercise();
 
-    cout << "終了" << endl;
+    cout << "main is finished" << endl;
     return 0;
 }
