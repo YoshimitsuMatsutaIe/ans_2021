@@ -22,7 +22,7 @@ class InvertedPendulum:
     
     G_ACCEL = 9.80665  # 重力加速度
     GOAL = 0  # goal of theta
-    TIME_INTERVAL = 0.1  #[sec]
+    TIME_INTERVAL = 0.01  #[sec]
     TIME_SPAN = 5  # [sec]
     
     def __init__(
@@ -188,8 +188,8 @@ class InvertedPendulum:
         
         pen_init, = ax_ani.plot([], [], lw = 2, color = '#a9a9a9')  # pendulum
         pen_init.set_data(
-            [x_list[0], x_list[0] + self.L*cos(pi/2-theta_list[0])],
-            [0, self.L*sin(pi/2-theta_list[0])],
+            [x_list[0], x_list[0] + self.L*cos(-theta_list[0]+pi/2)],
+            [0, self.L*sin(-theta_list[0]+pi/2)],
         )
         
         
@@ -202,7 +202,7 @@ class InvertedPendulum:
         
         pen, = ax_ani.plot([], [], lw = 2)  # pendulum
         pen.set_data(
-            [x_list[0], x_list[0] + self.L*cos(-pi/2-theta_list[0])],
+            [x_list[0], x_list[0] + self.L*cos(pi/2-theta_list[0])],
             [0, self.L*sin(pi/2-theta_list[0])],
         )
         
@@ -216,8 +216,8 @@ class InvertedPendulum:
             
             car.set_center([x_list[i], 0])
             pen.set_data(
-                [x_list[i], x_list[i] + self.L*cos(-pi/2-theta_list[i])],
-                [0, self.L*sin(pi/2-theta_list[i])],
+                [x_list[i], x_list[i] + self.L*cos(-theta_list[i]+pi/2)],
+                [0, self.L*sin(-theta_list[i]+pi/2)],
             )
             
             time.pop().remove()
@@ -233,7 +233,7 @@ class InvertedPendulum:
             fig = fig_ani,
             func = update,
             frames = np.arange(0, len(self.t)),
-            interval = 25*4,
+            interval = 1,
         )
         
         if ani_save:
@@ -415,13 +415,13 @@ class ByMPC(InvertedPendulum):
     def __init__(
         self,
         q = np.array([
-            [0, 0, 0, 0],
-            [0, 0, 0, 0],
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
             [0, 0, 1000, 0],
             [0, 0, 0, 1],
             ]),
         r = 0.0001,
-        time_horizon = 0.5,
+        time_horizon = 0.1,
         X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6*0.9, DTHETA_INIT=0.0,
     ):
         """
@@ -441,6 +441,8 @@ class ByMPC(InvertedPendulum):
         
         self.free = False
         self.method = 'MPC'
+        
+        print("n_horizon = ", self.n_horizon)
         
         # calculate coefficient matrix
         F_list = [np.linalg.matrix_power(self.A_LINIER, n) for n in range(1, self.n_horizon+1)]
@@ -571,13 +573,12 @@ class ByMPC(InvertedPendulum):
 
 if __name__ == '__main__':
     # simu = ByPID(THETA_INIT=pi/10,)
-    # simu.do_exercise_8()
+    # simu = ByMPC()
+    simu = ByLQR()
     
     
-    # simu = ByLQR()
-    # simu.do_exercise_8()
+    
+    
+    simu.do_exercise_8(ani_save=True)
     
     # main_no_input()
-    
-    simu = ByMPC()
-    simu.do_exercise_8()
