@@ -3,6 +3,7 @@
 import numpy as np
 #import math
 from math import pi, sin, cos, tan
+from numpy.core.numeric import zeros_like
 from numpy.lib.twodim_base import triu_indices
 #from numpy.core.fromnumeric import size
 import scipy as sp
@@ -22,13 +23,13 @@ class InvertedPendulum:
     
     G_ACCEL = 9.80665  # 重力加速度
     GOAL = 0  # goal of theta
-    TIME_INTERVAL = 0.01  #[sec]
+    TIME_INTERVAL = 0.1  #[sec]
     TIME_SPAN = 5  # [sec]
     
     def __init__(
         self,
         X_INIT, DX_INIT, THETA_INIT, DTHETA_INIT,
-        M_PEN=1.0, M_CAR=5.0, L=1.5, D_PEN=0.01, D_CAR=0.01,
+        M_PEN=1.0, M_CAR=2.0, L=1.5, D_PEN=0.01, D_CAR=0.01,
     ):
         """
         Parameters
@@ -417,12 +418,12 @@ class ByMPC(InvertedPendulum):
         q = np.array([
             [1, 0, 0, 0],
             [0, 1, 0, 0],
-            [0, 0, 1000, 0],
+            [0, 0, 1, 0],
             [0, 0, 0, 1],
             ]),
-        r = 0.0001,
-        time_horizon = 0.1,
-        X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/6*0.9, DTHETA_INIT=0.0,
+        r = 0.1,
+        time_horizon = 0.5,
+        X_INIT=0.0, DX_INIT=0.0, THETA_INIT=pi/10, DTHETA_INIT=0.0,
     ):
         """
         Parameters
@@ -447,7 +448,7 @@ class ByMPC(InvertedPendulum):
         # calculate coefficient matrix
         F_list = [np.linalg.matrix_power(self.A_LINIER, n) for n in range(1, self.n_horizon+1)]
         F = np.block(F_list).T * self.TIME_INTERVAL
-        #print(self.F)
+        #print("F = ", F)
         
         G_list = []
         for i in range(1, self.n_horizon + 1):
@@ -461,11 +462,29 @@ class ByMPC(InvertedPendulum):
                     col_G.append(np.linalg.matrix_power(self.A_LINIER, i-j) @ self.B_LINIER)
             G_list.append(col_G)
         G = np.block(G_list) * self.TIME_INTERVAL
-        #print(self.G)
+        #print("G = ", G)
         
         Q = np.tile(q, (self.n_horizon, self.n_horizon))
         #R = np.full((self.n_horizon, self.n_horizon), r)
         R = np.eye(self.n_horizon) * r
+        
+        # # 手動
+        # F = np.block([
+        #     [self.A_LINIER],
+        #     [self.A_LINIER**2],
+        #     [self.A_LINIER**3],
+        # ])*self.TIME_INTERVAL
+        # G = np.block([
+        #     [self.B_LINIER, np.zeros_like(self.B_LINIER), np.zeros_like(self.B_LINIER)],
+        #     [self.A_LINIER@self.B_LINIER, self.B_LINIER, np.zeros_like(self.B_LINIER)],
+        #     [self.A_LINIER**3@self.B_LINIER, self.A_LINIER@self.B_LINIER, self.B_LINIER],
+        # ])*self.TIME_INTERVAL
+        # Q = np.block([
+        #     [q, np.zeros_like(q), np.zeros_like(q)],
+        #     [np.zeros_like(q), q, np.zeros_like(q)],
+        #     [np.zeros_like(q), np.zeros_like(q), q],
+        # ])
+        # R = np.eye(3)*r
         
         self.multi_A = G.T @ Q @ G + R
         self.multi_B_coeff = 2 * F.T @ Q @ G
@@ -556,12 +575,12 @@ class ByMPC(InvertedPendulum):
 
     def input(self, state):
         """制約条件なし"""
-        x = np.array([state]).T
-        self.x0 = x
+        self.x0 = np.array([state]).T
         self.multi_B = self.x0.T @ self.multi_B_coeff
         # print(self.multi_A.shape)
         # print(self.multi_B.shape)
         U_star = -np.linalg.inv(self.multi_A) @ self.multi_B.T
+        print(U_star[0,0])
         return U_star[0, 0]
 
 
@@ -573,12 +592,12 @@ class ByMPC(InvertedPendulum):
 
 if __name__ == '__main__':
     # simu = ByPID(THETA_INIT=pi/10,)
-    # simu = ByMPC()
-    simu = ByLQR()
+    simu = ByMPC()
+    #simu = ByLQR()
     
     
     
     
-    simu.do_exercise_8(ani_save=True)
+    simu.do_exercise_8(ani_save=False)
     
     # main_no_input()
