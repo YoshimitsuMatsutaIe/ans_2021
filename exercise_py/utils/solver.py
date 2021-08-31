@@ -2,10 +2,6 @@ import numpy as np
 
 
 
-def hello():
-    print("hello")
-    return
-
 
 
 class sol:
@@ -13,9 +9,11 @@ class sol:
         self.y = y
 
 def jisaku_solve_RungeKuttar(dx, x0, tspan, dt):
-    """ルンゲクッタソルバ"""
+    """ルンゲクッタのソルバー"""
     t = range(tspan)
-    y
+    
+    def 
+    
 
 if __name__ == "__main__":
     pass
