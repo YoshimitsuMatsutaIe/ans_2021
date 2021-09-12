@@ -27,6 +27,7 @@ def do_example_3():
         fill = False,
         ec = 'r',
         linewidth = 2,
+        
         )
     ax.add_patch(c)  # axに円を追加
     
@@ -49,7 +50,7 @@ def do_example_3():
     )  # アニメーションを作成
     
     plt.show()  # 図を表示
-    #HTML(ani.to_jshtml())
+
 
 
 if __name__ == '__main__':
