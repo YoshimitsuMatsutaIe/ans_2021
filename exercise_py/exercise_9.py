@@ -301,8 +301,8 @@ def exercise_9_main_2():
 
 
 if __name__ == '__main__':
-    #exercise_9_main()
+    exercise_9_main()
     
-    exercise_9_main_2()
+    #exercise_9_main_2()
 
 
