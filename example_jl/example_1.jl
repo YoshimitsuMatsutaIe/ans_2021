@@ -4,7 +4,7 @@ using DataFrames
 using Dates
 
 
-function do_example_1(path, threshold)
+function do_example_1(path, threshold::T) where T
 
     now = Dates.now(Dates.UTC)
 
@@ -50,6 +50,6 @@ end
 
 
 path = "./example_jl/example_1_data"  # csvフォルダのパス
-threshold = 40  # xの閾値
+threshold = 40.0  # xの閾値
 
 @time do_example_1(path, threshold)
