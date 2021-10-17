@@ -2,3 +2,5 @@
 matplotlibcpp.h
 CMakeLists.txt
 Eigen/
+
+.vscode/*
