@@ -11,7 +11,7 @@ f = @ode_def begin
     dω = 3cos(θ)*(D*v + ω^2*l*m*sin(θ))/(l*(-4M + 3m*cos(θ)^2 -4*m)) +
     -3(M + m)*(-d + ω + g*l*m*sin(θ))/(l^2*(-4M*m + 3m^2*cos(θ)^2 - 4m^2)) +
     3cos(θ)/(l*(-4M + 3m*cos(θ)^2 - 4m))
-end M m L l D d g 
+end M m L l D d g
 
 
 function do_3_1()
@@ -50,9 +50,9 @@ function do_3_1()
     gif(anim, "example_3_1_jl.gif", fps = 30)
 
 
-    return sol
+    return sol, anim
 
 end
 
 
-@time sol = do_3_1()
+@time sol, anim = do_3_1()

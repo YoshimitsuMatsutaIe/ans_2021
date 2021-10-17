@@ -1,8 +1,10 @@
 using CPUTime
 
 
-# 簡単な実装
-function is_prime_simple(n)
+"""
+素数判定
+"""
+function is_prime_simple(n::T) where T
     if n < 2
         return false
     elseif n == 2
