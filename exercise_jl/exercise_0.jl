@@ -4,7 +4,7 @@ using CPUTime
 """
 素数判定
 """
-function is_prime_simple(n::T) where T
+function is_prime_simple(n::Int64)
     if n < 2
         return false
     elseif n == 2

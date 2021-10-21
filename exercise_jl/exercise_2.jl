@@ -22,7 +22,7 @@ function jisaku_solve_euler(dx, x₀, t_span, Δt)
 
     x[1] = x₀  # 初期値
     for i in 1:length(x)-1
-        x[i+1] = x[i] + dx(t[i], x[i])Δt
+        x[i+1] = x[i] .+ dx(t[i], x[i]) .* Δt
     end
 
     t, x
@@ -41,7 +41,7 @@ function jisaku_solve_RungeKutta(dx, x₀, t_span, Δt)
         k₂ = dx(t[i]+Δt/2, x[i]+k₁*Δt/2)
         k₃ = dx(t[i]+Δt/2, x[i]+k₂*Δt/2)
         k₄ = dx(t[i]+Δt, x[i]+k₃*Δt)
-        x[i+1] = x[i] + (k₁ + 2k₂ + 2k₃ +k₄)Δt/6
+        x[i+1] = x[i] .+ (k₁ .+ 2k₂ .+ 2k₃ .+k₄) .* Δt/6
     end
 
     t, x
