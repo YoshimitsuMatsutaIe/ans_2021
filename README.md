@@ -32,11 +32,12 @@ c++ではグラフ作成は実装しません．
 * Plots
 * CSV
 * DataFrames
-* DifferentialEquations
+* DifferentialEquations  
+etc
   
 `]`を押しPkgモードに入り，以下のコマンドで一括インストール
 ```julia
-add CPUTime, Plots, CSV, DataFrames, DifferentialEquations, StaticArrays, ArraysOfArrays, ForwardDiff, YAML
+add CPUTime, Plots, CSV, DataFrames, DifferentialEquations, StaticArrays, ArraysOfArrays, ForwardDiff, YAML, Colors
 ```
 `rBackspace`キーでPkgモード終了
 
@@ -44,7 +45,7 @@ add CPUTime, Plots, CSV, DataFrames, DifferentialEquations, StaticArrays, Arrays
 なし
 
 ### C++
-* Eigen
+* Eigen  
 Eigenを使ってます．直下にEigenディレクトリをおいてください．
 
 ## Note

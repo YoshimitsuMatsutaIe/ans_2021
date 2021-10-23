@@ -3,6 +3,8 @@ matplotlibcpp.h
 CMakeLists.txt
 Eigen/
 
+*.gif
+
 .vscode/*
 
 

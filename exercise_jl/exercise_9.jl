@@ -10,12 +10,12 @@ mutable struct Node
 end
 
 
-function options(x, y, x_max, y_max, gridmap)
-    """移動可能なノード
-    ・なぜか関数dijkstra内で定義したらエラー
-    ・[]が良くない？
-    """
+"""移動可能なノード
 
+・なぜか関数dijkstra内で定義したらエラー  
+・[]が良くない？  
+"""
+function options(x, y, x_max, y_max, gridmap)
     options = []
     if x+1 <= x_max
         if y+1 <= y_max
@@ -62,14 +62,16 @@ function options(x, y, x_max, y_max, gridmap)
     return options
 end
 
+
+"""ダイクストラで最短経路探索"""
 function dijkstra(gridmap::Matrix{Int64}, start, goal)
-    """ダイクストラで最短経路探索"""
     
     x_max = size(gridmap)[1]
     y_max = size(gridmap)[2]
 
+
+    """一番costが小さいnodeのidを探す"""
     function find_MinCost_id(d)
-        """一番costが小さいnodeのidを探す"""
         for (i, id) in enumerate(keys(d))
             if i==1
                 global minid = id
@@ -124,8 +126,10 @@ function dijkstra(gridmap::Matrix{Int64}, start, goal)
         end
     end
 
+
+    """決定済み集合から最短経路を組む"""
     function compute_optiomal_path(start_node, goal_node, closed_set)
-        """決定済み集合から最短経路を組む"""
+        
 
         rx, ry = [goal_node.x], [goal_node.y]
         parent = goal_node.parent
