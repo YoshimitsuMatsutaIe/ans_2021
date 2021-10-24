@@ -29,7 +29,7 @@ function options(x, y, x_max, y_max, gridmap)
             end
         end
         if gridmap[y, x+1] == 0
-            push!(options, (1, 0, 1))
+            push!(options, (1, 0, 1.0))
         end
     end
     if x >= 2
@@ -44,17 +44,17 @@ function options(x, y, x_max, y_max, gridmap)
             end
         end
         if gridmap[y, x-1] == 0
-            push!(options, (-1, 0, 1))
+            push!(options, (-1, 0, 1.0))
         end
     else
         if y+1 <= y_max
             if gridmap[y+1, x] == 0
-                push!(options, (0, 1, 1))
+                push!(options, (0, 1, 1.0))
             end
         end
         if y >= 2
             if gridmap[y-1, x] == 0
-            push!(options, (0, -1, 1))
+            push!(options, (0, -1, 1.0))
             end
         end
     end
