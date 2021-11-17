@@ -20,8 +20,8 @@ def primality_test_simple(n):
 
 def do_2(start, end, test_func=primality_test_simple):
     """素直な実装"""
-    
-    t1 = time.time()
+    print("\n単純なforループ")
+    #t1 = time.time()
     start = int(start)
     end = int(end)
     prime_list = []
@@ -34,7 +34,7 @@ def do_2(start, end, test_func=primality_test_simple):
     print('prime number is ...')
     #print(prime_list)
     print("Total = ", len(prime_list))
-    print("time = ", time.time() - t1)
+    #print("time = ", time.time() - t1)
     return prime_list
 
 
@@ -52,7 +52,8 @@ def primality_test_using_sieve(n):
 def do_2_using_sieve(start, end):
     """sieve使用"""
     
-    t1 = time.time()
+    print("\nsieve使用")
+    #t1 = time.time()
     start = int(start)
     end = int(end)
     print("start ...")
@@ -62,13 +63,14 @@ def do_2_using_sieve(start, end):
     print('prime number is ...')
     #print(prime_list)
     print("Total = ", len(prime_list))
-    print("time = ", time.time() - t1)
+    #print("time = ", time.time() - t1)
     return prime_list
 
 
 
 if __name__ == '__main__':
-    print(primality_test_simple(999961))  # 100万以下で最大の素数
-    #do_2(1, 1000)
-    #do_2_using_sieve(2, 999961)
-
+    start = time.time()
+    #print(primality_test_simple(999961))  # 100万以下で最大の素数
+    do_2(1, 1000)
+    #do_2_using_sieve(2, 1000)
+    print("実行時間 = ", time.time() - start, " [秒]\n")
