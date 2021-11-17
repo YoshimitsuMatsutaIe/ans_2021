@@ -31,9 +31,9 @@ def do_2(start, end, test_func=primality_test_simple):
         if test_func(n):
             prime_list.append(n)
 
-    print('prime number is ...')
+    #print('prime number is ...')
     #print(prime_list)
-    print("Total = ", len(prime_list))
+    print(start, "から", end, "に素数は", len(prime_list), "個ある")
     #print("time = ", time.time() - t1)
     return prime_list
 
@@ -60,9 +60,10 @@ def do_2_using_sieve(start, end):
     
     prime_list = [i for i in sieve.primerange(start, end+1)]
 
-    print('prime number is ...')
+    #print('prime number is ...')
     #print(prime_list)
-    print("Total = ", len(prime_list))
+    print(start, "から", end, "に素数は")
+    print("Total = ", len(prime_list), "個ある")
     #print("time = ", time.time() - t1)
     return prime_list
 
@@ -71,6 +72,6 @@ def do_2_using_sieve(start, end):
 if __name__ == '__main__':
     start = time.time()
     #print(primality_test_simple(999961))  # 100万以下で最大の素数
-    do_2(1, 1000)
-    #do_2_using_sieve(2, 1000)
+    do_2(1, 100000)
+    #do_2_using_sieve(2, 100000)
     print("実行時間 = ", time.time() - start, " [秒]\n")

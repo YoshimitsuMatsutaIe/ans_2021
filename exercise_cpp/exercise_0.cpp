@@ -49,7 +49,7 @@ int main(){
 
     int n0, n1;
     n0 = 1;
-    n1 = 999961;
+    n1 = 100000;
     do_2(n0, n1);
 
     return 0;
