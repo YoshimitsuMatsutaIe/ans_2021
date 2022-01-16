@@ -2,10 +2,10 @@ using CPUTime
 using Plots, Colors
 
 
-mutable struct Node
-    x::Int64
-    y::Int64
-    cost::Float64
+mutable struct Node{T, U}
+    x::T
+    y::T
+    cost::U
     parent::Tuple{Any, Any}
 end
 
@@ -15,7 +15,7 @@ end
 ・なぜか関数dijkstra内で定義したらエラー  
 ・[]が良くない？  
 """
-function options(x, y, x_max, y_max, gridmap)
+function options(x::T, y::T, x_max::T, y_max::T, gridmap::Matrix{T}) where T
     options = []
     if x+1 <= x_max
         if y+1 <= y_max
@@ -63,26 +63,52 @@ function options(x, y, x_max, y_max, gridmap)
 end
 
 
+"""一番costが小さいnodeのidを探す"""
+function find_MinCost_id(d)
+    for (i, id) in enumerate(keys(d))
+        if i==1
+            global minid = id
+        elseif d[id].cost < d[minid].cost
+            minid = id
+        end
+    end
+    minid
+end
+
+
+"""決定済み集合から最短経路を組む"""
+function compute_optiomal_path(
+    start_node::Node{T, U}, goal_node::Node{T, U},
+    closed_set
+    ) where {T, U}
+    
+
+    rx, ry = [goal_node.x], [goal_node.y]
+    parent = goal_node.parent
+    cost = goal_node.cost
+
+    while parent != (start_node.x, start_node.y)
+        node = closed_set[parent]
+        push!(rx, node.x)
+        push!(ry, node.y)
+        cost += node.cost
+        parent = node.parent
+    end
+
+    push!(rx, start_node.x)
+    push!(ry, start_node.y)
+
+    rx, ry, cost
+end
+
+
 """ダイクストラで最短経路探索"""
-function dijkstra(gridmap::Matrix{Int64}, start, goal)
+function dijkstra(gridmap::Matrix{T}, start::Tuple{T, T}, goal::Tuple{T, T}) where T
     
     x_max = size(gridmap)[1]
     y_max = size(gridmap)[2]
 
-
-    """一番costが小さいnodeのidを探す"""
-    function find_MinCost_id(d)
-        for (i, id) in enumerate(keys(d))
-            if i==1
-                global minid = id
-            elseif d[id].cost < d[minid].cost
-                minid = id
-            end
-        end
-        minid
-    end
-
-    start_node = Node(start[1], start[2], 0, (nothing, nothing))
+    start_node = Node(start[1], start[2], 0.0, (nothing, nothing))
     goal_node = Node(goal[1], goal[2], typemax(Float64), (nothing, nothing))
 
     open_set = Dict()
@@ -126,37 +152,16 @@ function dijkstra(gridmap::Matrix{Int64}, start, goal)
         end
     end
 
-
-    """決定済み集合から最短経路を組む"""
-    function compute_optiomal_path(start_node, goal_node, closed_set)
-        
-
-        rx, ry = [goal_node.x], [goal_node.y]
-        parent = goal_node.parent
-        cost = goal_node.cost
-
-        while parent != (start_node.x, start_node.y)
-            node = closed_set[parent]
-            push!(rx, node.x)
-            push!(ry, node.y)
-            cost += node.cost
-            parent = node.parent
-        end
-
-        push!(rx, start_node.x)
-        push!(ry, start_node.y)
-
-        rx, ry, cost
-    end
-
-
-    rx, ry, total_cost = compute_optiomal_path(start_node, goal_node, closed_set)
-
-    rx, ry, total_cost
+    compute_optiomal_path(start_node, goal_node, closed_set)
 end
 
 
-function draw(rx, ry, start, goal, gridmap)
+"""グラフを作成"""
+function draw(
+    rx::Vector{T}, ry::Vector{T}, start::Tuple{T, T}, goal::Tuple{T, T},
+    gridmap::Matrix{T}
+    ) where T
+
     plot(
         rx, ry,
         aspect_ratio=1, label="optiomal path", legend=:bottomright,
@@ -167,12 +172,11 @@ function draw(rx, ry, start, goal, gridmap)
     
     # 障害物位置のデータ作成
     obs_id = findall(gridmap .> 0)  # 障害物のindex検索
-    obs_x = Vector{Int64}(undef, length(obs_id))
-    obs_y = Vector{Int64}(undef, length(obs_id))
+    obs_x = Vector{T}(undef, length(obs_id))
+    obs_y = Vector{T}(undef, length(obs_id))
     for i in 1:length(obs_id)
         obs_x[i] = obs_id[i][2]
         obs_y[i] = obs_id[i][1]
-        
     end
     scatter!(obs_x, obs_y, marlershape=:star, label="obstacle")
 end
