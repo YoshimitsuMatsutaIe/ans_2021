@@ -1,6 +1,5 @@
 using DifferentialEquations
 using Plots
-using CPUTime
 
 function main()
      a = 3.0  # パラメータ
@@ -79,3 +78,6 @@ function main()
      x = exp.(a*t)
      plot!(t, x, label="exact sol exp(at)")
 end
+
+
+@time main()

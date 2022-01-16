@@ -1,5 +1,5 @@
 using Plots
-using CPUTime
+
 
 function makeplot()
     anim = @animate for i in 1:200

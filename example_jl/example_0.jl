@@ -1,4 +1,4 @@
-using CPUTime
+
 
 function y(x_start, dx, x_end)
     y = []
@@ -9,5 +9,5 @@ function y(x_start, dx, x_end)
     return y
 end
 
-@CPUtime ylist = y(0, 1, 10)
+@time ylist = y(0, 1, 10)
 println(ylist)
