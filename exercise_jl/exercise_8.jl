@@ -85,22 +85,22 @@ function run_simulation(p::LQRParam{T}, Δt::T=0.01, TIME_SPAN::T=5.0) where T
 
     # 原点近傍での線形化システム
     multi = [
-        1.0 0.0 0.0 0.0
-        0.0 0.0 1.0 0.0
-        0.0 M+m 0.0 m*L
-        0.0 m*L 0.0 4/3*m*l^2
+        1 0 0 0
+        0 0 1 0
+        0 M+m 0 m*L
+        0 m*L 0 4/3*m*l^2
     ]
     offset_x = [
-        0.0 1.0 0.0 0.0
-        0.0 0.0 0.0 1.0
-        0.0 -D 0.0 0.0
-        0.0 0.0 m*g*l -d
+        0 1 0 0
+        0 0 0 1
+        0 -D 0 0
+        0 0 m*g*l -d
     ]
     offset_u = [
-        0.0
-        0.0
+        0
+        0
         1.0
-        0.0
+        0
     ]
 
     A = inv(multi) * offset_x
